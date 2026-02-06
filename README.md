@@ -1,6 +1,6 @@
 # Irembo Document Verification AI System
 
-## 📋 Description
+## Description
 
 An AI-powered document verification system that leverages machine learning to automate the validation of citizen-submitted documents on the Irembo platform. The system uses deep learning trained on FUNSD (Form Understanding in Noisy Scanned Documents) and RVL-CDIP (document classification) datasets to verify document authenticity, quality, and completeness with 95%+ accuracy.
 
@@ -13,15 +13,29 @@ An AI-powered document verification system that leverages machine learning to au
 - ✅ Analytics dashboard for verification statistics
 - ✅ 70% reduction in manual verification workload
 
-**Impact:**
-- 🚀 Reduces document processing time from days to under 1 hour
-- 🎯 Achieves 95%+ accuracy in document validation
-- 💡 Improves citizen experience with instant feedback
-- ⚡ Enables officers to focus on complex edge cases
+---
+
+## Watch Demo Video
+
+ **[View 10-Minute Product Demo](https://youtu.be/GYl4uiUDjs8)**
+
+This video showcases the complete system:
+- UI/UX design walkthrough (9 professionally designed screens)
+- Machine learning model performance (96.3% accuracy)
+- Real-world impact metrics (70% workload reduction)
+- Deployment strategy and scalability
 
 ---
 
-## ⚠️ Important: Datasets Not Included in Repository
+**Impact:**
+-  Reduces document processing time from days to under 1 hour
+-  Achieves 95%+ accuracy in document validation
+-  Improves citizen experience with instant feedback
+-  Enables officers to focus on complex edge cases
+
+---
+
+##  Important: Datasets Not Included in Repository
 
 **Why datasets are NOT stored on GitHub:**
 
@@ -33,7 +47,7 @@ GitHub has strict file size limits and is designed for source code, not large da
 
 **Solution: Datasets are hosted on Google Drive**
 ```
-📥 Download datasets here:
+ Download datasets here:
 https://drive.google.com/drive/folders/1vp8AUptxJuYWesSvFguLe0jjLbfEDREb?usp=sharing
 ```
 
@@ -45,27 +59,27 @@ https://drive.google.com/drive/folders/1vp8AUptxJuYWesSvFguLe0jjLbfEDREb?usp=sha
 ✅ Easier updates without re-cloning entire repo
 ✅ Scalable for future dataset additions
 
-See [📥 Dataset Setup Instructions](#-dataset-setup-instructions) for complete download & setup guide.
+See [ Dataset Setup Instructions](#-dataset-setup-instructions) for complete download & setup guide.
 
 ---
 
-## 🔗 GitHub Repository
+## GitHub Repository
 
 **Repository URL:** [https://github.com/jkeza1/ml-document-verifier](https://github.com/jkeza1/ml-document-verifier)
 
 **Project Structure:**
 ```
 ml-document-verifier/
-├── 📓 Document_Verification_ML_Model.ipynb    # Complete ML implementation
-├── 📄 README.md                                # This file
-├── 📋 DEPLOYMENT_PLAN.md                       # Deployment strategy
-├── 📋 SETUP_GUIDE.md                           # Environment setup guide
-├── 📋 NOTEBOOK_SETUP_GUIDE.md                  # Dataset setup guide
-├── 📦 requirements.txt                         # Python dependencies
-├── 🐍 verify_document.py                       # Inference script
-├── 📥 download_datasets.sh                     # Dataset download helper
+├──  Document_Verification_ML_Model.ipynb    # Complete ML implementation
+├──  README.md                                # This file
+├──  DEPLOYMENT_PLAN.md                       # Deployment strategy
+├──  SETUP_GUIDE.md                           # Environment setup guide
+├──  NOTEBOOK_SETUP_GUIDE.md                  # Dataset setup guide
+├──  requirements.txt                         # Python dependencies
+├──  verify_document.py                       # Inference script
+├──  download_datasets.sh                     # Dataset download helper
 │
-├── 🎨 figma/                                   # UI/UX Design Mockups
+├──  figma/                                   # UI/UX Design Mockups
 │   ├── ai-powered_document_upload/
 │   ├── citizen_appeals_dashboard/
 │   ├── citizen_appeal_form/
@@ -89,18 +103,18 @@ ml-document-verifier/
 │   ├── officer_verification_workbench.html     # Verification workbench
 │   └── officer_ai_review_workbench.html        # AI review workbench
 │
-├── ⚙️ Backend/                                  # Backend Code
+├──  Backend/                                  # Backend Code
 │   ├── js/app.js                               # Client-side logic
 │   └── api/                                    # API endpoints (README)
 │
-├── 🎨 Assets/                                  # Static Resources
+├──  Assets/                                  # Static Resources
 │   └── css/style.css                           # Stylesheets
 │
-├── 📊 datasets/                                # Training Datasets
+├──  datasets/                                # Training Datasets
 │   ├── funsd/                                  # FUNSD dataset
 │   └── rvl-cdip/                               # RVL-CDIP dataset
 │
-└── 📁 output/                                  # Generated Outputs
+└──  output/                                  # Generated Outputs
     ├── models/                                 # Trained ML models
     ├── plots/                                  # Visualizations
     └── features/                               # Feature extractions
@@ -108,7 +122,7 @@ ml-document-verifier/
 
 ---
 
-## 🛠️ How to Set Up the Environment and Project
+##  How to Set Up the Environment and Project
 
 ### Prerequisites
 
@@ -254,7 +268,7 @@ python verify_document.py path/to/test_document.png
 
 ---
 
-## 🎨 Designs & Interfaces
+##  Designs & Interfaces
 
 ### Figma Mockups
 
@@ -356,7 +370,7 @@ python verify_document.py path/to/test_document.png
 
 ---
 
-## 🚀 Deployment Plan
+## Deployment Plan
 
 ### Deployment Platform: Contabo VPS
 
@@ -639,7 +653,7 @@ cp output/models/* /backups/models/
 
 ---
 
-## 📊 ML Model Details
+##  ML Model Details
 
 ### Model Architecture
 
@@ -729,7 +743,7 @@ False Negative Rate: 3.9%
 
 ---
 
-## 📊 Key Visualizations & Analysis
+##  Key Visualizations & Analysis
 
 All visualizations are generated during notebook execution and saved to `output/plots/`. Below are the essential plots for understanding the model:
 
@@ -765,7 +779,7 @@ All visualizations are generated during notebook execution and saved to `output/
 ![Confidence Distribution](output/plots/confidence_distribution.png)
 **Explanation:** Distribution of model prediction confidence scores. Bimodal pattern with peaks near 0% (invalid) and 100% (valid) shows the model makes confident, decisive predictions. Very few predictions fall in the uncertain 40-60% range.
 
-### 📁 Additional Visualizations
+###  Additional Visualizations
 
 The complete set of 23 visualizations includes:
 - **Dataset Analysis**: FUNSD & RVL-CDIP statistics and samples
@@ -783,7 +797,7 @@ jupyter notebook Document_Verification_ML_Model.ipynb
 
 ---
 
-## 🔌 API Documentation
+## API Documentation
 
 ### Base URL
 ```
@@ -898,7 +912,7 @@ Import this collection for quick API testing:
 
 ---
 
-## 🎥 Video Demo Guidelines
+## Video Demo Guidelines
 
 ### Video Structure (5-10 minutes)
 
@@ -958,7 +972,7 @@ Import this collection for quick API testing:
 
 ---
 
-## 📦 Dependencies
+## Dependencies
 
 ### Python Packages (requirements.txt)
 ```
@@ -970,7 +984,7 @@ numpy==1.24.3
 matplotlib==3.7.2
 ---
 
-## 📁 Code Files Structure
+## Code Files Structure
 
 ### Key Files & Directories
 
@@ -1154,7 +1168,7 @@ If you use these datasets, please cite:
 
 ---
 
-## 🧪 Testing
+## Testing
 
 ### Run Tests
 ```bash
@@ -1196,7 +1210,7 @@ python -m pytest tests/test_integration.py
 
 ---
 
-## 🤝 Contributing
+##  Contributing
 
 We welcome contributions! Please follow these guidelines:
 
@@ -1208,20 +1222,20 @@ We welcome contributions! Please follow these guidelines:
 
 ---
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
-## 👥 Authors
+## Authors
 
 - **Joan Keza** - ML Engineer & Frontend Developer
 - **Neza David Tuyishimire** - Backend Developer & DevOps
 
 ---
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - **FUNSD Dataset**: Guillaume Jaume et al. - Form Understanding in Noisy Scanned Documents
 - **RVL-CDIP Dataset**: Adam W. Harley et al. - Document Classification
@@ -1230,7 +1244,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-## 📞 Support & Contact
+## Support & Contact
 
 - **GitHub Repository**: [ml-document-verifier](https://github.com/jkeza1/ml-document-verifier)
 - **GitHub Issues**: [Report a bug](https://github.com/jkeza1/ml-document-verifier/issues)
@@ -1238,7 +1252,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-## 🗺️ Roadmap
+## Roadmap
 
 ### Phase 1 (Current) - MVP ✅
 - Document verification ML model
