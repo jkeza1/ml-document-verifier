@@ -223,7 +223,7 @@ python verify_document.py path/to/test_document.png
 
 ### Figma Mockups
 
-**Design System:** [Irembo Document Verification UI/UX](https://www.figma.com/)
+**Design System:** 
 - Color Palette: Rwanda flag colors (Blue, Yellow, Green)
 - Typography: Inter, Noto Sans
 - Components: Buttons, Forms, Cards, Modals
@@ -240,35 +240,36 @@ python verify_document.py path/to/test_document.png
 - Service overview
 
 #### 2. Citizen Application Dashboard
-![Citizen Dashboard](screenshots/citizen_dashboard.png)
+<img width="1600" height="1280" alt="screen" src="https://github.com/user-attachments/assets/d5049fd9-b273-41bc-af4e-a20d3e92758f" />
+
 - Application tracking
 - Document status indicators
 - Upload progress
 - AI verification results
 
 #### 3. Document Upload with AI Feedback
-![Document Upload](screenshots/document_upload.png)
+<img width="1307" height="1600" alt="screen" src="https://github.com/user-attachments/assets/1c2785af-abd6-4633-8cb3-722ee806b840" />
 - Drag & drop interface
 - Real-time AI validation
 - Quality feedback
 - Instant approval/rejection
 
 #### 4. Officer Verification Queue
-![Officer Queue](screenshots/officer_queue.png)
+<img width="1600" height="1280" alt="screen" src="https://github.com/user-attachments/assets/d0b812c7-107a-492b-8204-20c5bb71b1de" />
 - Prioritized document list
 - Filter by status/date
 - AI confidence scores
 - Quick actions
 
 #### 5. Officer AI Review Workbench
-![AI Review](screenshots/ai_workbench.png)
+<img width="1600" height="1418" alt="screen" src="https://github.com/user-attachments/assets/f10f7a48-1116-40d6-8ade-17ea86b4ba08" />
 - Side-by-side document view
 - AI analysis results
 - Feature extraction display
 - Approve/Reject controls
 
 #### 6. Citizen Appeals Dashboard
-![Appeals Dashboard](screenshots/appeals_dashboard.png)
+<img width="1548" height="1600" alt="screen" src="https://github.com/user-attachments/assets/c567d111-c6cb-42d3-943d-3a18a787e371" />
 - Appeal submission form
 - Status tracking
 - Evidence upload
