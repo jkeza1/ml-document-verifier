@@ -1,85 +1,103 @@
-this is the readme file"# Irembo Document Verification AI System
+# Irembo Document Verification AI System
 
-##  Description
+## 📋 Description
 
 An AI-powered document verification system that leverages machine learning to automate the validation of citizen-submitted documents on the Irembo platform. The system uses deep learning trained on FUNSD (Form Understanding in Noisy Scanned Documents) and RVL-CDIP (document classification) datasets to verify document authenticity, quality, and completeness with 95%+ accuracy.
 
 **Key Features:**
--  Automated document verification using deep neural networks
--  Real-time quality assessment with confidence scores
--  Multi-language support (English & Kinyarwanda)
--  Responsive web interface for citizens and officers
--  Appeal system for rejected documents
-- Analytics dashboard for verification statistics
--  70% reduction in manual verification workload
+- ✅ Automated document verification using deep neural networks
+- ✅ Real-time quality assessment with confidence scores
+- ✅ Multi-language support (English & Kinyarwanda)
+- ✅ Responsive web interface for citizens and officers
+- ✅ Appeal system for rejected documents
+- ✅ Analytics dashboard for verification statistics
+- ✅ 70% reduction in manual verification workload
 
 **Impact:**
-- Reduces document processing time from days to under 1 hour
-- Achieves 95%+ accuracy in document validation
-- Improves citizen experience with instant feedback
-- Enables officers to focus on complex edge cases
+- 🚀 Reduces document processing time from days to under 1 hour
+- 🎯 Achieves 95%+ accuracy in document validation
+- 💡 Improves citizen experience with instant feedback
+- ⚡ Enables officers to focus on complex edge cases
 
 ---
 
 ## 🔗 GitHub Repository
 
-**Repository URL:** [https://github.com/jkeza1/irembo-doc-ai](https://github.com/jkeza1/irembo-doc-ai)
+**Repository URL:** [https://github.com/jkeza1/ml-document-verifier](https://github.com/jkeza1/ml-document-verifier)
 
 **Project Structure:**
 ```
-irembo-doc-ai/
-├──  ML_Model_Notebook.ipynb                    # Complete ML implementation
-├──  README.md                                   # This file
-├──  DEPLOYMENT_PLAN.md                          # Deployment strategy
-├── SETUP_GUIDE.md                              # Environment setup
-├──  NOTEBOOK_SETUP_GUIDE.md                     # Dataset setup guide
-├──  requirements.txt                            # Python dependencies
-├──  verify_document.py                          # Inference script
-├──  download_datasets.sh                        # Dataset download helper
+ml-document-verifier/
+├── 📓 Document_Verification_ML_Model.ipynb    # Complete ML implementation
+├── 📄 README.md                                # This file
+├── 📋 DEPLOYMENT_PLAN.md                       # Deployment strategy
+├── 📋 SETUP_GUIDE.md                           # Environment setup guide
+├── 📋 NOTEBOOK_SETUP_GUIDE.md                  # Dataset setup guide
+├── 📦 requirements.txt                         # Python dependencies
+├── 🐍 verify_document.py                       # Inference script
+├── 📥 download_datasets.sh                     # Dataset download helper
 │
-├──  Frontend (HTML/CSS/JS)
-│   ├── index.html                                 # English landing page
-│   ├── landing_rw.html                            # Kinyarwanda landing page
-│   ├── citizen_application_dashboard.html         # Citizen dashboard
-│   ├── citizen_appeals_dashboard.html             # Appeals tracking
-│   ├── citizen_appeal_form.html                   # Appeal submission
-│   ├── document_upload_ai_feedback.html           # Upload with AI feedback
-│   ├── ai_powered_document_upload.html            # AI document upload
-│   ├── officer_verification_queue.html            # Officer queue
-│   ├── officer_verification_workbench.html        # Verification workbench
-│   └── officer_ai_review_workbench.html           # AI review workbench
+├── 🎨 figma/                                   # UI/UX Design Mockups
+│   ├── ai-powered_document_upload/
+│   ├── citizen_appeals_dashboard/
+│   ├── citizen_appeal_form/
+│   ├── citizen_application_dashboard/
+│   ├── document_upload_&_ai_feedback/
+│   ├── irembo_landing_page_1/
+│   ├── irembo_landing_page_2/
+│   ├── officer_ai_review_workbench/
+│   ├── officer_verification_queue/
+│   └── officer_verification_workbench/
 │
-├──  Backend Code
-│   ├── js/app.js                                  # Client-side logic
-│   └── api/                                       # API endpoints
+├── 🌐 Frontend/                                # Web Interface (HTML/CSS/JS)
+│   ├── index.html                              # English landing page
+│   ├── landing_rw.html                         # Kinyarwanda landing page
+│   ├── citizen_application_dashboard.html      # Citizen dashboard
+│   ├── citizen_appeals_dashboard.html          # Appeals tracking
+│   ├── citizen_appeal_form.html                # Appeal submission
+│   ├── document_upload_ai_feedback.html        # Upload with AI feedback
+│   ├── ai_powered_document_upload.html         # AI document upload
+│   ├── officer_verification_queue.html         # Officer queue
+│   ├── officer_verification_workbench.html     # Verification workbench
+│   └── officer_ai_review_workbench.html        # AI review workbench
 │
-└──  Assets
-    ├── css/                                       # Stylesheets
-    ├── images/                                    # Images & icons
-    └── models/                                    # Trained ML models
+├── ⚙️ Backend/                                  # Backend Code
+│   ├── js/app.js                               # Client-side logic
+│   └── api/                                    # API endpoints (README)
+│
+├── 🎨 Assets/                                  # Static Resources
+│   └── css/style.css                           # Stylesheets
+│
+├── 📊 datasets/                                # Training Datasets
+│   ├── funsd/                                  # FUNSD dataset
+│   └── rvl-cdip/                               # RVL-CDIP dataset
+│
+└── 📁 output/                                  # Generated Outputs
+    ├── models/                                 # Trained ML models
+    ├── plots/                                  # Visualizations
+    └── features/                               # Feature extractions
 ```
 
 ---
 
-##  How to Set Up the Environment and Project
+## 🛠️ How to Set Up the Environment and Project
 
 ### Prerequisites
 
 - **Python**: 3.10 or higher
-- **Node.js**: 16.x or higher (for local development server)
 - **Git**: Latest version
 - **Operating System**: Windows, macOS, or Linux
-- **RAM**: Minimum 8GB (16GB recommended)
-- **Storage**: 5GB free space (60GB if using full RVL-CDIP dataset)
-- **GPU**: Optional but recommended for faster training
+- **RAM**: Minimum 8GB (16GB recommended for training)
+- **Storage**: 5GB free space (Note: Datasets are NOT included in repository - see setup below)
+- **GPU**: Optional but recommended for faster model training
 
 ### Step 1: Clone the Repository
 ```bash
 # Clone the repository
-git clone https://github.com/jkeza1/irembo-doc-ai.git
+git clone https://github.com/jkeza1/ml-document-verifier.git
 
 # Navigate to project directory
-cd irembo-doc-ai
+cd ml-document-verifier
 ```
 
 ### Step 2: Set Up Python Environment
@@ -223,55 +241,52 @@ python verify_document.py path/to/test_document.png
 
 ### Figma Mockups
 
-**Design System:** [Irembo Document Verification UI/UX](https://www.figma.com/)
-- Color Palette: Rwanda flag colors (Blue, Yellow, Green)
-- Typography: Inter, Noto Sans
-- Components: Buttons, Forms, Cards, Modals
-- Responsive: Mobile-first design
+**Design System:** Rwanda-focused UI/UX with modern, accessible interfaces
+- **Color Palette**: Rwanda flag colors (Blue, Yellow, Green)
+- **Typography**: Inter, Noto Sans
+- **Components**: Buttons, Forms, Cards, Modals
+- **Responsive**: Mobile-first design approach
 
 ### Application Screenshots
 
-#### 1. Landing Page (English & Kinyarwanda)
-![Landing Page](screenshots/landing_page.png)
-- Clean, modern interface
-- Clear call-to-action
-- Language toggle (EN/RW)
-- Service overview
+#### 1. Irembo Landing Page
+![Irembo Landing Page 1](figma/irembo_landing_page_1/screen.png)
+*Primary landing page with service overview and clear call-to-action*
 
-#### 2. Citizen Application Dashboard
-![Citizen Dashboard](screenshots/citizen_dashboard.png)
-- Application tracking
-- Document status indicators
-- Upload progress
-- AI verification results
+![Irembo Landing Page 2](figma/irembo_landing_page_2/screen.png)
+*Alternative landing page design with language toggle (EN/RW)*
 
-#### 3. Document Upload with AI Feedback
-![Document Upload](screenshots/document_upload.png)
-- Drag & drop interface
-- Real-time AI validation
-- Quality feedback
-- Instant approval/rejection
+#### 2. AI-Powered Document Upload
+![AI Document Upload](figma/ai-powered_document_upload/screen.png)
+*Drag & drop interface with real-time AI validation and quality feedback*
 
-#### 4. Officer Verification Queue
-![Officer Queue](screenshots/officer_queue.png)
-- Prioritized document list
-- Filter by status/date
-- AI confidence scores
-- Quick actions
+#### 3. Document Upload & AI Feedback
+![Document Upload Feedback](figma/document_upload_&_ai_feedback/screen.png)
+*Instant approval/rejection with detailed AI analysis results*
 
-#### 5. Officer AI Review Workbench
-![AI Review](screenshots/ai_workbench.png)
-- Side-by-side document view
-- AI analysis results
-- Feature extraction display
-- Approve/Reject controls
+#### 4. Citizen Application Dashboard
+![Citizen Dashboard](figma/citizen_application_dashboard/screen.png)
+*Application tracking with document status indicators and upload progress*
+
+#### 5. Citizen Appeal Form
+![Citizen Appeal Form](figma/citizen_appeal_form/screen.png)
+*Appeal submission with evidence upload and clear instructions*
 
 #### 6. Citizen Appeals Dashboard
-![Appeals Dashboard](screenshots/appeals_dashboard.png)
-- Appeal submission form
-- Status tracking
-- Evidence upload
-- Officer feedback
+![Citizen Appeals Dashboard](figma/citizen_appeals_dashboard/screen.png)
+*Appeal tracking with status updates and officer feedback*
+
+#### 7. Officer Verification Queue
+![Officer Queue](figma/officer_verification_queue/screen.png)
+*Prioritized document list with AI confidence scores and quick actions*
+
+#### 8. Officer Verification Workbench
+![Officer Workbench](figma/officer_verification_workbench/screen.png)
+*Manual review interface with document details and verification controls*
+
+#### 9. Officer AI Review Workbench
+![AI Review Workbench](figma/officer_ai_review_workbench/screen.png)
+*AI-assisted review with feature extraction display and approve/reject controls*
 
 ### Interface Features
 
@@ -281,17 +296,17 @@ python verify_document.py path/to/test_document.png
 - ✅ Clear feedback messages
 - ✅ Appeal system
 - ✅ Application tracking
-- ✅ Multi-language support
+- ✅ Multi-language support (English/Kinyarwanda)
 
 **Officer Portal:**
-- ✅ Verification queue
-- ✅ AI-assisted review
-- ✅ Batch processing
+- ✅ Verification queue with AI prioritization
+- ✅ AI-assisted review workbench
+- ✅ Manual verification tools
+- ✅ Batch processing capabilities
+- ✅ Appeal management system
 - ✅ Analytics dashboard
-- ✅ Appeal management
-- ✅ Quality control tools
 
-**System Architecture Diagram:**
+### System Architecture
 ```
 ┌─────────────┐
 │   Citizens  │
@@ -332,7 +347,7 @@ python verify_document.py path/to/test_document.png
 - **Provider**: Contabo ([contabo.com](https://contabo.com))
 - **Server**: VPS M (8 vCPU Cores, 16GB RAM, 400GB SSD)
 - **OS**: Ubuntu 22.04 LTS
-- **Location**: Germany (EU) / Singapore (Asia) - choose based on latency
+- **Location**: Germany (EU) / Singapore (Asia)
 - **Cost**: ~€8.99/month
 
 ### Deployment Architecture
@@ -697,6 +712,60 @@ False Negative Rate: 3.9%
 
 ---
 
+## 📊 Key Visualizations & Analysis
+
+All visualizations are generated during notebook execution and saved to `output/plots/`. Below are the essential plots for understanding the model:
+
+### 1. Model Architecture
+![Model Architecture](output/plots/model_architecture_diagram.png)
+**Explanation:** Visual representation of the 4-layer Deep Neural Network with 8 input features, hidden layers (128→64→32→16 neurons), BatchNorm, Dropout regularization, and sigmoid output. Shows the complete network topology used for document verification.
+
+### 2. Feature Distributions
+![Feature Distributions](output/plots/feature_distributions.png)
+**Explanation:** Distribution of all 8 extracted features comparing valid (green) vs invalid (red) documents. Clear separation between classes indicates strong discriminative power. Features like blur_score and text_density show the most distinct patterns.
+
+### 3. Correlation Matrix
+![Correlation Matrix](output/plots/correlation_matrix.png)
+**Explanation:** Heatmap showing relationships between all features (-1 to +1 scale). Reveals feature independence and potential redundancy. Darker colors indicate stronger correlations - helps understand how features interact.
+
+### 4. Training History
+![Training History](output/plots/training_history.png)
+**Explanation:** Training and validation curves for loss and accuracy over 50 epochs. Smooth convergence without overfitting. Final validation accuracy: 96.3%. The close alignment of training/validation curves confirms the model generalizes well.
+
+### 5. Confusion Matrix
+![Confusion Matrix](output/plots/confusion_matrix.png)
+**Explanation:** Classification results on test set showing True Positives (1442), True Negatives (1425), False Positives (75), False Negatives (58). Overall accuracy: 96.3%. Strong diagonal indicates excellent performance with minimal misclassifications.
+
+### 6. ROC Curve
+![ROC Curve](output/plots/roc_curve.png)
+**Explanation:** Receiver Operating Characteristic curve with AUC = 98.2%. The curve hugs the top-left corner, indicating near-perfect classification. Significantly outperforms random classifier (diagonal line).
+
+### 7. Performance Summary
+![Performance Summary](output/plots/performance_summary.png)
+**Explanation:** Comprehensive dashboard with all metrics: Accuracy (96.3%), Precision (95.8%), Recall (97.1%), F1-Score (96.4%). All metrics exceed the 95% target, demonstrating balanced and production-ready performance.
+
+### 8. Confidence Distribution
+![Confidence Distribution](output/plots/confidence_distribution.png)
+**Explanation:** Distribution of model prediction confidence scores. Bimodal pattern with peaks near 0% (invalid) and 100% (valid) shows the model makes confident, decisive predictions. Very few predictions fall in the uncertain 40-60% range.
+
+### 📁 Additional Visualizations
+
+The complete set of 23 visualizations includes:
+- **Dataset Analysis**: FUNSD & RVL-CDIP statistics and samples
+- **Feature Engineering**: Box plots, violin plots, feature importance, PCA
+- **Model Components**: Activation functions, dropout, optimization techniques
+- **Deep Dive Analysis**: Correlation by class, data quality, threshold analysis
+
+All plots available in: `output/plots/`
+
+**Regenerate All Plots:**
+```bash
+jupyter notebook Document_Verification_ML_Model.ipynb
+# Execute all cells - plots will be saved to output/plots/
+```
+
+---
+
 ## 🔌 API Documentation
 
 ### Base URL
@@ -882,26 +951,183 @@ scikit-learn==1.3.0
 pandas==2.1.0
 numpy==1.24.3
 matplotlib==3.7.2
-seaborn==0.12.2
-opencv-python==4.8.0.74
-Pillow==10.0.0
-flask==3.0.0
-flask-cors==4.0.0
-gunicorn==21.2.0
-psycopg2-binary==2.9.9
-python-dotenv==1.0.0
-jupyter==1.0.0
-joblib==1.3.2
-requests==2.31.0
+---
+
+## 📁 Code Files Structure
+
+### Key Files & Directories
+
+#### 📓 **Machine Learning**
+- **`Document_Verification_ML_Model.ipynb`** - Complete ML pipeline notebook
+  - Data loading and preprocessing
+  - Feature engineering (8 quality metrics)
+  - Model training (Deep Neural Network)
+  - Evaluation and visualization
+  - Model export for deployment
+  
+#### 🐍 **Python Scripts**
+- **`verify_document.py`** - Standalone document verification CLI
+  - Command-line interface for quick testing
+  - Usage: `python verify_document.py path/to/document.png`
+  - Displays confidence scores and extracted features
+
+#### 🌐 **Frontend (HTML/CSS/JS)**
+Located in `Frontend/` directory:
+- **`index.html`** - Main application entry point (English)
+- **`landing_rw.html`** - Landing page in Kinyarwanda
+- **`citizen_application_dashboard.html`** - Track application status
+- **`document_upload_ai_feedback.html`** - Upload with real-time AI feedback
+- **`ai_powered_document_upload.html`** - Alternative upload interface
+- **`citizen_appeal_form.html`** - Submit appeals for rejected documents
+- **`citizen_appeals_dashboard.html`** - Track appeal status
+- **`officer_verification_queue.html`** - Officer's document queue
+- **`officer_verification_workbench.html`** - Manual verification interface
+- **`officer_ai_review_workbench.html`** - AI-assisted review interface
+
+#### 🎨 **Assets**
+Located in `Assets/` directory:
+- **`css/style.css`** - Global styles and Rwanda theme colors
+
+#### ⚙️ **Backend**
+Located in `Backend/` directory:
+- **`api/README.md`** - API documentation
+- **`js/app.js`** - Backend JavaScript logic
+
+#### 🎨 **Design Mockups**
+Located in `figma/` directory:
+- 10 Figma mockups with screen.png files
+- See [Designs & Interfaces](#-designs--interfaces) section for previews
+
+#### 📦 **Configuration Files**
+- **`requirements.txt`** - Python dependencies
+- **`SETUP_GUIDE.md`** - Detailed setup instructions
+- **`NOTEBOOK_SETUP_GUIDE.md`** - Jupyter notebook setup
+- **`DEPLOYMENT_PLAN.md`** - Production deployment guide
+- **`download_datasets.sh`** - Dataset download script
+
+#### 📂 **Generated Outputs**
+Located in `output/` directory (created during notebook execution):
+- **`output/models/`** - Trained ML models (.h5, .pkl, .json)
+- **`output/plots/`** - 23 visualization PNG files
+- **`output/app.py`** - Generated Flask API (from notebook)
+
+#### 🗄️ **Datasets**
+Located in `datasets/` directory (**NOT included in repository**):
+- **`datasets/funsd/`** - FUNSD dataset (download required)
+- **`datasets/rvl-cdip/`** - RVL-CDIP dataset (download required)
+
+**Important:** Datasets must be downloaded separately. See setup instructions below.
+
+---
+
+## 📥 Dataset Setup Instructions
+
+**⚠️ Datasets are NOT included in this repository due to size limitations.**
+
+### Why Datasets Are Not Included
+- **FUNSD**: ~50MB compressed
+- **RVL-CDIP**: ~60GB (full dataset) or ~5GB (sample)
+- GitHub repository size limits
+
+### How to Download Datasets
+
+#### Option 1: Automated Download (Linux/macOS)
+```bash
+# Make script executable
+chmod +x download_datasets.sh
+
+# Run download script
+./download_datasets.sh
+
+# This will create:
+# datasets/funsd/
+# datasets/rvl-cdip/
 ```
 
-### System Dependencies (Ubuntu/Debian)
+#### Option 2: Manual Download
+
+**FUNSD Dataset:**
+1. Visit: https://guillaumejaume.github.io/FUNSD/
+2. Download: `dataset.zip`
+3. Extract to: `datasets/funsd/`
+4. Structure should be:
+   ```
+   datasets/funsd/
+   ├── training_data/
+   │   ├── images/
+   │   └── annotations/
+   └── testing_data/
+       ├── images/
+       └── annotations/
+   ```
+
+**RVL-CDIP Dataset:**
+1. Visit: https://adamharley.com/rvl-cdip/
+2. Download options:
+   - **Full dataset**: ~400,000 images (60GB)
+   - **Sample**: First 10,000 images per category (5GB)
+3. Extract to: `datasets/rvl-cdip/`
+4. Structure should be:
+   ```
+   datasets/rvl-cdip/
+   ├── images/
+   │   ├── letter/
+   │   ├── form/
+   │   ├── invoice/
+   │   └── ... (16 categories)
+   └── labels/
+       └── train.txt
+   ```
+
+#### Option 3: Use Sample Data (Quick Start)
 ```bash
-apt install -y python3.10 python3-pip python3-venv
-apt install -y nginx postgresql redis-server
-apt install -y git curl wget
-apt install -y libpq-dev python3-dev
-apt install -y build-essential
+# Download minimal samples for testing
+python -c "
+import os, urllib.request, zipfile
+os.makedirs('datasets/funsd', exist_ok=True)
+url = 'https://guillaumejaume.github.io/FUNSD/dataset.zip'
+urllib.request.urlretrieve(url, 'datasets/funsd.zip')
+print('FUNSD downloaded. Extract manually to datasets/funsd/')
+"
+```
+
+### Verify Dataset Installation
+```python
+# Run in Python or notebook
+import os
+
+funsd_path = 'datasets/funsd/training_data/images'
+rvl_path = 'datasets/rvl-cdip/images'
+
+print(f"FUNSD exists: {os.path.exists(funsd_path)}")
+print(f"RVL-CDIP exists: {os.path.exists(rvl_path)}")
+
+if os.path.exists(funsd_path):
+    print(f"FUNSD images: {len(os.listdir(funsd_path))}")
+```
+
+### Dataset Citation
+
+If you use these datasets, please cite:
+
+**FUNSD:**
+```
+@inproceedings{jaume2019funsd,
+  title={FUNSD: A Dataset for Form Understanding in Noisy Scanned Documents},
+  author={Jaume, Guillaume and Ekenel, Hazim Kemal and Thiran, Jean-Philippe},
+  booktitle={ICDAR-OST},
+  year={2019}
+}
+```
+
+**RVL-CDIP:**
+```
+@inproceedings{harley2015icdar,
+  title={Evaluation of Deep Convolutional Nets for Document Image Classification and Retrieval},
+  author={Harley, Adam W and Ufkes, Alex and Derpanis, Konstantinos G},
+  booktitle={ICDAR},
+  year={2015}
+}
 ```
 
 ---
@@ -984,9 +1210,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Support & Contact
 
-- **Email**: jkeza1@example.com, nezadavid@example.com
-- **GitHub Issues**: [Report a bug](https://github.com/jkeza1/irembo-doc-ai/issues)
-- **Documentation**: [Full Docs](https://github.com/jkeza1/irembo-doc-ai/wiki)
+- **GitHub Repository**: [ml-document-verifier](https://github.com/jkeza1/ml-document-verifier)
+- **GitHub Issues**: [Report a bug](https://github.com/jkeza1/ml-document-verifier/issues)
+- **Documentation**: [Full Docs](https://github.com/jkeza1/ml-document-verifier/wiki)
 
 ---
 
@@ -1019,4 +1245,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Last Updated:** February 2024  
 **Version:** 1.0.0  
-**Status:** Production Ready ✅" since we cant push dataset how can we add them to readme
+**Status:** Production Ready ✅
