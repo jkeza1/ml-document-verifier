@@ -23,7 +23,7 @@ An AI-powered document verification system that leverages machine learning to au
 
 ## 🔗 GitHub Repository
 
-**Repository URL:** [https://github.com/jkeza1/irembo-doc-ai](https://github.com/jkeza1/irembo-doc-ai)
+**Repository URL:** [https://github.com/jkeza1/ml-document-verifier](https://github.com/jkeza1/ml-document-verifier)
 
 **Project Structure:**
 ```
