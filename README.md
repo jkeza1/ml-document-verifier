@@ -232,8 +232,8 @@ python verify_document.py path/to/test_document.png
 ### Application Screenshots
 
 #### 1. Landing Page (English & Kinyarwanda)
-![Landing Page](<img width="1600" height="1280" alt="screen" src="https://github.com/user-attachments/assets/504ba1fc-d6d2-4c2a-99bc-18d702e82455" />
-)
+<img width="1600" height="1280" alt="screen" src="https://github.com/user-attachments/assets/fa7033e7-f092-4256-9181-07f59ae9aced" />
+
 - Clean, modern interface
 - Clear call-to-action
 - Language toggle (EN/RW)
