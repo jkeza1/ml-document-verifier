@@ -35,7 +35,7 @@ This video showcases the complete system:
 
 ---
 
-##  Important: Datasets Not Included in Repository
+## Important: Datasets Not Included in Repository
 
 **Why datasets are NOT stored on GitHub:**
 
@@ -122,7 +122,7 @@ ml-document-verifier/
 
 ---
 
-##  How to Set Up the Environment and Project
+## How to Set Up the Environment and Project
 
 ### Prerequisites
 
@@ -268,7 +268,7 @@ python verify_document.py path/to/test_document.png
 
 ---
 
-##  Designs & Interfaces
+## Designs & Interfaces
 
 ### Figma Mockups
 
@@ -653,7 +653,7 @@ cp output/models/* /backups/models/
 
 ---
 
-##  ML Model Details
+## ML Model Details
 
 ### Model Architecture
 
@@ -743,7 +743,7 @@ False Negative Rate: 3.9%
 
 ---
 
-##  Key Visualizations & Analysis
+## Key Visualizations & Analysis
 
 All visualizations are generated during notebook execution and saved to `output/plots/`. Below are the essential plots for understanding the model:
 
@@ -1051,7 +1051,7 @@ Located in `datasets/` directory (**NOT included in repository**):
 
 ---
 
-## 📥 Dataset Setup Instructions
+## Dataset Setup Instructions
 
 **⚠️ Datasets are NOT included in this repository due to size limitations.**
 
@@ -1210,7 +1210,7 @@ python -m pytest tests/test_integration.py
 
 ---
 
-##  Contributing
+## Contributing
 
 We welcome contributions! Please follow these guidelines:
 
