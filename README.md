@@ -21,6 +21,34 @@ An AI-powered document verification system that leverages machine learning to au
 
 ---
 
+## ⚠️ Important: Datasets Not Included in Repository
+
+**Why datasets are NOT stored on GitHub:**
+
+GitHub has strict file size limits and is designed for source code, not large datasets:
+- **GitHub File Limit**: 100 MB max per file, 5 GB per repository recommended
+- **FUNSD Dataset**: ~50 MB compressed, ~500 MB uncompressed
+- **RVL-CDIP Dataset**: Full dataset is ~60 GB, sample is ~5 GB
+- **Total Project**: Would exceed GitHub's storage limits by 10-100x
+
+**Solution: Datasets are hosted on Google Drive**
+```
+📥 Download datasets here:
+https://drive.google.com/drive/folders/1vp8AUptxJuYWesSvFguLe0jjLbfEDREb?usp=sharing
+```
+
+**Benefits of this approach:**
+✅ Code repository stays lean (~1-2 MB)
+✅ Faster GitHub cloning and operations
+✅ Datasets remain easily accessible
+✅ Better for version control (Git not designed for binary data)
+✅ Easier updates without re-cloning entire repo
+✅ Scalable for future dataset additions
+
+See [📥 Dataset Setup Instructions](#-dataset-setup-instructions) for complete download & setup guide.
+
+---
+
 ## 🔗 GitHub Repository
 
 **Repository URL:** [https://github.com/jkeza1/ml-document-verifier](https://github.com/jkeza1/ml-document-verifier)
@@ -136,46 +164,35 @@ pip install -r requirements.txt
 # - jupyter==1.0.0            (Notebook environment)
 ```
 
-### Step 4: Download Datasets (Optional)
+### Step 4: Download Datasets
 ```bash
-# Make download script executable
-chmod +x download_datasets.sh
+# Datasets are stored in Google Drive (not in Git due to size)
+# Download link: https://drive.google.com/drive/folders/1vp8AUptxJuYWesSvFguLe0jjLbfEDREb?usp=sharing
 
-# Run interactive download script
-./download_datasets.sh
+# After downloading and extracting to datasets/ folder:
 
-# Choose option:
-# A - Download sample datasets (quick start, ~500MB)
-# B - Download full datasets (production, ~50GB)
-# C - Skip (notebook will use synthetic data)
+# Verify FUNSD dataset
+ls datasets/funsd/training_data/images/
+
+# Verify RVL-CDIP dataset
+ls datasets/rvl-cdip/images/
 ```
 
-**Manual Dataset Download:**
+**Why datasets are on Google Drive:**
+- ✅ Total size: ~50GB+ (too large for GitHub)
+- ✅ Easier to share and manage large files
+- ✅ Faster downloads for all users
+- ✅ Datasets remain accessible even if repository is updated
 
-**FUNSD Dataset:**
-```bash
-# Download FUNSD
-git clone https://github.com/applicaai/FUNSD.git datasets/funsd
-
-# Or download from: https://guillaumejaume.github.io/FUNSD/
-```
-
-**RVL-CDIP Dataset:**
-```bash
-# Download via Hugging Face (recommended)
-pip install huggingface_hub
-huggingface-cli download aharley/rvl_cdip --repo-type dataset --local-dir datasets/rvl-cdip
-
-# Or visit: https://www.cs.cmu.edu/~aharley/rvl-cdip/
-```
+**See detailed dataset instructions:** [📥 Dataset Setup Instructions](#-dataset-setup-instructions)
 
 ### Step 5: Run the ML Notebook
 ```bash
 # Start Jupyter Notebook
-jupyter notebook ML_Model_Notebook.ipynb
+jupyter notebook Document_Verification_ML_Model.ipynb
 
 # Or use JupyterLab
-jupyter lab ML_Model_Notebook.ipynb
+jupyter lab Document_Verification_ML_Model.ipynb
 
 # In the notebook:
 # 1. Update dataset paths in Section 2.1 (if using real datasets)
@@ -1027,57 +1044,62 @@ Located in `datasets/` directory (**NOT included in repository**):
 ### Why Datasets Are Not Included
 - **FUNSD**: ~50MB compressed
 - **RVL-CDIP**: ~60GB (full dataset) or ~5GB (sample)
-- GitHub repository size limits
+- **GitHub** has size limits and is not suitable for large binary files
+- Datasets are stored in **Google Drive** for efficient access
 
-### How to Download Datasets
+### Quick Start: Download from Google Drive
 
-#### Option 1: Automated Download (Linux/macOS)
-```bash
-# Make script executable
-chmod +x download_datasets.sh
-
-# Run download script
-./download_datasets.sh
-
-# This will create:
-# datasets/funsd/
-# datasets/rvl-cdip/
+**📌 All datasets are available here:**
+```
+https://drive.google.com/drive/folders/1vp8AUptxJuYWesSvFguLe0jjLbfEDREb?usp=sharing
 ```
 
-#### Option 2: Manual Download
+**Steps:**
+1. **Click the link above** to open Google Drive folder
+2. **Download the `datasets.zip` file** (or individual dataset folders)
+3. **Extract to your local project:**
+   ```bash
+   # Windows
+   Expand-Archive -Path datasets.zip -DestinationPath .
 
-**FUNSD Dataset:**
-1. Visit: https://guillaumejaume.github.io/FUNSD/
-2. Download: `dataset.zip`
-3. Extract to: `datasets/funsd/`
-4. Structure should be:
+   # Linux/macOS
+   unzip datasets.zip
    ```
-   datasets/funsd/
-   ├── training_data/
-   │   ├── images/
-   │   └── annotations/
-   └── testing_data/
+4. **Directory structure after extraction:**
+   ```
+   datasets/
+   ├── funsd/
+   │   ├── training_data/
+   │   │   ├── images/
+   │   │   └── annotations/
+   │   └── testing_data/
+   │       ├── images/
+   │       └── annotations/
+   └── rvl-cdip/
        ├── images/
-       └── annotations/
+       │   ├── letter/
+       │   ├── form/
+       │   ├── email/
+       │   └── ... (16 categories)
+       └── labels/
+           └── train.txt
    ```
 
-**RVL-CDIP Dataset:**
-1. Visit: https://adamharley.com/rvl-cdip/
-2. Download options:
-   - **Full dataset**: ~400,000 images (60GB)
-   - **Sample**: First 10,000 images per category (5GB)
-3. Extract to: `datasets/rvl-cdip/`
-4. Structure should be:
-   ```
-   datasets/rvl-cdip/
-   ├── images/
-   │   ├── letter/
-   │   ├── form/
-   │   ├── invoice/
-   │   └── ... (16 categories)
-   └── labels/
-       └── train.txt
-   ```
+### Alternative: Manual Download
+
+#### Option 1: Download FUNSD from Original Source
+```bash
+# Visit: https://guillaumejaume.github.io/FUNSD/
+# Download: dataset.zip
+# Extract to: datasets/funsd/
+```
+
+#### Option 2: Download RVL-CDIP from Original Source
+```bash
+# Visit: https://adamharley.com/rvl-cdip/
+# Download: Full dataset (~60GB) or Sample (~5GB)
+# Extract to: datasets/rvl-cdip/
+```
 
 #### Option 3: Use Sample Data (Quick Start)
 ```bash
