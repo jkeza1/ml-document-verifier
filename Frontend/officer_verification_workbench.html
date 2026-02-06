@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verification Workbench</title>
+    <link rel="stylesheet" href="../Assets/css/style.css">
+</head>
+<body>
+    <header>
+        <h1>Document Verification Workbench</h1>
+        <p>Detailed document review and verification</p>
+    </header>
+    <main>
+        <section class="workbench">
+            <div class="document-viewer">
+                <div id="document-display"></div>
+            </div>
+            <div class="verification-panel">
+                <h3>Verification Details</h3>
+                <form id="verificationForm">
+                    <label for="status">Verification Status:</label>
+                    <select id="status" name="status">
+                        <option value="pending">Pending</option>
+                        <option value="approved">Approved</option>
+                        <option value="rejected">Rejected</option>
+                        <option value="need_review">Needs Review</option>
+                    </select>
+                    
+                    <label for="notes">Officer Notes:</label>
+                    <textarea id="notes" name="notes"></textarea>
+                    
+                    <button type="submit">Save Verification</button>
+                </form>
+            </div>
+        </section>
+    </main>
+    <script src="../Backend/js/app.js"></script>
+</body>
+</html>

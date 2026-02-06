@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verification Queue - Officer Dashboard</title>
+    <link rel="stylesheet" href="../Assets/css/style.css">
+</head>
+<body>
+    <header>
+        <h1>Document Verification Queue</h1>
+        <p>Officer verification workflow</p>
+    </header>
+    <main>
+        <section class="verification-queue">
+            <div class="queue-stats">
+                <div class="stat-card">
+                    <h3>Pending Documents</h3>
+                    <p id="pending-count">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>In Progress</h3>
+                    <p id="inprogress-count">0</p>
+                </div>
+            </div>
+            <div id="queue-list"></div>
+        </section>
+    </main>
+    <script src="../Backend/js/app.js"></script>
+</body>
+</html>

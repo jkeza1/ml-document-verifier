@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Review Workbench - Officer Dashboard</title>
+    <link rel="stylesheet" href="../Assets/css/style.css">
+</head>
+<body>
+    <header>
+        <h1>AI Review Workbench</h1>
+        <p>Review AI verification results and provide feedback</p>
+    </header>
+    <main>
+        <section class="ai-review-workbench">
+            <div class="ai-results-panel">
+                <h3>AI Analysis Results</h3>
+                <div id="ai-analysis">
+                    <div class="ai-prediction">
+                        <h4>AI Prediction</h4>
+                        <p id="ai-prediction-result"></p>
+                        <p id="ai-confidence">Confidence: <span id="confidence-score">0</span>%</p>
+                    </div>
+                    <div class="ai-details">
+                        <h4>Detection Details</h4>
+                        <div id="detection-details"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="officer-review-panel">
+                <h3>Officer Review</h3>
+                <form id="aiReviewForm">
+                    <label for="agreement">Do you agree with AI result?</label>
+                    <select id="agreement" name="agreement">
+                        <option value="">Select...</option>
+                        <option value="agree">Agree</option>
+                        <option value="disagree">Disagree</option>
+                    </select>
+                    
+                    <label for="feedback">Feedback for AI Model:</label>
+                    <textarea id="feedback" name="feedback" placeholder="Help improve the AI model"></textarea>
+                    
+                    <button type="submit">Submit Review</button>
+                </form>
+            </div>
+        </section>
+    </main>
+    <script src="../Backend/js/app.js"></script>
+</body>
+</html>

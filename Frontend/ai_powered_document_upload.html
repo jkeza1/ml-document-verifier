@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Powered Document Upload</title>
+    <link rel="stylesheet" href="../Assets/css/style.css">
+</head>
+<body>
+    <header>
+        <h1>AI-Powered Document Upload</h1>
+        <p>Intelligent document processing and verification</p>
+    </header>
+    <main>
+        <section class="ai-upload-section">
+            <div class="upload-container">
+                <form id="aiUploadForm" enctype="multipart/form-data">
+                    <div class="drag-drop-zone" id="dragDropZone">
+                        <p>Drag and drop documents here or click to select</p>
+                        <input type="file" id="aiDocument" name="document" multiple accept=".pdf,.jpg,.png,.docx" hidden>
+                    </div>
+                    <button type="submit">Process Documents</button>
+                </form>
+            </div>
+            <div id="processing-results"></div>
+        </section>
+    </main>
+    <script src="../Backend/js/app.js"></script>
+</body>
+</html>
