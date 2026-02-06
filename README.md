@@ -76,7 +76,7 @@ irembo-doc-ai/
 ### Step 1: Clone the Repository
 ```bash
 # Clone the repository
-git clone https://github.com/jkeza1/irembo-doc-ai.git
+git clone https://github.com/jkeza1/ml-document-verifier
 
 # Navigate to project directory
 cd irembo-doc-ai
