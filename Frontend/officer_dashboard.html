@@ -1,0 +1,1723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Officer Dashboard - iRembo Verification</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
+    <style>
+        :root {
+            --primary-blue: #003DA5;
+            --primary-gold: #FFD700;
+            --primary-green: #28A745;
+            --text-dark: #333;
+            --text-light: #666;
+            --border-color: #ddd;
+            --white: #ffffff;
+            --bg-light: #f8f9fa;
+            --success: #28A745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --info: #17a2b8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary-blue), #1a5fb8);
+            color: white;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .header-left p {
+            opacity: 0.9;
+            font-size: 0.95rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-align: right;
+        }
+
+        .user-email {
+            font-size: 0.85rem;
+            opacity: 0.8;
+            margin-top: 0.2rem;
+        }
+
+        .user-role {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .logout-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+        }
+
+        /* Main Layout */
+        .container {
+            max-width: 1600px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 2rem;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .responsibilities {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .responsibilities h3 {
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .responsibility-item {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .responsibility-item i {
+            color: var(--primary-green);
+            flex-shrink: 0;
+        }
+
+        /* Main Content */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            border-bottom: 2px solid var(--border-color);
+            background: white;
+            padding: 1rem;
+            border-radius: 12px 12px 0 0;
+            margin-bottom: 0;
+        }
+
+        .tab {
+            padding: 0.8rem 1.5rem;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-light);
+            transition: all 0.3s;
+        }
+
+        .tab:hover {
+            color: var(--primary-blue);
+        }
+
+        .tab.active {
+            color: var(--primary-blue);
+            border-bottom-color: var(--primary-blue);
+        }
+
+        /* Content Area */
+        .content-area {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        /* Submission List */
+        .submissions-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .submission-card {
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .submission-card:hover {
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+            transform: translateY(-2px);
+        }
+
+        .submission-card.selected {
+            border-color: var(--primary-blue);
+            background: rgba(0, 61, 165, 0.02);
+        }
+
+        .submission-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .submission-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .submission-id {
+            color: var(--text-light);
+            font-size: 0.85rem;
+        }
+
+        .priority-badge {
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .priority-urgent {
+            background: #f8d7da;
+            color: #842029;
+        }
+
+        .priority-normal {
+            background: #cfe2ff;
+            color: #084298;
+        }
+
+        .submission-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+
+        .info-label {
+            color: var(--text-light);
+            font-size: 0.85rem;
+        }
+
+        .info-value {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .submission-files {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .documents-list {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .doc-badge {
+            background: var(--bg-light);
+            padding: 0.4rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        /* Analysis Panel */
+        .analysis-panel {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .analysis-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .analysis-box {
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            border-radius: 8px;
+            background: var(--bg-light);
+        }
+
+        .ai-analysis {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: var(--text-dark);
+        }
+
+        .analysis-result {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: flex;
+            gap: 0.75rem;
+            align-items: flex-start;
+        }
+
+        .analysis-result.success {
+            background: #d1e7dd;
+            color: #0f5132;
+            border-left: 4px solid var(--success);
+        }
+
+        .analysis-result.warning {
+            background: #fff3cd;
+            color: #664d03;
+            border-left: 4px solid var(--warning);
+        }
+
+        .analysis-result.error {
+            background: #f8d7da;
+            color: #842029;
+            border-left: 4px solid var(--danger);
+        }
+
+        .analysis-btn {
+            background: var(--primary-blue);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .analysis-btn:hover {
+            background: #002d7a;
+            transform: translateY(-2px);
+        }
+
+        .analysis-btn.loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        /* Decision Section */
+        .decision-section {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+
+        .decision-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-approve {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-reject {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-send {
+            background: var(--info);
+            color: white;
+        }
+
+        .btn-hold {
+            background: var(--warning);
+            color: #000;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            opacity: 0.9;
+        }
+
+        .decision-notes {
+            margin-top: 1rem;
+        }
+
+        .decision-notes textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            min-height: 100px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-light);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-light);
+        }
+
+        .modal-form input,
+        .modal-form textarea,
+        .modal-form select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            margin-bottom: 1rem;
+            font-family: inherit;
+        }
+
+        .modal-btn {
+            width: 100%;
+            padding: 1rem;
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            color: white;
+            z-index: 3000;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .notification.success {
+            background: var(--success);
+        }
+
+        .notification.error {
+            background: var(--danger);
+        }
+
+        @media (max-width: 1200px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+
+            .analysis-panel {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-content">
+            <div class="header-left">
+                <h1><i class="fas fa-shield-alt"></i> Officer Dashboard</h1>
+                <p>Review and analyze citizen submissions</p>
+            </div>
+            <div class="user-info">
+                <div>
+                    <div class="user-name" id="officerName">Loading...</div>
+                    <div class="user-email" id="officerEmail"></div>
+                    <div class="user-role">👨‍⚖️ Verification Officer</div>
+                </div>
+                <button class="logout-btn" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="stat-card">
+                <div class="stat-number" id="pendingCount">0</div>
+                <div class="stat-label">Pending Review</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="reviewingCount">0</div>
+                <div class="stat-label">Currently Analyzing</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="appealsCount">0</div>
+                <div class="stat-label">Appeals</div>
+            </div>
+
+            <div class="responsibilities">
+                <h3><i class="fas fa-clipboard-list"></i> Your Responsibilities</h3>
+                <div class="responsibility-item">
+                    <i class="fas fa-check"></i>
+                    <span>Review citizen submissions</span>
+                </div>
+                <div class="responsibility-item">
+                    <i class="fas fa-check"></i>
+                    <span>Use AI to analyze documents</span>
+                </div>
+                <div class="responsibility-item">
+                    <i class="fas fa-check"></i>
+                    <span>Make approval decisions</span>
+                </div>
+                <div class="responsibility-item">
+                    <i class="fas fa-check"></i>
+                    <span>Handle appeals</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="tabs">
+                <button class="tab active" onclick="switchView('pending')">
+                    <i class="fas fa-inbox"></i> Pending (<span id="pendingBadge">0</span>)
+                </button>
+                <button class="tab" onclick="switchView('analyzing')">
+                    <i class="fas fa-microscope"></i> Analyzing (<span id="analyzingBadge">0</span>)
+                </button>
+                <button class="tab" onclick="switchView('appeals')">
+                    <i class="fas fa-exclamation-circle"></i> Appeals (<span id="appealsBadge">0</span>)
+                </button>
+            </div>
+
+            <!-- Pending Submissions -->
+            <div class="content-area" id="pendingView">
+                <h2 style="margin-bottom: 1.5rem; color: var(--primary-blue);">
+                    <i class="fas fa-inbox"></i> Pending Submissions
+                </h2>
+                <div class="submissions-grid" id="pendingList">
+                    <div class="empty-state">
+                        <i class="fas fa-check-circle"></i>
+                        <h3>All caught up!</h3>
+                        <p>No pending submissions at the moment</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analysis View -->
+            <div class="content-area" id="analyzingView" style="display: none;">
+                <h2 style="margin-bottom: 1.5rem; color: var(--primary-blue);">
+                    <i class="fas fa-microscope"></i> AI Analysis & Review
+                </h2>
+                <div class="submissions-grid" id="analyzingList" style="margin-bottom: 2rem;"></div>
+                <div id="analysisContent">
+                    <div class="empty-state">
+                        <i class="fas fa-search"></i>
+                        <h3>Select a submission to analyze</h3>
+                        <p>Click on a submission in the pending list to start AI analysis</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Appeals View -->
+            <div class="content-area" id="appealsView" style="display: none;">
+                <h2 style="margin-bottom: 1.5rem; color: var(--primary-blue);">
+                    <i class="fas fa-exclamation-circle"></i> Appeals
+                </h2>
+                <div id="appealsList">
+                    <div class="empty-state">
+                        <i class="fas fa-inbox"></i>
+                        <h3>No appeals</h3>
+                        <p>No pending appeals at the moment</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Decision Modal -->
+    <div id="decisionModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Final Decision</h2>
+                <button class="close-btn" onclick="closeDecisionModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <form class="modal-form" onsubmit="submitDecision(event)">
+                <div>
+                    <label>Decision:</label>
+                    <select id="decisionType" required>
+                        <option value="">Select outcome...</option>
+                        <option value="approved">✅ Approve</option>
+                        <option value="rejected">❌ Reject</option>
+                        <option value="hold">⏸️ Hold for Further Review</option>
+                        <option value="send">📤 Send to Another Department</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Officer Notes:</label>
+                    <textarea id="decisionNotes" placeholder="Add your comments..." required></textarea>
+                </div>
+                <button type="submit" class="modal-btn">Submit Decision</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // State management
+        let currentSubmission = null;
+        let submissions = [];
+
+        const DATE_PATTERN = /\b\d{1,2}[\/-]\d{1,2}[\/-]\d{2,4}\b/;
+        const YEAR_PATTERN = /\b(19|20)\d{2}\b/;
+
+        function normalizeText(text) {
+            return (text || '').toLowerCase().replace(/\s+/g, ' ').trim();
+        }
+
+        function hasAny(text, patterns) {
+            return patterns.some(pattern => pattern instanceof RegExp ? pattern.test(text) : text.includes(pattern));
+        }
+
+        function checkName(text, fullName) {
+            if (!fullName) return false;
+            const normalizedName = fullName.toLowerCase().trim();
+            if (!normalizedName) return false;
+            if (text.includes(normalizedName)) return true;
+            const parts = normalizedName.split(/\s+/).filter(Boolean);
+            if (parts.length >= 2) {
+                return parts.every(part => text.includes(part));
+            }
+            return text.includes(parts[0]);
+        }
+
+        function checkIdNumber(text, idNumber) {
+            if (!idNumber) return false;
+            return text.includes(idNumber.toLowerCase());
+        }
+
+        function checkLabeledDate(text, labels) {
+            return hasAny(text, labels) && (DATE_PATTERN.test(text) || YEAR_PATTERN.test(text));
+        }
+
+        const DOCUMENT_RULES = {
+            'National ID': {
+                required: [
+                    { key: 'fullName', label: 'Full name', critical: true, check: ({ text, submission }) => checkName(text, submission.fullName) },
+                    { key: 'nationalId', label: 'National ID number', critical: true, check: ({ text, submission }) => checkIdNumber(text, submission.nationalId) },
+                    { key: 'dob', label: 'Date of birth', check: ({ text }) => checkLabeledDate(text, ['date of birth', 'dob', 'birth date']) },
+                    { key: 'issueDate', label: 'Issue date', check: ({ text }) => checkLabeledDate(text, ['issue date', 'issued on']) },
+                    { key: 'expiryDate', label: 'Expiry date', check: ({ text }) => checkLabeledDate(text, ['expiry', 'expires', 'valid until']) },
+                    { key: 'sex', label: 'Sex/Gender', check: ({ text }) => hasAny(text, ['sex', 'gender', 'male', 'female']) },
+                    { key: 'signature', label: 'Signature/Seal', check: ({ text }) => hasAny(text, ['signature', 'signed', 'seal', 'stamp']) },
+                    { key: 'issuer', label: 'Issuing authority', check: ({ text }) => hasAny(text, ['authority', 'issuer', 'republic of', 'national identification']) },
+                    { key: 'photo', label: 'Photo present (manual check)', manual: true, note: 'Not detectable from OCR text' }
+                ]
+            },
+            'Land Title': {
+                required: [
+                    { key: 'titleNumber', label: 'Title number', critical: true, check: ({ text }) => hasAny(text, ['title number', 'title no', 'certificate no', 'certificate number']) },
+                    { key: 'ownerName', label: 'Owner name', critical: true, check: ({ text, submission }) => checkName(text, submission.fullName) },
+                    { key: 'plotNumber', label: 'Plot/parcel number', critical: true, check: ({ text }) => hasAny(text, ['plot', 'parcel', 'lot', 'land parcel']) },
+                    { key: 'location', label: 'Location', check: ({ text }) => hasAny(text, ['location', 'district', 'sector', 'cell', 'village']) },
+                    { key: 'area', label: 'Land area/size', check: ({ text }) => hasAny(text, ['area', 'size', 'hectare', 'ha', 'sqm', 'm2']) },
+                    { key: 'issueDate', label: 'Issue date', check: ({ text }) => checkLabeledDate(text, ['issue date', 'issued on']) },
+                    { key: 'authority', label: 'Registrar/authority', check: ({ text }) => hasAny(text, ['registrar', 'authority', 'land office', 'ministry']) },
+                    { key: 'seal', label: 'Seal/Signature', check: ({ text }) => hasAny(text, ['seal', 'signature', 'signed', 'stamp']) }
+                ]
+            },
+            'Birth Certificate': {
+                required: [
+                    { key: 'childName', label: 'Child full name', critical: true, check: ({ text }) => hasAny(text, ['child name', 'name of child', 'name']) },
+                    { key: 'dob', label: 'Date of birth', critical: true, check: ({ text }) => checkLabeledDate(text, ['date of birth', 'dob', 'birth date']) },
+                    { key: 'placeOfBirth', label: 'Place of birth', check: ({ text }) => hasAny(text, ['place of birth', 'birth place']) },
+                    { key: 'fatherName', label: 'Father name', check: ({ text }) => hasAny(text, ['father', 'father name']) },
+                    { key: 'motherName', label: 'Mother name', check: ({ text }) => hasAny(text, ['mother', 'mother name']) },
+                    { key: 'registrationNumber', label: 'Registration number', critical: true, check: ({ text }) => hasAny(text, ['registration number', 'reg no', 'entry number']) },
+                    { key: 'issueDate', label: 'Issue date', check: ({ text }) => checkLabeledDate(text, ['issue date', 'issued on']) },
+                    { key: 'authority', label: 'Registrar/Seal', check: ({ text }) => hasAny(text, ['registrar', 'seal', 'signature', 'stamp']) }
+                ]
+            },
+            'Police Clearance': {
+                required: [
+                    { key: 'applicantName', label: 'Applicant full name', critical: true, check: ({ text, submission }) => checkName(text, submission.fullName) },
+                    { key: 'idNumber', label: 'National ID/Passport number', critical: true, check: ({ text, submission }) => checkIdNumber(text, submission.nationalId) || hasAny(text, ['passport']) },
+                    { key: 'certificateNumber', label: 'Certificate number', critical: true, check: ({ text }) => hasAny(text, ['certificate number', 'certificate no', 'ref', 'reference']) },
+                    { key: 'issueDate', label: 'Issue date', check: ({ text }) => checkLabeledDate(text, ['issue date', 'issued on']) },
+                    { key: 'validity', label: 'Validity/Expiry', check: ({ text }) => checkLabeledDate(text, ['valid', 'validity', 'expiry', 'expires']) },
+                    { key: 'authority', label: 'Issuing authority', check: ({ text }) => hasAny(text, ['police', 'authority', 'ministry', 'department']) },
+                    { key: 'signature', label: 'Signature/Seal', check: ({ text }) => hasAny(text, ['signature', 'seal', 'signed', 'stamp']) }
+                ]
+            },
+            'Passport': {
+                required: [
+                    { key: 'fullName', label: 'Full name', critical: true, check: ({ text, submission }) => checkName(text, submission.fullName) },
+                    { key: 'passportNumber', label: 'Passport number', critical: true, check: ({ text }) => hasAny(text, ['passport no', 'passport number', 'passport']) },
+                    { key: 'nationality', label: 'Nationality', check: ({ text }) => hasAny(text, ['nationality', 'country']) },
+                    { key: 'dob', label: 'Date of birth', check: ({ text }) => checkLabeledDate(text, ['date of birth', 'dob', 'birth date']) },
+                    { key: 'issueDate', label: 'Issue date', check: ({ text }) => checkLabeledDate(text, ['issue date', 'issued on']) },
+                    { key: 'expiryDate', label: 'Expiry date', check: ({ text }) => checkLabeledDate(text, ['expiry', 'expires', 'valid until']) },
+                    { key: 'issuer', label: 'Issuing authority', check: ({ text }) => hasAny(text, ['authority', 'issuer', 'republic of', 'passport']) },
+                    { key: 'signature', label: 'Signature/Seal', check: ({ text }) => hasAny(text, ['signature', 'signed', 'seal', 'stamp']) },
+                    { key: 'photo', label: 'Photo present (manual check)', manual: true, note: 'Not detectable from OCR text' }
+                ]
+            },
+            "Driver's License": {
+                required: [
+                    { key: 'fullName', label: 'Full name', critical: true, check: ({ text, submission }) => checkName(text, submission.fullName) },
+                    { key: 'licenseNumber', label: 'License number', critical: true, check: ({ text }) => hasAny(text, ['license no', 'licence no', 'license number', 'licence number']) },
+                    { key: 'dob', label: 'Date of birth', check: ({ text }) => checkLabeledDate(text, ['date of birth', 'dob', 'birth date']) },
+                    { key: 'issueDate', label: 'Issue date', check: ({ text }) => checkLabeledDate(text, ['issue date', 'issued on']) },
+                    { key: 'expiryDate', label: 'Expiry date', check: ({ text }) => checkLabeledDate(text, ['expiry', 'expires', 'valid until']) },
+                    { key: 'class', label: 'License class/category', check: ({ text }) => hasAny(text, ['class', 'category']) },
+                    { key: 'issuer', label: 'Issuing authority', check: ({ text }) => hasAny(text, ['authority', 'issuer', 'transport', 'police']) },
+                    { key: 'signature', label: 'Signature/Seal', check: ({ text }) => hasAny(text, ['signature', 'signed', 'seal', 'stamp']) },
+                    { key: 'photo', label: 'Photo present (manual check)', manual: true, note: 'Not detectable from OCR text' }
+                ]
+            },
+            'Marriage Certificate': {
+                required: [
+                    { key: 'spouseNames', label: 'Spouse full names', critical: true, check: ({ text }) => hasAny(text, ['spouse', 'husband', 'wife', 'bride', 'groom']) },
+                    { key: 'marriageDate', label: 'Date of marriage', critical: true, check: ({ text }) => checkLabeledDate(text, ['date of marriage', 'marriage date', 'date']) },
+                    { key: 'place', label: 'Place of marriage', check: ({ text }) => hasAny(text, ['place of marriage', 'location', 'district', 'sector', 'cell']) },
+                    { key: 'certificateNumber', label: 'Certificate/Registration number', critical: true, check: ({ text }) => hasAny(text, ['certificate number', 'registration number', 'reg no', 'entry number']) },
+                    { key: 'registrar', label: 'Registrar/Authority', check: ({ text }) => hasAny(text, ['registrar', 'authority', 'ministry']) },
+                    { key: 'seal', label: 'Seal/Signature', check: ({ text }) => hasAny(text, ['seal', 'signature', 'signed', 'stamp']) }
+                ]
+            },
+            'Business Registration': {
+                required: [
+                    { key: 'businessName', label: 'Business name', critical: true, check: ({ text }) => hasAny(text, ['business name', 'company name', 'enterprise']) },
+                    { key: 'registrationNumber', label: 'Registration number', critical: true, check: ({ text }) => hasAny(text, ['registration number', 'reg no', 'certificate number', 'company number']) },
+                    { key: 'registrationDate', label: 'Registration date', check: ({ text }) => checkLabeledDate(text, ['registration date', 'issued on', 'date of registration']) },
+                    { key: 'businessType', label: 'Business type', check: ({ text }) => hasAny(text, ['business type', 'company type', 'category']) },
+                    { key: 'address', label: 'Business address', check: ({ text }) => hasAny(text, ['address', 'location']) },
+                    { key: 'authority', label: 'Issuing authority', check: ({ text }) => hasAny(text, ['authority', 'registrar', 'ministry', 'rdb']) },
+                    { key: 'seal', label: 'Seal/Signature', check: ({ text }) => hasAny(text, ['seal', 'signature', 'signed', 'stamp']) }
+                ]
+            },
+            'Tax Clearance': {
+                required: [
+                    { key: 'taxpayerName', label: 'Taxpayer name', critical: true, check: ({ text }) => hasAny(text, ['taxpayer', 'name']) || checkName(text, submission.fullName) },
+                    { key: 'tin', label: 'TIN/Tax ID number', critical: true, check: ({ text }) => hasAny(text, ['tin', 'tax id', 'taxpayer identification']) },
+                    { key: 'certificateNumber', label: 'Certificate/Reference number', critical: true, check: ({ text }) => hasAny(text, ['certificate number', 'reference', 'ref']) },
+                    { key: 'issueDate', label: 'Issue date', check: ({ text }) => checkLabeledDate(text, ['issue date', 'issued on']) },
+                    { key: 'validity', label: 'Validity/Expiry', check: ({ text }) => checkLabeledDate(text, ['valid', 'validity', 'expiry', 'expires']) },
+                    { key: 'authority', label: 'Issuing authority', check: ({ text }) => hasAny(text, ['authority', 'revenue', 'tax', 'rra']) },
+                    { key: 'seal', label: 'Seal/Signature', check: ({ text }) => hasAny(text, ['seal', 'signature', 'signed', 'stamp']) }
+                ]
+            }
+        };
+
+        function evaluateChecklist(serviceType, text, submission) {
+            const rules = DOCUMENT_RULES[serviceType];
+            if (!rules) {
+                return {
+                    supported: false,
+                    docType: serviceType,
+                    items: [],
+                    missing: [],
+                    completeness: null
+                };
+            }
+
+            const items = rules.required.map(item => {
+                if (item.manual) {
+                    return {
+                        label: item.label,
+                        status: 'manual',
+                        note: item.note || 'Manual check required',
+                        critical: item.critical || false
+                    };
+                }
+                const passed = item.check({ text, submission });
+                return {
+                    label: item.label,
+                    status: passed ? 'pass' : 'fail',
+                    note: passed ? 'Found in OCR text' : 'Not found in OCR text',
+                    critical: item.critical || false
+                };
+            });
+
+            const missing = items.filter(item => item.status === 'fail').map(item => item.label);
+            const scoredItems = items.filter(item => item.status !== 'manual');
+            const completeness = scoredItems.length
+                ? (scoredItems.filter(item => item.status === 'pass').length / scoredItems.length) * 100
+                : null;
+
+            return {
+                supported: true,
+                docType: serviceType,
+                items,
+                missing,
+                completeness
+            };
+        }
+
+        // Check authentication
+        function checkAuth() {
+            let user = JSON.parse(localStorage.getItem('iremboUser'));
+            let isLoggedIn = localStorage.getItem('isLoggedIn');
+
+            // Fallback: auto-login as Test Officer if not logged in or wrong user type
+            if (!isLoggedIn || !user || user.userType !== 'officer') {
+                user = {
+                    name: 'Test Officer',
+                    email: 'officer@test.local',
+                    userType: 'officer'
+                };
+                localStorage.setItem('iremboUser', JSON.stringify(user));
+                localStorage.setItem('isLoggedIn', 'true');
+                isLoggedIn = 'true';
+            }
+
+            document.getElementById('officerName').textContent = user.name;
+            document.getElementById('officerEmail').textContent = user.email;
+        }
+
+        // Load submissions from backend
+        async function loadSubmissions() {
+            try {
+                const response = await fetch('http://localhost:5000/api/applications?page=1&per_page=100');
+                const result = await response.json();
+                submissions = result.data || [];
+                
+                console.log('Loaded applications from backend:', submissions);
+                
+                // Map backend response to expected format
+                submissions = submissions.map(app => {
+                    console.log('Mapping application:', {
+                        id: app.application_id,
+                        citizen_name: app.citizen_name,
+                        citizen_id: app.citizen_id,
+                        citizen_phone: app.citizen_phone
+                    });
+                    
+                    return {
+                        id: app.application_id || app.id,
+                        serviceType: app.document_type || app.serviceType,
+                        fullName: app.citizen_name || app.fullName || 'N/A',
+                        nationalId: app.citizen_id || app.nationalId || 'N/A',
+                        phoneNumber: app.citizen_phone || app.phoneNumber || 'N/A',
+                        description: app.description || '',
+                        status: app.status === 'pending' ? 'pending' : app.status === 'review' ? 'review' : app.status,
+                        submittedDate: app.created_at || app.submittedDate,
+                        files: app.documents || [],
+                        timeline: [{ status: 'Submitted', date: app.created_at, active: true }],
+                        apiId: app.application_id
+                    };
+                });
+            } catch (error) {
+                console.error('Error loading from backend:', error);
+                // Fallback to localStorage
+                submissions = JSON.parse(localStorage.getItem('citizenApplications')) || [];
+            }
+            restoreCurrentSubmission();
+            updateCounts();
+            renderPendingSubmissions();
+            renderAnalyzingSubmissions();
+            if (currentSubmission) {
+                renderAnalysisPanel();
+            } else {
+                setAnalysisEmptyState();
+            }
+        }
+
+        function restoreCurrentSubmission() {
+            const savedId = localStorage.getItem('officerCurrentSubmissionId');
+            if (!savedId) {
+                currentSubmission = null;
+                return;
+            }
+
+            const match = submissions.find(s => s.id === savedId && s.status === 'review');
+            if (match) {
+                currentSubmission = match;
+            } else {
+                currentSubmission = null;
+                localStorage.removeItem('officerCurrentSubmissionId');
+            }
+        }
+
+        function updateCounts() {
+            const pending = submissions.filter(s => s.status === 'pending').length;
+            const reviewing = submissions.filter(s => s.status === 'review').length;
+            const appeals = submissions.filter(s => s.appeal).length;
+
+            document.getElementById('pendingCount').textContent = pending;
+            document.getElementById('reviewingCount').textContent = reviewing;
+            document.getElementById('appealsCount').textContent = appeals;
+            document.getElementById('pendingBadge').textContent = pending;
+            document.getElementById('analyzingBadge').textContent = reviewing;
+            document.getElementById('appealsBadge').textContent = appeals;
+        }
+
+        function renderPendingSubmissions() {
+            const pending = submissions.filter(s => s.status === 'pending');
+            const container = document.getElementById('pendingList');
+
+            if (pending.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-check-circle"></i>
+                        <h3>All caught up!</h3>
+                        <p>No pending submissions at the moment</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = pending.map(sub => `
+                <div class="submission-card" onclick="selectSubmission('${sub.id}')">
+                    <div class="submission-header">
+                        <div>
+                            <div class="submission-title">${sub.serviceType}</div>
+                            <div class="submission-id">${sub.id}</div>
+                        </div>
+                        <div class="priority-badge priority-normal">Normal</div>
+                    </div>
+                    <div class="submission-info">
+                        <div class="info-item">
+                            <div class="info-label">Applicant</div>
+                            <div class="info-value">${sub.fullName}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">National ID</div>
+                            <div class="info-value">${sub.nationalId}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Phone</div>
+                            <div class="info-value">${sub.phoneNumber}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Submitted</div>
+                            <div class="info-value">${new Date(sub.submittedDate).toLocaleDateString()}</div>
+                        </div>
+                    </div>
+                    ${sub.files && sub.files.length > 0 ? `
+                        <div class="submission-files">
+                            <strong style="font-size: 0.85rem; display: block; margin-bottom: 0.5rem;">Documents:</strong>
+                            <div class="documents-list">
+                                ${sub.files.map(f => `<div class="doc-badge"><i class="fas fa-file"></i> ${f.name || f}</div>`).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+
+        function renderAnalyzingSubmissions() {
+            const reviewing = submissions.filter(s => s.status === 'review');
+            const container = document.getElementById('analyzingList');
+
+            if (!container) {
+                return;
+            }
+
+            if (reviewing.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state" style="padding: 2rem 1rem;">
+                        <i class="fas fa-search"></i>
+                        <h3>No items under analysis</h3>
+                        <p>Select a submission from Pending to start analysis</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = reviewing.map(sub => `
+                <div class="submission-card ${currentSubmission && currentSubmission.id === sub.id ? 'selected' : ''}" onclick="selectSubmission('${sub.id}')">
+                    <div class="submission-header">
+                        <div>
+                            <div class="submission-title">${sub.serviceType}</div>
+                            <div class="submission-id">${sub.id}</div>
+                        </div>
+                        <div class="priority-badge priority-normal">Review</div>
+                    </div>
+                    <div class="submission-info">
+                        <div class="info-item">
+                            <div class="info-label">Applicant</div>
+                            <div class="info-value">${sub.fullName}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Submitted</div>
+                            <div class="info-value">${new Date(sub.submittedDate).toLocaleDateString()}</div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function selectSubmission(id) {
+            currentSubmission = submissions.find(s => s.id === id);
+            if (currentSubmission) {
+                if (currentSubmission.status !== 'review') {
+                    currentSubmission.status = 'review';
+                    currentSubmission.timeline.push({
+                        status: 'Under Review',
+                        date: new Date().toISOString(),
+                        active: true
+                    });
+                    
+                    // Update status in backend if available
+                    if (currentSubmission.apiId) {
+                        try {
+                            await fetch('http://localhost:5000/api/applications/' + currentSubmission.apiId, {
+                                method: 'PUT',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ status: 'review' })
+                            });
+                        } catch (error) {
+                            console.error('Could not update backend status:', error);
+                        }
+                    }
+                }
+                localStorage.setItem('citizenApplications', JSON.stringify(submissions));
+                localStorage.setItem('officerCurrentSubmissionId', currentSubmission.id);
+
+                updateCounts();
+                renderAnalysisPanel();
+                renderPendingSubmissions();
+                renderAnalyzingSubmissions();
+                switchView('analyzing');
+            }
+        }
+
+        function setAnalysisEmptyState() {
+            const analysisContent = document.getElementById('analysisContent');
+            analysisContent.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-search"></i>
+                    <h3>Select a submission to analyze</h3>
+                    <p>Click on a submission in the pending list to start AI analysis</p>
+                </div>
+            `;
+        }
+
+        function renderAnalysisPanel() {
+            if (!currentSubmission) return;
+
+            const analysisContent = document.getElementById('analysisContent');
+            
+            // Simulate AI analysis
+            const aiAnalysis = {
+                documentQuality: "✅ Documents are clear and legible",
+                completeness: "✅ All required information provided",
+                authenticity: "✅ Document appears authentic",
+                compliance: "⚠️ Minor formatting issues - request clarification on date field",
+                recommendation: "Recommend approval with minor corrections"
+            };
+
+            analysisContent.innerHTML = `
+                <div class="analysis-panel">
+                    <!-- Left: Submission Details -->
+                    <div class="analysis-section">
+                        <h3 class="section-title">Submission Details</h3>
+                        <div class="analysis-box">
+                            <div class="info-item" style="margin-bottom: 1rem;">
+                                <div class="info-label">Service Type</div>
+                                <div class="info-value">${currentSubmission.serviceType}</div>
+                            </div>
+                            <div class="info-item" style="margin-bottom: 1rem;">
+                                <div class="info-label">Applicant</div>
+                                <div class="info-value">${currentSubmission.fullName}</div>
+                            </div>
+                            <div class="info-item" style="margin-bottom: 1rem;">
+                                <div class="info-label">National ID</div>
+                                <div class="info-value">${currentSubmission.nationalId}</div>
+                            </div>
+                            <div class="info-item" style="margin-bottom: 1rem;">
+                                <div class="info-label">Phone</div>
+                                <div class="info-value">${currentSubmission.phoneNumber}</div>
+                            </div>
+                            ${currentSubmission.description ? `
+                                <div class="info-item">
+                                    <div class="info-label">Applicant Notes</div>
+                                    <div class="info-value">${currentSubmission.description}</div>
+                                </div>
+                            ` : ''}
+                        </div>
+
+                        ${currentSubmission.files && currentSubmission.files.length > 0 ? `
+                            <div style="margin-top: 1.5rem;">
+                                <h4 class="section-title">Documents</h4>
+                                <div class="analysis-box">
+                                    ${currentSubmission.files.map((f, idx) => `
+                                        <div style="margin-bottom: 1rem; padding: 1rem; background: white; border-radius: 6px; border: 1px solid var(--border-color);">
+                                            <div class="doc-badge" style="margin-bottom: 0.5rem;">
+                                                <i class="fas fa-file"></i> ${f.name || f}
+                                            </div>
+                                            ${f.data && f.type && f.type.startsWith('image/') ? `
+                                                <img src="${f.data}" style="max-width: 100%; max-height: 300px; border-radius: 4px; margin-top: 0.5rem;" id="doc-img-${idx}">
+                                            ` : ''}
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        ` : ''}
+                    </div>
+
+                    <!-- Right: AI Analysis -->
+                    <div class="analysis-section">
+                        <h3 class="section-title"><i class="fas fa-robot"></i> AI Analysis Results</h3>
+                        
+                        <button class="analysis-btn" onclick="runAIAnalysis()" id="analyzeBtn">
+                            <i class="fas fa-microscope"></i> Run AI Analysis
+                        </button>
+
+                        <div id="analysisResults" style="margin-top: 1rem;">
+                            <div style="padding: 1rem; background: #f8f9fa; border-radius: 8px; text-align: center; color: var(--text-light);">
+                                <i class="fas fa-info-circle"></i> Click "Run AI Analysis" to start OCR and authenticity verification
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="decision-section">
+                    <h3 class="section-title"><i class="fas fa-gavel"></i> Make a Decision</h3>
+                    <div class="decision-buttons">
+                        <button class="btn btn-approve" onclick="openDecisionModal('approved')">
+                            <i class="fas fa-check"></i> Approve
+                        </button>
+                        <button class="btn btn-reject" onclick="openDecisionModal('rejected')">
+                            <i class="fas fa-times"></i> Reject
+                        </button>
+                        <button class="btn btn-hold" onclick="openDecisionModal('hold')">
+                            <i class="fas fa-pause"></i> Hold for Further Review
+                        </button>
+                        <button class="btn btn-send" onclick="openDecisionModal('send')">
+                            <i class="fas fa-share"></i> Send to Department
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function runAIAnalysis() {
+            const btn = document.getElementById('analyzeBtn');
+            const resultsDiv = document.getElementById('analysisResults');
+            
+            btn.classList.add('loading');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Running AI Analysis...';
+
+            resultsDiv.innerHTML = `
+                <div style="padding: 1rem; background: #fff3cd; border-radius: 8px; margin-bottom: 1rem;">
+                    <i class="fas fa-hourglass-half"></i> <strong>Processing...</strong>
+                    <div style="margin-top: 0.5rem; font-size: 0.9rem;">Performing OCR, extracting text, and validating authenticity...</div>
+                </div>
+            `;
+
+            try {
+                const analysisResults = await analyzeDocuments();
+                displayAnalysisResults(analysisResults);
+                
+                btn.classList.remove('loading');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-check-circle"></i> Analysis Complete';
+                showNotification('✅ AI analysis completed successfully!', 'success');
+            } catch (error) {
+                console.error('Analysis error:', error);
+                resultsDiv.innerHTML = `
+                    <div class="analysis-result error">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <div>Analysis failed: ${error.message}</div>
+                    </div>
+                `;
+                btn.classList.remove('loading');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-redo"></i> Retry Analysis';
+                showNotification('❌ Analysis failed', 'error');
+            }
+        }
+
+        async function analyzeDocuments() {
+            if (!currentSubmission || !currentSubmission.files || currentSubmission.files.length === 0) {
+                throw new Error('No documents to analyze');
+            }
+
+            const results = {
+                ocrResults: [],
+                qualityScore: 0,
+                authenticityScore: null,
+                completenessScore: null,
+                checklist: null,
+                issues: [],
+                recommendations: []
+            };
+
+            // Analyze each document
+            for (let i = 0; i < currentSubmission.files.length; i++) {
+                const file = currentSubmission.files[i];
+                
+                if (file.data && file.type && file.type.startsWith('image/')) {
+                    try {
+                        // Run OCR using Tesseract.js
+                        const ocrResult = await Tesseract.recognize(
+                            file.data,
+                            'eng',
+                            {
+                                logger: m => {
+                                    if (m.status === 'recognizing text') {
+                                        const progress = Math.round(m.progress * 100);
+                                        document.getElementById('analysisResults').innerHTML = `
+                                            <div style="padding: 1rem; background: #e7f3ff; border-radius: 8px;">
+                                                <i class="fas fa-spinner fa-spin"></i> <strong>OCR in Progress...</strong>
+                                                <div style="margin-top: 0.5rem;">
+                                                    <div style="background: #ccc; height: 8px; border-radius: 4px; overflow: hidden;">
+                                                        <div style="background: var(--primary-blue); height: 100%; width: ${progress}%; transition: width 0.3s;"></div>
+                                                    </div>
+                                                    <div style="margin-top: 0.5rem; font-size: 0.9rem;">${progress}% - Processing document ${i + 1}/${currentSubmission.files.length}</div>
+                                                </div>
+                                            </div>
+                                        `;
+                                    }
+                                }
+                            }
+                        );
+
+                        const extractedText = ocrResult.data.text;
+                        const confidence = ocrResult.data.confidence;
+
+                        results.ocrResults.push({
+                            filename: file.name,
+                            text: extractedText,
+                            confidence: confidence,
+                            words: ocrResult.data.words.length
+                        });
+
+                        // Quality assessment based on confidence
+                        results.qualityScore += confidence;
+
+                    } catch (error) {
+                        console.error('OCR failed for', file.name, error);
+                        results.ocrResults.push({
+                            filename: file.name,
+                            error: 'OCR processing failed'
+                        });
+                    }
+                }
+            }
+
+            // Calculate average quality score
+            if (results.ocrResults.length > 0) {
+                results.qualityScore = results.qualityScore / results.ocrResults.length;
+            } else {
+                results.qualityScore = 0;
+                results.issues.push('No OCR results were produced');
+            }
+
+            const combinedText = normalizeText(
+                results.ocrResults.map(ocr => ocr.text || '').join('\n')
+            );
+
+            results.checklist = evaluateChecklist(currentSubmission.serviceType, combinedText, currentSubmission);
+
+            if (results.checklist.supported) {
+                results.completenessScore = results.checklist.completeness;
+                results.authenticityScore = results.checklist.completeness;
+
+                if (results.checklist.missing.length > 0) {
+                    results.issues.push(`Missing required fields: ${results.checklist.missing.join(', ')}`);
+                }
+            } else {
+                results.issues.push('No checklist configured for this service type');
+            }
+
+            const hasLowConfidence = results.ocrResults.some(ocr => ocr.confidence && ocr.confidence < 60);
+            if (hasLowConfidence) {
+                results.issues.push('Low OCR confidence on one or more documents');
+            }
+
+            // Check for critical identity mismatch
+            const criticalFailures = results.checklist.items.filter(item => item.critical && item.status === 'fail');
+            if (criticalFailures.length > 0) {
+                results.identityMismatch = true;
+                results.criticalIssues = criticalFailures.map(item => item.label);
+                results.issues.unshift(`⚠️ CRITICAL: Identity fields don't match - ${results.criticalIssues.join(', ')}`);
+            }
+
+            // Generate recommendations
+            if (results.checklist.supported) {
+                if (criticalFailures.length > 0) {
+                    results.recommendations.push('⛔ Recommend REJECTION - Identity verification failed. Name and/or ID number on document do not match applicant information.');
+                    results.recommendations.push('Citizen must submit a document that matches their registered name and ID number.');
+                } else if ((results.completenessScore || 0) >= 85 && results.qualityScore >= 80 && results.checklist.missing.length === 0) {
+                    results.recommendations.push('✅ Recommend APPROVAL - All required fields detected including verified identity match');
+                } else if (results.checklist.missing.length > 0) {
+                    results.recommendations.push(`Request resubmission with missing fields: ${results.checklist.missing.join(', ')}`);
+                } else {
+                    results.recommendations.push('Recommend FURTHER REVIEW - Validate unclear fields');
+                }
+            } else {
+                results.recommendations.push('Manual review required - no checklist configured for this service type');
+            }
+
+            if (results.qualityScore < 70) {
+                results.recommendations.push('Request higher quality document scans');
+            }
+
+            return results;
+        }
+
+        function displayAnalysisResults(results) {
+            const resultsDiv = document.getElementById('analysisResults');
+            
+            const getScoreClass = (score) => {
+                if (score === null || Number.isNaN(score)) return 'warning';
+                if (score >= 80) return 'success';
+                if (score >= 60) return 'warning';
+                return 'error';
+            };
+
+            const formatScore = (score) => {
+                if (score === null || Number.isNaN(score)) return 'N/A';
+                return `${Math.round(score)}%`;
+            };
+
+            const qualityClass = getScoreClass(results.qualityScore);
+            const authenticityClass = getScoreClass(results.authenticityScore);
+            const completenessClass = getScoreClass(results.completenessScore);
+
+            resultsDiv.innerHTML = `
+                <!-- OCR Results -->
+                <div style="margin-bottom: 1.5rem;">
+                    <h4 style="margin-bottom: 0.75rem; color: var(--text-dark);">📄 OCR Extraction Results</h4>
+                    ${results.ocrResults.map(ocr => `
+                        <div style="padding: 0.75rem; background: #f8f9fa; border-radius: 6px; margin-bottom: 0.5rem; font-size: 0.9rem;">
+                            <strong>${ocr.filename}</strong><br>
+                            ${ocr.error ? `<span style="color: var(--danger);">${ocr.error}</span>` : `
+                                Confidence: ${Math.round(ocr.confidence)}% | Words extracted: ${ocr.words}<br>
+                                <details style="margin-top: 0.5rem;">
+                                    <summary style="cursor: pointer; color: var(--primary-blue);">View extracted text</summary>
+                                    <div style="margin-top: 0.5rem; padding: 0.5rem; background: white; border-radius: 4px; max-height: 150px; overflow-y: auto; white-space: pre-wrap; font-family: monospace; font-size: 0.8rem;">
+                                        ${ocr.text || 'No text extracted'}
+                                    </div>
+                                </details>
+                            `}
+                        </div>
+                    `).join('')}
+                </div>
+
+                <!-- Identity Verification Warning -->
+                ${results.identityMismatch ? `
+                    <div style="padding: 1rem; background: #fff3cd; border: 2px solid #ff9800; border-radius: 8px; margin-bottom: 1.5rem;">
+                        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+                            <i class="fas fa-exclamation-triangle" style="font-size: 1.5rem; color: #ff6b00;"></i>
+                            <strong style="color: #ff6b00; font-size: 1.1rem;">⚠️ IDENTITY VERIFICATION FAILED</strong>
+                        </div>
+                        <div style="color: #856404; line-height: 1.6;">
+                            The information on the submitted document does NOT match the applicant's registered details:<br>
+                            <strong>${results.criticalIssues.join(', ')}</strong><br>
+                            <em style="font-size: 0.9rem;">This document may belong to a different person or contain incorrect information.</em>
+                        </div>
+                    </div>
+                ` : ''}
+
+                <!-- Required Fields Checklist -->
+                <div style="margin-bottom: 1.5rem;">
+                    <h4 style="margin-bottom: 0.75rem; color: var(--text-dark);">📋 Required Fields Checklist</h4>
+                    ${results.checklist && results.checklist.supported ? `
+                        <div style="padding: 0.75rem; background: #f8f9fa; border-radius: 6px;">
+                            ${results.checklist.items.map(item => `
+                                <div style="display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 0; border-bottom: 1px dashed #e2e6ea; ${item.critical && item.status === 'fail' ? 'background: #ffe6e6; margin: 0 -0.75rem; padding-left: 0.75rem; padding-right: 0.75rem;' : ''}">
+                                    <span style="font-size: 0.75rem; font-weight: 700; color: ${item.status === 'pass' ? 'var(--success)' : item.status === 'fail' ? 'var(--danger)' : 'var(--warning)'};">
+                                        ${item.status === 'pass' ? '✓ PASS' : item.status === 'fail' ? '✗ FAIL' : '⚠ MANUAL'}
+                                    </span>
+                                    <span style="flex: 1; font-weight: ${item.critical ? '700' : '400'};">
+                                        ${item.label}${item.critical ? ' 🔴' : ''}
+                                    </span>
+                                    <span style="font-size: 0.8rem; color: var(--text-light);">${item.note}</span>
+                                </div>
+                            `).join('')}
+                            <div style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid #dee2e6; font-size: 0.85rem; color: var(--text-light);">
+                                🔴 = Critical field (must match applicant's registered information)
+                            </div>
+                        </div>
+                    ` : `
+                        <div class="analysis-result warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <div>No checklist configured for this service type. Manual review required.</div>
+                        </div>
+                    `}
+                </div>
+
+                <!-- Scores -->
+                <div class="analysis-result ${qualityClass}">
+                    <i class="fas ${qualityClass === 'success' ? 'fa-check-circle' : qualityClass === 'warning' ? 'fa-exclamation-triangle' : 'fa-times-circle'}"></i>
+                    <div>
+                        <strong>Document Quality:</strong> ${formatScore(results.qualityScore)}<br>
+                        <span style="font-size: 0.85rem;">OCR confidence and image clarity assessment</span>
+                    </div>
+                </div>
+
+                <div class="analysis-result ${authenticityClass}">
+                    <i class="fas ${authenticityClass === 'success' ? 'fa-check-circle' : authenticityClass === 'warning' ? 'fa-exclamation-triangle' : 'fa-times-circle'}"></i>
+                    <div>
+                        <strong>Authenticity Score:</strong> ${formatScore(results.authenticityScore)}<br>
+                        <span style="font-size: 0.85rem;">Based on required field detection in OCR text</span>
+                    </div>
+                </div>
+
+                <div class="analysis-result ${completenessClass}">
+                    <i class="fas ${completenessClass === 'success' ? 'fa-check-circle' : completenessClass === 'warning' ? 'fa-exclamation-triangle' : 'fa-times-circle'}"></i>
+                    <div>
+                        <strong>Completeness:</strong> ${formatScore(results.completenessScore)}<br>
+                        <span style="font-size: 0.85rem;">Required fields present based on OCR text</span>
+                    </div>
+                </div>
+
+                ${results.issues.length > 0 ? `
+                    <div class="analysis-result warning">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <div>
+                            <strong>Issues Found:</strong><br>
+                            <ul style="margin-top: 0.5rem; margin-left: 1.5rem; font-size: 0.9rem;">
+                                ${results.issues.map(issue => `<li>${issue}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                ` : ''}
+
+                <!-- Recommendations -->
+                <div style="padding: 1rem; background: #e7f3ff; border-radius: 8px; margin-top: 1rem; border-left: 4px solid var(--info);">
+                    <strong>🤖 AI Recommendations:</strong>
+                    <ul style="margin-top: 0.5rem; margin-left: 1.5rem;">
+                        ${results.recommendations.map(rec => `<li>${rec}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+        }
+
+        function openDecisionModal(decision) {
+            document.getElementById('decisionType').value = decision;
+            document.getElementById('decisionModal').classList.add('active');
+        }
+
+        function closeDecisionModal() {
+            document.getElementById('decisionModal').classList.remove('active');
+            document.getElementById('decisionType').value = '';
+            document.getElementById('decisionNotes').value = '';
+        }
+
+        async function submitDecision(event) {
+            event.preventDefault();
+
+            const decision = document.getElementById('decisionType').value;
+            const notes = document.getElementById('decisionNotes').value;
+
+            if (!currentSubmission) return;
+
+            // Map decision to status
+            let newStatus = 'review';
+            if (decision === 'approved') {
+                newStatus = 'approved';
+            } else if (decision === 'rejected') {
+                newStatus = 'rejected';
+            } else if (decision === 'send') {
+                newStatus = 'sent';
+            }
+
+            currentSubmission.officerNotes = notes;
+            currentSubmission.decidedDate = new Date().toISOString();
+            currentSubmission.status = newStatus;
+
+            const statusText = decision === 'approved' ? 'Approved' : 
+                              decision === 'rejected' ? 'Rejected' : 
+                              decision === 'send' ? 'Sent to Department' :
+                              'Hold - Pending Further Review';
+            
+            currentSubmission.timeline.push({
+                status: statusText,
+                date: new Date().toISOString(),
+                active: true
+            });
+
+            // Update backend if available
+            if (currentSubmission.apiId) {
+                try {
+                    await fetch('http://localhost:5000/api/applications/' + currentSubmission.apiId, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ 
+                            status: newStatus,
+                            feedback: notes 
+                        })
+                    });
+                } catch (error) {
+                    console.error('Error updating backend:', error);
+                }
+            }
+
+            localStorage.setItem('citizenApplications', JSON.stringify(submissions));
+            localStorage.removeItem('officerCurrentSubmissionId');
+            currentSubmission = null;
+            
+            showNotification(`Decision submitted: ${statusText}`, 'success');
+            closeDecisionModal();
+            loadSubmissions();
+            renderPendingSubmissions();
+            renderAnalyzingSubmissions();
+        }
+
+        function switchView(view) {
+            document.querySelectorAll('[id$="View"]').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+
+            switch(view) {
+                case 'pending':
+                    document.getElementById('pendingView').style.display = 'block';
+                    break;
+                case 'analyzing':
+                    document.getElementById('analyzingView').style.display = 'block';
+                    renderAnalyzingSubmissions();
+                    if (!currentSubmission) {
+                        setAnalysisEmptyState();
+                    }
+                    break;
+                case 'appeals':
+                    document.getElementById('appealsView').style.display = 'block';
+                    renderAppeals();
+                    break;
+            }
+
+            event.target.classList.add('active');
+        }
+
+        function renderAppeals() {
+            const appeals = submissions.filter(s => s.appeal);
+            const container = document.getElementById('appealsList');
+
+            if (appeals.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-inbox"></i>
+                        <h3>No appeals</h3>
+                        <p>No pending appeals at the moment</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = appeals.map(app => `
+                <div class="submission-card">
+                    <div class="submission-header">
+                        <div>
+                            <div class="submission-title">${app.serviceType}</div>
+                            <div class="submission-id">${app.id}</div>
+                        </div>
+                        <div class="priority-badge priority-urgent">APPEAL</div>
+                    </div>
+                    <div class="submission-info">
+                        <div class="info-item">
+                            <div class="info-label">Applicant</div>
+                            <div class="info-value">${app.fullName}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Appeal Date</div>
+                            <div class="info-value">${new Date(app.appeal.date).toLocaleDateString()}</div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 6px;">
+                        <strong>Appeal Reason:</strong>
+                        <p style="margin-top: 0.5rem; color: var(--text-dark);">${app.appeal.reason}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('iremboUser');
+                localStorage.removeItem('isLoggedIn');
+                window.location.href = 'index_functional.html';
+            }
+        }
+
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.remove();
+            }, 4000);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuth();
+            loadSubmissions();
+
+            // Close modal when clicking outside
+            document.getElementById('decisionModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeDecisionModal();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

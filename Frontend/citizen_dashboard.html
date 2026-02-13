@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Citizen Dashboard - iRembo Services</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-blue: #003DA5;
+            --primary-gold: #FFD700;
+            --primary-green: #28A745;
+            --text-dark: #333;
+            --text-light: #666;
+            --border-color: #ddd;
+            --white: #ffffff;
+            --bg-light: #f8f9fa;
+            --success: #28A745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --info: #17a2b8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary-blue), #1a5fb8);
+            color: white;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .header-left p {
+            opacity: 0.9;
+            font-size: 0.95rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .user-details {
+            text-align: right;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .user-email {
+            font-size: 0.85rem;
+            opacity: 0.8;
+            margin-top: 0.2rem;
+        }
+
+        .user-role {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .logout-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .tab {
+            padding: 1rem 2rem;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-light);
+            transition: all 0.3s;
+        }
+
+        .tab:hover {
+            color: var(--primary-blue);
+        }
+
+        .tab.active {
+            color: var(--primary-blue);
+            border-bottom-color: var(--primary-blue);
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Service Request Form */
+        .request-form {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            max-width: 800px;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(0, 61, 165, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .file-upload {
+            border: 2px dashed var(--border-color);
+            padding: 2rem;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .file-upload:hover {
+            border-color: var(--primary-blue);
+            background: rgba(0, 61, 165, 0.02);
+        }
+
+        .file-upload input {
+            display: none;
+        }
+
+        .file-info {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            background: var(--bg-light);
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, var(--primary-blue), #1a5fb8);
+            color: white;
+            padding: 1rem 3rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 61, 165, 0.3);
+        }
+
+        /* Applications List */
+        .applications-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .application-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+
+        .application-card:hover {
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        }
+
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .app-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 0.3rem;
+        }
+
+        .app-id {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .status-badge {
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-review {
+            background: #cfe2ff;
+            color: #084298;
+        }
+
+        .status-approved {
+            background: #d1e7dd;
+            color: #0f5132;
+        }
+
+        .status-rejected {
+            background: #f8d7da;
+            color: #842029;
+        }
+
+        .status-sent {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .app-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .detail-item {
+            font-size: 0.9rem;
+        }
+
+        .detail-label {
+            color: var(--text-light);
+            margin-bottom: 0.2rem;
+        }
+
+        .detail-value {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .app-timeline {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .timeline-title {
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            font-size: 0.95rem;
+        }
+
+        .timeline-item {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+            font-size: 0.9rem;
+        }
+
+        .timeline-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--primary-blue);
+            margin-top: 0.3rem;
+            flex-shrink: 0;
+        }
+
+        .timeline-dot.inactive {
+            background: var(--border-color);
+        }
+
+        .timeline-content {
+            flex: 1;
+        }
+
+        .timeline-date {
+            color: var(--text-light);
+            font-size: 0.85rem;
+        }
+
+        .app-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .btn {
+            padding: 0.6rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-appeal {
+            background: var(--warning);
+            color: #000;
+        }
+
+        .btn-view {
+            background: var(--info);
+            color: white;
+        }
+
+        .btn-download {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            opacity: 0.9;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-light);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+
+        /* Appeal Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header h2 {
+            color: var(--primary-blue);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-light);
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            z-index: 3000;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .notification.success {
+            background: var(--success);
+            color: white;
+        }
+
+        .notification.error {
+            background: var(--danger);
+            color: white;
+        }
+
+        .notification.info {
+            background: var(--info);
+            color: white;
+        }
+
+        .notification.warning {
+            background: var(--warning);
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-content">
+            <div class="header-left">
+                <h1><i class="fas fa-file-alt"></i> iRembo Services</h1>
+                <p>Request services and track your applications</p>
+            </div>
+            <div class="user-info">
+                <div class="user-details">
+                    <div class="user-name" id="userName">Loading...</div>
+                    <div class="user-email" id="userEmail"></div>
+                    <div class="user-role">👤 Citizen Account</div>
+                </div>
+                <button class="logout-btn" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('request')">
+                <i class="fas fa-plus-circle"></i> Verify Document
+            </button>
+            <button class="tab" onclick="switchTab('requestDoc')">
+                <i class="fas fa-file-import"></i> Request Document
+            </button>
+            <button class="tab" onclick="switchTab('applications')">
+                <i class="fas fa-list"></i> My Applications
+            </button>
+        </div>
+
+        <!-- New Request Tab -->
+        <div class="tab-content active" id="requestTab">
+            <div class="request-form">
+                <h2 style="margin-bottom: 1rem; color: var(--primary-blue);">
+                    <i class="fas fa-file-alt"></i> Request a Service
+                </h2>
+                
+                <!-- Identity Verification Notice -->
+                <div style="padding: 1rem; background: #e7f3ff; border-left: 4px solid var(--info); border-radius: 6px; margin-bottom: 1.5rem;">
+                    <div style="display: flex; align-items: start; gap: 0.75rem;">
+                        <i class="fas fa-info-circle" style="color: var(--info); margin-top: 0.2rem;"></i>
+                        <div style="font-size: 0.9rem; line-height: 1.6;">
+                            <strong>Identity Verification Required</strong><br>
+                            Your name and ID number must <strong>exactly match</strong> what appears on your submitted document. 
+                            Our AI system will verify this information. Any mismatch will result in rejection.
+                        </div>
+                    </div>
+                </div>
+
+                <form id="requestForm" onsubmit="submitRequest(event)">
+                    <div class="form-group">
+                        <label for="serviceType">Service Type *</label>
+                        <select id="serviceType" required>
+                            <option value="">Select a service...</option>
+                            <option value="Birth Certificate">Birth Certificate</option>
+                            <option value="National ID">National ID</option>
+                            <option value="Passport">Passport</option>
+                            <option value="Driver's License">Driver's License</option>
+                            <option value="Marriage Certificate">Marriage Certificate</option>
+                            <option value="Business Registration">Business Registration</option>
+                            <option value="Land Title">Land Title</option>
+                            <option value="Tax Clearance">Tax Clearance</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="fullName">Full Name (as shown on document) *</label>
+                        <input type="text" id="fullName" required placeholder="Enter your full name exactly as on ID/document">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="nationalId">National ID Number (16 digits) *</label>
+                        <input type="text" id="nationalId" required placeholder="1XXXXXXXXXXXX" maxlength="16">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phoneNumber">Phone Number *</label>
+                        <input type="tel" id="phoneNumber" required placeholder="+250 XXX XXX XXX">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Additional Details</label>
+                        <textarea id="description" placeholder="Provide any additional information about your request..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Supporting Documents (Optional)</label>
+                        <div class="file-upload" onclick="document.getElementById('fileInput').click()">
+                            <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; color: var(--primary-blue); margin-bottom: 0.5rem;"></i>
+                            <p><strong>Click to upload</strong> or drag and drop</p>
+                            <p style="font-size: 0.85rem; color: var(--text-light);">PDF, JPG, PNG (Max 10MB)</p>
+                            <input type="file" id="fileInput" multiple accept=".pdf,.jpg,.jpeg,.png" onchange="handleFileSelect(event)">
+                        </div>
+                        <div id="fileList" class="file-info" style="display: none;"></div>
+                    </div>
+
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-paper-plane"></i> Submit Request
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Request Document from iRembo Tab -->
+        <div class="tab-content" id="requestDocTab">
+            <div class="request-form">
+                <h2 style="margin-bottom: 1rem; color: var(--primary-blue);">
+                    <i class="fas fa-file-import"></i> Request Document from iRembo
+                </h2>
+                
+                <!-- Identity Verification Notice -->
+                <div style="padding: 1rem; background: #fff3cd; border-left: 4px solid var(--warning); border-radius: 6px; margin-bottom: 1.5rem;">
+                    <div style="display: flex; align-items: start; gap: 0.75rem;">
+                        <i class="fas fa-shield-alt" style="color: var(--warning); margin-top: 0.2rem;"></i>
+                        <div style="font-size: 0.9rem; line-height: 1.6; color: #856404;">
+                            <strong>Secure Identity Verification</strong><br>
+                            iRembo will retrieve your official document using your registered identity. 
+                            Ensure your name and ID are exactly as registered in the national database.
+                        </div>
+                    </div>
+                </div>
+
+                <form id="requestDocForm" onsubmit="submitDocRequest(event)">
+                    <div class="form-group">
+                        <label for="docType">Document Type *</label>
+                        <select id="docType" required>
+                            <option value="">Select document...</option>
+                            <option value="National ID">National ID</option>
+                            <option value="Passport">Passport</option>
+                            <option value="Birth Certificate">Birth Certificate</option>
+                            <option value="Driver's License">Driver's License</option>
+                            <option value="Marriage Certificate">Marriage Certificate</option>
+                            <option value="Business Registration">Business Registration</option>
+                            <option value="Land Title">Land Title</option>
+                            <option value="Tax Clearance">Tax Clearance</option>
+                            <option value="Police Clearance">Police Clearance</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="docFullName">Full Name *</label>
+                        <input type="text" id="docFullName" required placeholder="Enter your full name">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="docNationalId">National ID Number *</label>
+                        <input type="text" id="docNationalId" required placeholder="1XXXXXXXXXXXX">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="docPhone">Phone Number *</label>
+                        <input type="tel" id="docPhone" required placeholder="+250 XXX XXX XXX">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="docReason">Reason for Request</label>
+                        <textarea id="docReason" placeholder="Explain why you need this document..."></textarea>
+                    </div>
+
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-paper-plane"></i> Submit Request
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- My Applications Tab -->
+        <div class="tab-content" id="applicationsTab">
+            <div class="applications-grid" id="applicationsList">
+                <!-- Applications will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Appeal Modal -->
+    <div id="appealModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-exclamation-circle"></i> Submit Appeal</h2>
+                <button class="close-btn" onclick="closeAppealModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="appealForm" onsubmit="submitAppeal(event)">
+                <input type="hidden" id="appealAppId">
+                <div class="form-group">
+                    <label for="appealReason">Reason for Appeal *</label>
+                    <textarea id="appealReason" required placeholder="Explain why you are appealing this decision or delay..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Additional Documents (Optional)</label>
+                    <div class="file-upload" onclick="document.getElementById('appealFileInput').click()">
+                        <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; color: var(--primary-blue);"></i>
+                        <p>Upload supporting documents</p>
+                        <input type="file" id="appealFileInput" multiple accept=".pdf,.jpg,.jpeg,.png">
+                    </div>
+                </div>
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-paper-plane"></i> Submit Appeal
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Check authentication
+        function checkAuth() {
+            let user = JSON.parse(localStorage.getItem('iremboUser'));
+            let isLoggedIn = localStorage.getItem('isLoggedIn');
+
+            // Fallback: auto-login as Test Citizen if not logged in or wrong user type
+            if (!isLoggedIn || !user || user.userType !== 'citizen') {
+                user = {
+                    name: 'Test Citizen',
+                    email: 'citizen@test.local',
+                    userType: 'citizen'
+                };
+                localStorage.setItem('iremboUser', JSON.stringify(user));
+                localStorage.setItem('isLoggedIn', 'true');
+                isLoggedIn = 'true';
+            }
+
+            document.getElementById('userName').textContent = user.name;
+            document.getElementById('userEmail').textContent = user.email;
+        }
+
+        // Logout
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('iremboUser');
+                localStorage.removeItem('isLoggedIn');
+                window.location.href = 'index_functional.html';
+            }
+        }
+
+        // Tab switching
+        function switchTab(tabName) {
+            const tabs = document.querySelectorAll('.tab');
+            const contents = document.querySelectorAll('.tab-content');
+
+            tabs.forEach(tab => tab.classList.remove('active'));
+            contents.forEach(content => content.classList.remove('active'));
+
+            event.target.closest('.tab').classList.add('active');
+            document.getElementById(tabName + 'Tab').classList.add('active');
+
+            if (tabName === 'applications') {
+                loadApplications();
+            }
+        }
+
+        // Submit document request to iRembo
+        async function submitDocRequest(event) {
+            event.preventDefault();
+
+            const docType = document.getElementById('docType').value;
+            const fullName = document.getElementById('docFullName').value;
+            const nationalId = document.getElementById('docNationalId').value;
+            const phone = document.getElementById('docPhone').value;
+            const reason = document.getElementById('docReason').value;
+
+            try {
+                const response = await fetch('http://localhost:5000/api/document-request', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        document_type: docType,
+                        citizen_name: fullName,
+                        citizen_id: nationalId,
+                        citizen_phone: phone,
+                        reason: reason,
+                        requested_at: new Date().toISOString()
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to submit request');
+                }
+
+                const result = await response.json();
+                showNotification('✅ Document request submitted! Request ID: ' + result.data?.request_id, 'success');
+                document.getElementById('requestDocForm').reset();
+
+                // Switch to applications tab
+                setTimeout(() => {
+                    document.querySelectorAll('.tab')[2].click();
+                    loadApplications();
+                }, 1500);
+            } catch (error) {
+                showNotification('❌ Error: ' + error.message, 'error');
+                console.error('Request error:', error);
+            }
+        }
+
+        // File selection handler
+        let selectedFiles = [];
+        let cachedApplications = [];
+
+        function handleFileSelect(event) {
+            selectedFiles = Array.from(event.target.files);
+            const fileList = document.getElementById('fileList');
+            
+            if (selectedFiles.length > 0) {
+                fileList.style.display = 'block';
+                fileList.innerHTML = `<strong>Selected files:</strong><br>${selectedFiles.map(f => f.name).join('<br>')}`;
+            } else {
+                fileList.style.display = 'none';
+            }
+        }
+
+        // Submit service request
+        async function submitRequest(event) {
+            event.preventDefault();
+
+            if (selectedFiles.length === 0) {
+                showNotification('❌ Please upload at least one document', 'error');
+                return;
+            }
+
+            const serviceType = document.getElementById('serviceType').value;
+            const fullName = document.getElementById('fullName').value;
+            const nationalId = document.getElementById('nationalId').value;
+            const phoneNumber = document.getElementById('phoneNumber').value;
+            const description = document.getElementById('description').value;
+            const email = fullName.replace(/\s+/g, '.').toLowerCase() + '@citizen.irembo';
+
+            if (!/^\d{16}$/.test(nationalId)) {
+                showNotification('❌ National ID must be exactly 16 digits', 'error');
+                return;
+            }
+
+            // Create FormData for backend submission
+            const formData = new FormData();
+            formData.append('document_type', serviceType);
+            formData.append('applicant_name', fullName);
+            formData.append('applicant_email', email);
+            formData.append('applicant_id', nationalId);
+            formData.append('applicant_phone', phoneNumber);
+            formData.append('description', description);
+            
+            selectedFiles.forEach(file => {
+                formData.append('documents', file);
+            });
+
+            try {
+                // Submit to backend
+                const response = await fetch('http://localhost:5000/api/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error('Backend error: ' + response.statusText);
+                }
+
+                const result = await response.json();
+                const appId = result.data?.application_id || result.data?.id || 'APP-' + Date.now();
+
+                // Save to localStorage as backup
+                let applications = JSON.parse(localStorage.getItem('citizenApplications')) || [];
+                const submissionDate = new Date();
+                const estimatedDate = new Date(submissionDate.getTime() + 14 * 24 * 60 * 60 * 1000); // 14 days from now
+                
+                const request = {
+                    id: appId,
+                    serviceType: serviceType,
+                    fullName: fullName,
+                    nationalId: nationalId,
+                    phoneNumber: phoneNumber,
+                    description: description,
+                    files: selectedFiles.map(f => ({ name: f.name })),
+                    status: 'pending',
+                    submittedDate: submissionDate.toISOString(),
+                    estimatedAvailableDate: estimatedDate.toISOString(),
+                    timeline: [{
+                        status: 'Submitted',
+                        date: submissionDate.toISOString(),
+                        active: true
+                    }]
+                };
+                applications.push(request);
+                localStorage.setItem('citizenApplications', JSON.stringify(applications));
+
+                showNotification('✅ Request submitted! Application ID: ' + appId, 'success');
+
+                // Reset form
+                document.getElementById('requestForm').reset();
+                selectedFiles = [];
+                document.getElementById('fileList').style.display = 'none';
+
+                // Switch to applications tab
+                setTimeout(() => {
+                    document.querySelectorAll('.tab')[1].click();
+                    loadApplications();
+                }, 1500);
+            } catch (error) {
+                showNotification('❌ Error: ' + error.message, 'error');
+                console.error('Submit error:', error);
+            }
+        }
+
+        // Load applications from backend
+        async function loadApplications(skipLoadingIndicator = false) {
+            const container = document.getElementById('applicationsList');
+            
+            // Always try to show cached data immediately while loading from backend
+            const localAppsImmediate = JSON.parse(localStorage.getItem('citizenApplications')) || [];
+            
+            // Show cached data immediately if available
+            if (localAppsImmediate.length > 0 && !skipLoadingIndicator) {
+                cachedApplications = localAppsImmediate;
+                renderApplicationsList(localAppsImmediate, container);
+            } else if (!skipLoadingIndicator) {
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><h3>Loading applications...</h3></div>';
+            }
+
+            try {
+                // Add timeout to prevent hanging
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+                
+                const response = await fetch('http://localhost:5000/api/applications?page=1&per_page=50', {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' },
+                    signal: controller.signal
+                });
+                
+                clearTimeout(timeoutId);
+                
+                if (!response.ok) {
+                    throw new Error('Backend not available');
+                }
+                
+                const result = await response.json();
+                const applications = (result.data || []).map(app => ({
+                    id: app.application_id || app.id,
+                    serviceType: app.document_type || app.serviceType,
+                    fullName: app.citizen_name || app.fullName,
+                    nationalId: app.citizen_id || app.nationalId,
+                    phoneNumber: app.citizen_phone || app.phoneNumber,
+                    description: app.description || app.description,
+                    files: app.documents || app.files || [],
+                    status: app.status || 'pending',
+                    feedback: app.feedback || app.officerNotes || '',
+                    submittedDate: app.created_at || app.submittedDate,
+                    estimatedAvailableDate: app.estimated_available_date,
+                    timeline: app.timeline || [
+                        { status: 'Submitted', date: app.created_at || app.submittedDate, active: true },
+                        { status: 'Under Review', date: app.updated_at || app.created_at, active: app.status !== 'pending' }
+                    ]
+                }));
+
+                // Also load from localStorage as fallback
+                const localApps = JSON.parse(localStorage.getItem('citizenApplications')) || [];
+
+                // Load document requests from backend
+                let documentRequests = [];
+                try {
+                    const userId = localStorage.getItem('userId');
+                    const docReqUrl = userId
+                        ? `http://localhost:5000/api/document-requests?citizen_id=${userId}`
+                        : 'http://localhost:5000/api/document-requests';
+                    const docReqResponse = await fetch(docReqUrl);
+                    const docReqResult = await docReqResponse.json();
+                    documentRequests = (docReqResult.data || []).map(req => ({
+                        id: req.request_id,
+                        serviceType: req.document_type,
+                        fullName: req.citizen_name,
+                        nationalId: req.citizen_id,
+                        phoneNumber: req.citizen_phone,
+                        status: req.status,
+                        submittedDate: req.requested_at,
+                        isDocumentRequest: true,
+                        feedback: req.remarks || '',
+                        timeline: [
+                            { status: 'Request Submitted', date: req.requested_at, active: true },
+                            { status: 'Processing', date: req.updated_at || req.requested_at, active: req.status !== 'pending' }
+                        ]
+                    }));
+                } catch (err) {
+                    console.log('Document requests not available:', err);
+                }
+
+                const allApps = [...applications, ...documentRequests, ...localApps].filter((app, idx, arr) => arr.findIndex(a => a.id === app.id) === idx);
+                
+                // Check if data has changed to avoid unnecessary re-renders
+                const dataChanged = JSON.stringify(cachedApplications) !== JSON.stringify(allApps);
+                cachedApplications = allApps;
+
+                if (allApps.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-inbox"></i>
+                            <h3>No applications yet</h3>
+                            <p>Submit a service request to get started</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // Only re-render if data actually changed
+                if (dataChanged) {
+                    renderApplicationsList(allApps, container);
+                }
+            } catch (error) {
+                console.error('Error loading applications:', error);
+                // Fallback to localStorage only
+                const applications = JSON.parse(localStorage.getItem('citizenApplications')) || [];
+                cachedApplications = applications;
+                
+                if (applications.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-inbox"></i>
+                            <h3>No applications yet</h3>
+                            <p>Submit a service request to get started</p>
+                            <p style="color: #ff6b6b; font-size: 0.9rem; margin-top: 1rem;">
+                                <i class="fas fa-exclamation-triangle"></i> Backend server is not running. Start backend to sync data.
+                            </p>
+                        </div>
+                    `;
+                } else {
+                    // Show cached data even on error
+                    renderApplicationsList(applications, container);
+                    showNotification('⚠️ Showing cached data - backend offline', 'warning');
+                }
+            }
+        }
+
+        // Render applications list
+        function renderApplicationsList(applications, container) {
+
+            container.innerHTML = [...applications].reverse().map(app => {
+                const statusClass = 'status-' + app.status;
+                let statusText = app.status.charAt(0).toUpperCase() + app.status.slice(1);
+                
+                // Better status text mapping
+                if (app.status === 'pending') statusText = 'Pending';
+                if (app.status === 'review') statusText = 'Under Review';
+                if (app.status === 'approved') statusText = 'Approved';
+                if (app.status === 'rejected') statusText = 'Rejected';
+                if (app.status === 'sent') statusText = 'Sent to Department';
+                
+                const submittedDate = new Date(app.submittedDate).toLocaleDateString();
+                
+                // Calculate days since submission and estimated available date
+                const daysSince = Math.floor((Date.now() - new Date(app.submittedDate)) / (1000 * 60 * 60 * 24));
+                // Use provided estimate or default to 14 days from submission
+                const estimatedDate = app.estimatedAvailableDate ? new Date(app.estimatedAvailableDate) : new Date(new Date(app.submittedDate).getTime() + 14 * 24 * 60 * 60 * 1000);
+                const estimatedDateString = estimatedDate.toLocaleDateString();
+                const daysUntilAvailable = Math.floor((estimatedDate - Date.now()) / (1000 * 60 * 60 * 24));
+                const canAppeal = daysUntilAvailable < 0 && app.status !== 'approved' && app.status !== 'rejected' && !app.isDocumentRequest;
+                const appealText = daysUntilAvailable < 0 ? '(Overdue)' : `(${Math.abs(daysUntilAvailable)} days)`;
+
+                return `
+                    <div class="application-card">
+                        <div class="app-header">
+                            <div>
+                                <div class="app-title">${app.serviceType}</div>
+                                <div class="app-id">${app.id}</div>
+                            </div>
+                            <div class="status-badge ${statusClass}">${statusText}</div>
+                        </div>
+
+                        <div class="app-details">
+                            <div class="detail-item">
+                                <div class="detail-label">Applicant</div>
+                                <div class="detail-value">${app.fullName}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Submitted</div>
+                                <div class="detail-value">${submittedDate}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">National ID</div>
+                                <div class="detail-value">${app.nationalId}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Estimated Available</div>
+                                <div class="detail-value">${estimatedDateString} ${daysUntilAvailable >= 0 ? `(in ${daysUntilAvailable} days)` : `(${Math.abs(daysUntilAvailable)} days overdue)`}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Phone</div>
+                                <div class="detail-value">${app.phoneNumber}</div>
+                            </div>
+                        </div>
+
+                        <div class="app-timeline">
+                            <div class="timeline-title">📍 Status Timeline</div>
+                            ${app.timeline.map(t => `
+                                <div class="timeline-item">
+                                    <div class="timeline-dot ${t.active ? '' : 'inactive'}"></div>
+                                    <div class="timeline-content">
+                                        <div>${t.status}</div>
+                                        <div class="timeline-date">${new Date(t.date).toLocaleString()}</div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+
+                        <div class="app-actions">
+                            <button class="btn btn-view" onclick="viewDetails('${app.id}')">
+                                <i class="fas fa-eye"></i> View Details
+                            </button>
+                            ${canAppeal ? `
+                                <button class="btn btn-appeal" onclick="openAppealModal('${app.id}')">
+                                    <i class="fas fa-exclamation-circle"></i> Appeal ${appealText}
+                                </button>
+                            ` : ''}
+                            ${app.status === 'approved' ? `
+                                <button class="btn btn-download">
+                                    <i class="fas fa-download"></i> Download
+                                </button>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // View details
+        function viewDetails(appId) {
+            const localApplications = JSON.parse(localStorage.getItem('citizenApplications')) || [];
+            const app = cachedApplications.find(a => a.id === appId) || localApplications.find(a => a.id === appId);
+
+            if (app) {
+                const feedbackText = app.feedback ? `\nOfficer Notes: ${app.feedback}` : '';
+                const descriptionText = app.description ? `\nDetails: ${app.description}` : '';
+                alert(`Application Details:\n\nService: ${app.serviceType}\nStatus: ${app.status}\nSubmitted: ${new Date(app.submittedDate).toLocaleString()}${descriptionText}${feedbackText}`);
+            }
+        }
+
+        // Appeal modal
+        function openAppealModal(appId) {
+            document.getElementById('appealAppId').value = appId;
+            document.getElementById('appealModal').classList.add('active');
+        }
+
+        function closeAppealModal() {
+            document.getElementById('appealModal').classList.remove('active');
+            document.getElementById('appealForm').reset();
+        }
+
+        async function submitAppeal(event) {
+            event.preventDefault();
+
+            const appId = document.getElementById('appealAppId').value;
+            const reason = document.getElementById('appealReason').value;
+
+            try {
+                const response = await fetch('http://localhost:5000/api/appeals', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        application_id: appId,
+                        reason: reason,
+                        additional_documents: []
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Appeal submission failed');
+                }
+            } catch (error) {
+                console.error('Appeal submit error:', error);
+            }
+
+            // Update application status locally for immediate feedback
+            let applications = JSON.parse(localStorage.getItem('citizenApplications')) || [];
+            const appIndex = applications.findIndex(a => a.id === appId);
+
+            if (appIndex !== -1) {
+                applications[appIndex].timeline = applications[appIndex].timeline || [];
+                applications[appIndex].timeline.push({
+                    status: 'Appeal Submitted',
+                    date: new Date().toISOString(),
+                    active: true
+                });
+                applications[appIndex].appeal = {
+                    reason: reason,
+                    date: new Date().toISOString()
+                };
+
+                localStorage.setItem('citizenApplications', JSON.stringify(applications));
+            }
+
+            showNotification('✅ Appeal submitted successfully!', 'success');
+            closeAppealModal();
+            loadApplications();
+        }
+
+        // Notification
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.remove();
+            }, 4000);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuth();
+            loadApplications();
+
+            // Auto-refresh only when Applications tab is active, preserve scroll position
+            setInterval(() => {
+                const applicationsTab = document.getElementById('applicationsTab');
+                const isActive = applicationsTab && applicationsTab.classList.contains('active');
+                if (!isActive) return;
+                const scrollTop = window.scrollY;
+                loadApplications(true).then(() => {
+                    // Use requestAnimationFrame to ensure DOM has updated before restoring scroll
+                    requestAnimationFrame(() => {
+                        requestAnimationFrame(() => {
+                            window.scrollTo({ top: scrollTop, behavior: 'instant' });
+                        });
+                    });
+                });
+            }, 10000);
+        });
+
+        // Close modal when clicking outside
+        document.getElementById('appealModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeAppealModal();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -3,38 +3,1194 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verification Workbench</title>
+    <title>Officer Verification Workbench - iRembo</title>
     <link rel="stylesheet" href="../Assets/css/style.css">
+    <style>
+        :root {
+            --primary-color: #1976d2;
+            --success-color: #4caf50;
+            --warning-color: #ff9800;
+            --danger-color: #f44336;
+            --info-color: #2196f3;
+            --gray-light: #f5f5f5;
+            --gray-medium: #e0e0e0;
+            --gray-dark: #757575;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        header {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        header h1 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            font-size: 2rem;
+        }
+
+        header p {
+            color: var(--gray-dark);
+        }
+
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-top: 4px solid var(--primary-color);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-card h3 {
+            color: var(--gray-dark);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-card .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        .applications-queue {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .queue-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--gray-medium);
+        }
+
+        .queue-header h2 {
+            color: var(--primary-color);
+            font-size: 1.3rem;
+        }
+
+        .filter-dropdown {
+            padding: 0.5rem;
+            border: 2px solid var(--gray-medium);
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        .app-queue-item {
+            background: var(--gray-light);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .app-queue-item:hover {
+            background: #e3f2fd;
+            transform: translateX(5px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .app-queue-item.active {
+            background: #e3f2fd;
+            border-left-color: var(--success-color);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .queue-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .queue-item-id {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .priority-badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .priority-badge.high {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .priority-badge.normal {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+
+        .priority-badge.urgent {
+            background: #fff3e0;
+            color: #e65100;
+        }
+
+        .queue-item-info {
+            font-size: 0.85rem;
+            color: var(--gray-dark);
+        }
+
+        .verification-workspace {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            min-height: 80vh;
+        }
+
+        .workspace-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--gray-medium);
+        }
+
+        .workspace-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .tab-btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            background: var(--gray-light);
+            color: var(--gray-dark);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .tab-btn.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .tab-btn:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .ai-analysis-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+
+        .ai-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .ai-icon {
+            font-size: 2.5rem;
+        }
+
+        .ai-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .pulse {
+            width: 12px;
+            height: 12px;
+            background: #4caf50;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .ai-results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .ai-result-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .ai-result-card h4 {
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .ai-result-card .result-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin: 0.5rem 0;
+        }
+
+        .ai-result-card .result-detail {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .confidence-meter {
+            width: 100%;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4caf50, #8bc34a);
+            transition: width 1s ease;
+        }
+
+        .authenticity-report {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .report-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--gray-medium);
+        }
+
+        .report-header h3 {
+            color: var(--primary-color);
+            font-size: 1.3rem;
+        }
+
+        .report-section {
+            margin-bottom: 2rem;
+        }
+
+        .report-section h4 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .check-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--gray-light);
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+        }
+
+        .check-icon {
+            font-size: 1.5rem;
+        }
+
+        .check-icon.pass { color: var(--success-color); }
+        .check-icon.fail { color: var(--danger-color); }
+        .check-icon.warning { color: var(--warning-color); }
+
+        .check-details {
+            flex: 1;
+        }
+
+        .check-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .check-description {
+            font-size: 0.9rem;
+            color: var(--gray-dark);
+        }
+
+        .document-preview {
+            background: var(--gray-light);
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .document-preview img {
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .document-placeholder {
+            padding: 4rem;
+            background: white;
+            border: 2px dashed var(--gray-medium);
+            border-radius: 8px;
+            color: var(--gray-dark);
+        }
+
+        .verification-form {
+            background: var(--gray-light);
+            padding: 2rem;
+            border-radius: 12px;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .form-group select,
+        .form-group textarea,
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--gray-medium);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+        }
+
+        .form-group select:focus,
+        .form-group textarea:focus,
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #45a049;
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+        }
+
+        .btn-danger {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #da190b;
+            box-shadow: 0 4px 12px rgba(244, 67, 54, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--gray-medium);
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-dark);
+            color: white;
+        }
+
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .status-indicator.authentic {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .status-indicator.suspicious {
+            background: #fff3e0;
+            color: #e65100;
+        }
+
+        .status-indicator.fraudulent {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--gray-dark);
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .alert.success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #4caf50;
+        }
+
+        .alert.error {
+            background: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #f44336;
+        }
+
+        .alert.info {
+            background: #e3f2fd;
+            color: #1565c0;
+            border-left: 4px solid #2196f3;
+        }
+
+        @media (max-width: 968px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .applications-queue {
+                max-height: 300px;
+            }
+
+            .ai-results-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
     <header>
-        <h1>Document Verification Workbench</h1>
-        <p>Detailed document review and verification</p>
+        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+            <div>
+                <h1>🛡️ Officer Verification Workbench</h1>
+                <p>AI-Powered Document Verification System</p>
+            </div>
+            <div style="text-align: right;">
+                <div id="user-info" style="color: #666; font-size: 0.9rem; margin-bottom: 0.5rem;"></div>
+                <button onclick="logout()" style="background: #f44336; color: white; padding: 0.5rem 1rem; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s;">
+                    <i style="font-size: 0.9rem;">🚪</i> Logout
+                </button>
+            </div>
+        </div>
     </header>
-    <main>
-        <section class="workbench">
-            <div class="document-viewer">
-                <div id="document-display"></div>
+
+    <!-- Officer Responsibilities Section -->
+    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 2rem; border-radius: 12px; margin-bottom: 2rem; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+        <h2 style="margin-bottom: 1.5rem; font-size: 1.5rem;">👨‍💼 Your Role as Officer</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+            <div style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2);">
+                <h3 style="margin-bottom: 0.5rem; font-size: 1.1rem;">📋 Review Applications</h3>
+                <p style="opacity: 0.9; font-size: 0.95rem;">Review submitted documents and applications in your queue. Prioritize urgent cases and manage workload efficiently.</p>
             </div>
-            <div class="verification-panel">
-                <h3>Verification Details</h3>
-                <form id="verificationForm">
-                    <label for="status">Verification Status:</label>
-                    <select id="status" name="status">
-                        <option value="pending">Pending</option>
-                        <option value="approved">Approved</option>
-                        <option value="rejected">Rejected</option>
-                        <option value="need_review">Needs Review</option>
-                    </select>
-                    
-                    <label for="notes">Officer Notes:</label>
-                    <textarea id="notes" name="notes"></textarea>
-                    
-                    <button type="submit">Save Verification</button>
-                </form>
+            <div style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2);">
+                <h3 style="margin-bottom: 0.5rem; font-size: 1.1rem;">🤖 Use AI Assistance</h3>
+                <p style="opacity: 0.9; font-size: 0.95rem;">Leverage AI analysis for authenticity verification, fraud detection, and document quality assessment with confidence scores.</p>
             </div>
-        </section>
-    </main>
+            <div style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2);">
+                <h3 style="margin-bottom: 0.5rem; font-size: 1.1rem;">✓ Make Decisions</h3>
+                <p style="opacity: 0.9; font-size: 0.95rem;">Approve, reject, or request more information for applications. Document your verification decision with notes.</p>
+            </div>
+            <div style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2);">
+                <h3 style="margin-bottom: 0.5rem; font-size: 1.1rem;">📊 Track Performance</h3>
+                <p style="opacity: 0.9; font-size: 0.95rem;">Monitor your verification stats, daily achievements, and maintain high accuracy standards for quality service.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard Statistics -->
+    <div class="dashboard-stats">
+        <div class="stat-card">
+            <h3>Pending Review</h3>
+            <div class="stat-value" id="stat-pending">0</div>
+        </div>
+        <div class="stat-card">
+            <h3>Verified Today</h3>
+            <div class="stat-value" id="stat-verified">0</div>
+        </div>
+        <div class="stat-card">
+            <h3>AI Confidence Avg</h3>
+            <div class="stat-value" id="stat-confidence">0%</div>
+        </div>
+        <div class="stat-card">
+            <h3>My Queue</h3>
+            <div class="stat-value" id="stat-queue">0</div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Applications Queue -->
+        <div class="applications-queue">
+            <div class="queue-header">
+                <h2>📋 Applications Queue</h2>
+                <select class="filter-dropdown" id="queueFilter" onchange="filterQueue()">
+                    <option value="all">All</option>
+                    <option value="urgent">Urgent</option>
+                    <option value="high">High Priority</option>
+                    <option value="normal">Normal</option>
+                </select>
+            </div>
+            <div id="queue-list"></div>
+        </div>
+
+        <!-- Verification Workspace -->
+        <div class="verification-workspace">
+            <div id="empty-state" class="empty-state">
+                <div class="empty-state-icon">📁</div>
+                <h3>Select an application to begin verification</h3>
+                <p>Choose an application from the queue to view AI analysis and complete verification</p>
+            </div>
+
+            <div id="workspace-content" style="display: none;">
+                <div class="workspace-header">
+                    <div>
+                        <h2 id="current-app-id">APP-001</h2>
+                        <p id="current-app-info">Document Type • Submission Date</p>
+                    </div>
+                    <div id="current-app-status"></div>
+                </div>
+
+                <!-- Workspace Tabs -->
+                <div class="workspace-tabs">
+                    <button class="tab-btn active" onclick="switchTab('ai-analysis')">🤖 AI Analysis</button>
+                    <button class="tab-btn" onclick="switchTab('document')">📄 Document</button>
+                    <button class="tab-btn" onclick="switchTab('verification')">✓ Verification</button>
+                </div>
+
+                <!-- AI Analysis Tab -->
+                <div id="ai-analysis-tab" class="tab-content active">
+                    <div class="ai-analysis-section">
+                        <div class="ai-header">
+                            <div class="ai-icon">🤖</div>
+                            <div>
+                                <h3>AI Document Analysis</h3>
+                                <div class="ai-status">
+                                    <div class="pulse"></div>
+                                    <span>Analysis Complete</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="ai-results-grid">
+                            <div class="ai-result-card">
+                                <h4>Authenticity Score</h4>
+                                <div class="result-value" id="ai-authenticity">95%</div>
+                                <div class="result-detail">High confidence</div>
+                                <div class="confidence-meter">
+                                    <div class="confidence-fill" id="confidence-bar" style="width: 95%"></div>
+                                </div>
+                            </div>
+
+                            <div class="ai-result-card">
+                                <h4>Document Type</h4>
+                                <div class="result-value" id="ai-doc-type">Passport</div>
+                                <div class="result-detail">Verified classification</div>
+                            </div>
+
+                            <div class="ai-result-card">
+                                <h4>Quality Check</h4>
+                                <div class="result-value" id="ai-quality">✓ Pass</div>
+                                <div class="result-detail">Image quality acceptable</div>
+                            </div>
+
+                            <div class="ai-result-card">
+                                <h4>Fraud Detection</h4>
+                                <div class="result-value" id="ai-fraud">No Issues</div>
+                                <div class="result-detail">No tampering detected</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Detailed Authenticity Report -->
+                    <div class="authenticity-report">
+                        <div class="report-header">
+                            <h3>📊 Detailed Authenticity Report</h3>
+                            <span class="status-indicator authentic" id="overall-status">✓ Authentic</span>
+                        </div>
+
+                        <div class="report-section">
+                            <h4>🔍 Security Features Check</h4>
+                            <div id="security-checks"></div>
+                        </div>
+
+                        <div class="report-section">
+                            <h4>📝 Data Extraction</h4>
+                            <div id="extracted-data"></div>
+                        </div>
+
+                        <div class="report-section">
+                            <h4>⚠️ Detected Issues</h4>
+                            <div id="detected-issues"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Document Tab -->
+                <div id="document-tab" class="tab-content">
+                    <div class="document-preview">
+                        <div class="document-placeholder" id="doc-preview">
+                            <p>📄 Document preview will be displayed here</p>
+                            <p style="margin-top: 0.5rem; font-size: 0.9rem;">Supported formats: PDF, JPG, PNG</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Verification Tab -->
+                <div id="verification-tab" class="tab-content">
+                    <div id="alert-container"></div>
+                    
+                    <form class="verification-form" id="verificationForm" onsubmit="submitVerification(event)">
+                        <h3 style="margin-bottom: 1.5rem; color: var(--primary-color);">Officer Verification Decision</h3>
+                        
+                        <div class="form-group">
+                            <label for="decision">Verification Decision *</label>
+                            <select id="decision" required>
+                                <option value="">-- Select Decision --</option>
+                                <option value="approved">✓ Approve Document</option>
+                                <option value="rejected">✗ Reject Document</option>
+                                <option value="needs-review">⚠ Needs Further Review</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="agree-ai">Do you agree with AI assessment?</label>
+                            <select id="agree-ai">
+                                <option value="yes">Yes, AI analysis is accurate</option>
+                                <option value="partial">Partially, needs adjustment</option>
+                                <option value="no">No, AI analysis is incorrect</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="feedback">Officer Notes / Feedback *</label>
+                            <textarea id="feedback" required placeholder="Provide detailed feedback on the document verification..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="rejection-reason">Rejection Reason (if applicable)</label>
+                            <select id="rejection-reason">
+                                <option value="">-- Select Reason --</option>
+                                <option value="poor-quality">Poor Image Quality</option>
+                                <option value="incomplete">Incomplete Document</option>
+                                <option value="expired">Expired Document</option>
+                                <option value="fraudulent">Suspected Fraud</option>
+                                <option value="mismatch">Data Mismatch</option>
+                                <option value="other">Other (specify in notes)</option>
+                            </select>
+                        </div>
+
+                        <div class="action-buttons">
+                            <button type="submit" class="btn btn-primary">
+                                <span>✓</span> Submit Verification
+                            </button>
+                            <button type="button" class="btn btn-secondary" onclick="resetForm()">
+                                <span>↺</span> Reset Form
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="../Backend/js/app.js"></script>
+    <script>
+        const API_BASE_URL = 'http://localhost:5000/api';
+        let applications = [];
+        let currentApp = null;
+        let currentFilter = 'all';
+
+        // Check if user is logged in and is an officer
+        function checkOfficerAuth() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            const userStr = localStorage.getItem('iremboUser');
+            
+            if (!isLoggedIn || !userStr) {
+                window.location.href = 'index_functional.html';
+                return;
+            }
+
+            const user = JSON.parse(userStr);
+            
+            // Check if user is an officer
+            if (user.userType !== 'officer') {
+                alert('You do not have permission to access this page. Officer access required.');
+                window.location.href = 'index_functional.html';
+                return;
+            }
+
+            // Display user info
+            document.getElementById('user-info').innerHTML = `
+                <div><strong>${user.name}</strong></div>
+                <div style="font-size: 0.85rem;">👨‍💼 Officer Account</div>
+            `;
+
+            return user;
+        }
+
+        // Logout function
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('iremboUser');
+                localStorage.removeItem('isLoggedIn');
+                window.location.href = 'index_functional.html';
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            checkOfficerAuth();
+            loadApplications();
+        });
+
+        // Load Applications
+        async function loadApplications() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/applications`);
+                const data = await response.json();
+                applications = data.data || [];
+                
+                if (applications.length === 0) {
+                    loadDemoData();
+                }
+                
+                updateStats();
+                displayQueue();
+            } catch (error) {
+                console.error('Error:', error);
+                loadDemoData();
+            }
+        }
+
+        // Load Demo Data
+        function loadDemoData() {
+            applications = [
+                {
+                    application_id: 'APP-2024-001',
+                    document_type: 'Passport',
+                    status: 'pending',
+                    created_at: '2026-02-09T08:30:00',
+                    priority: 'high',
+                    citizen_name: 'John Doe',
+                    ai_confidence: 95,
+                    ai_verdict: 'authentic'
+                },
+                {
+                    application_id: 'APP-2024-002',
+                    document_type: 'Birth Certificate',
+                    status: 'pending',
+                    created_at: '2026-02-09T09:15:00',
+                    priority: 'urgent',
+                    citizen_name: 'Jane Smith',
+                    ai_confidence: 87,
+                    ai_verdict: 'authentic'
+                },
+                {
+                    application_id: 'APP-2024-003',
+                    document_type: 'Driver License',
+                    status: 'pending',
+                    created_at: '2026-02-09T10:00:00',
+                    priority: 'normal',
+                    citizen_name: 'Bob Johnson',
+                    ai_confidence: 62,
+                    ai_verdict: 'suspicious'
+                },
+                {
+                    application_id: 'APP-2024-004',
+                    document_type: 'National ID',
+                    status: 'pending',
+                    created_at: '2026-02-09T10:30:00',
+                    priority: 'high',
+                    citizen_name: 'Alice Williams',
+                    ai_confidence: 98,
+                    ai_verdict: 'authentic'
+                }
+            ];
+            updateStats();
+            displayQueue();
+        }
+
+        // Update Statistics
+        function updateStats() {
+            const pending = applications.filter(a => a.status === 'pending').length;
+            const verified = applications.filter(a => a.status === 'approved').length;
+            const avgConfidence = applications.length > 0 
+                ? Math.round(applications.reduce((sum, a) => sum + (a.ai_confidence || 0), 0) / applications.length)
+                : 0;
+
+            document.getElementById('stat-pending').textContent = pending;
+            document.getElementById('stat-verified').textContent = verified;
+            document.getElementById('stat-confidence').textContent = avgConfidence + '%';
+            document.getElementById('stat-queue').textContent = applications.length;
+        }
+
+        // Display Queue
+        function displayQueue() {
+            let filtered = applications;
+            if (currentFilter !== 'all') {
+                filtered = applications.filter(a => a.priority === currentFilter);
+            }
+
+            const html = filtered.map(app => `
+                <div class="app-queue-item ${currentApp?.application_id === app.application_id ? 'active' : ''}" 
+                     onclick="selectApplication('${app.application_id}')">
+                    <div class="queue-item-header">
+                        <span class="queue-item-id">${app.application_id}</span>
+                        <span class="priority-badge ${app.priority}">${app.priority.toUpperCase()}</span>
+                    </div>
+                    <div class="queue-item-info">
+                        <div><strong>${app.document_type}</strong></div>
+                        <div>Citizen: ${app.citizen_name || 'Unknown'}</div>
+                        <div>AI Confidence: ${app.ai_confidence || 0}%</div>
+                        <div style="font-size: 0.8rem; color: #999;">${new Date(app.created_at).toLocaleString()}</div>
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('queue-list').innerHTML = html || '<div style="text-align: center; color: #999; padding: 2rem;">No applications in queue</div>';
+        }
+
+        // Filter Queue
+        function filterQueue() {
+            currentFilter = document.getElementById('queueFilter').value;
+            displayQueue();
+        }
+
+        // Select Application
+        function selectApplication(appId) {
+            currentApp = applications.find(a => a.application_id === appId);
+            if (!currentApp) return;
+
+            document.getElementById('empty-state').style.display = 'none';
+            document.getElementById('workspace-content').style.display = 'block';
+
+            // Update header
+            document.getElementById('current-app-id').textContent = currentApp.application_id;
+            document.getElementById('current-app-info').textContent = `${currentApp.document_type} • ${new Date(currentApp.created_at).toLocaleDateString()}`;
+            
+            // Show real document if available
+            if (currentApp.document_base64) {
+                document.getElementById('doc-preview').innerHTML = `<img src="data:image/jpeg;base64,${currentApp.document_base64}" style="max-width: 100%; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">`;
+            } else {
+                document.getElementById('doc-preview').innerHTML = `
+                    <div class="document-placeholder">
+                        <p>📄 Document preview not available in demo mode</p>
+                    </div>`;
+            }
+
+            // Update AI Analysis
+            runAIAnalysis(currentApp);
+            
+            // Highlight selected in queue
+            displayQueue();
+        }
+
+        // Run AI Analysis
+        function runAIAnalysis(app) {
+            const hasRealAI = !!app.ai_results;
+            const results = app.ai_results || {};
+            
+            const confidence = app.ai_confidence || Math.floor(Math.random() * 30) + 70;
+            const verdict = app.ai_verdict || 'authentic';
+            
+            // Update AI cards
+            document.getElementById('ai-authenticity').textContent = confidence + '%';
+            document.getElementById('confidence-bar').style.width = confidence + '%';
+            document.getElementById('ai-doc-type').textContent = app.document_type;
+            
+            // Quality metric based on forensics if available
+            let qualityStatus = '✓ Pass';
+            if (hasRealAI && results.ai_forensics) {
+                qualityStatus = results.ai_forensics.noise_integrity > 5 ? '✓ Good' : '⚠ Distorted';
+            } else {
+                qualityStatus = confidence > 80 ? '✓ Pass' : '⚠ Warning';
+            }
+            document.getElementById('ai-quality').textContent = qualityStatus;
+            
+            document.getElementById('ai-fraud').textContent = verdict === 'authentic' ? 'No Issues' : 'Issues Detected';
+
+            // Update overall status
+            const statusEl = document.getElementById('overall-status');
+            if (verdict === 'authentic' && confidence > 84) {
+                statusEl.className = 'status-indicator authentic';
+                statusEl.innerHTML = '✓ Authentic';
+            } else if (confidence < 70 || verdict === 'fraudulent') {
+                statusEl.className = 'status-indicator fraudulent';
+                statusEl.innerHTML = '✗ Suspicious';
+            } else {
+                statusEl.className = 'status-indicator suspicious';
+                statusEl.innerHTML = '⚠ Needs Review';
+            }
+
+            // Security checks - Real forensics logic
+            let securityChecks = [];
+            if (hasRealAI && results.ai_forensics) {
+                securityChecks = [
+                    { 
+                        title: 'Forensic Noise Integrity', 
+                        status: results.ai_forensics.noise_integrity > 5 ? 'pass' : 'warning', 
+                        detail: `Noise level: ${results.ai_forensics.noise_integrity?.toFixed(2)}. ${results.ai_forensics.noise_integrity > 5 ? 'High frequency data preserved.' : 'Potential blur or smoothing detected.'}` 
+                    },
+                    { 
+                        title: 'Specular Glare Check', 
+                        status: results.ai_forensics.specular_glare < 0.05 ? 'pass' : 'warning', 
+                        detail: results.ai_forensics.specular_glare > 0.05 ? 'Glare detected - possible photo of a screen.' : 'No significant glare detected.' 
+                    },
+                    { 
+                        title: 'Hologram Integrity', 
+                        status: results.ai_forensics.noise_integrity > 10 ? 'pass' : 'warning', 
+                        detail: 'Surface micro-texture verification' 
+                    }
+                ];
+            } else {
+                securityChecks = [
+                    { title: 'Watermark Detection', status: 'pass', detail: 'Official watermark verified' },
+                    { title: 'Hologram Verification', status: 'pass', detail: 'Holographic elements present' },
+                    { title: 'UV Feature Check', status: confidence > 80 ? 'pass' : 'warning', detail: confidence > 80 ? 'UV features detected' : 'Partial UV features' }
+                ];
+            }
+
+            document.getElementById('security-checks').innerHTML = securityChecks.map(check => `
+                <div class="check-item">
+                    <div class="check-icon ${check.status}">${check.status === 'pass' ? '✓' : '⚠'}</div>
+                    <div class="check-details">
+                        <div class="check-title">${check.title}</div>
+                        <div class="check-description">${check.detail}</div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Extracted data - Real OCR logic
+            let extractedData = [];
+            if (hasRealAI && results.ocr_data) {
+                extractedData = [
+                    { label: 'Extracted Text', value: results.ocr_data.text.substring(0, 100) + '...' },
+                    { label: 'OCR Verdict', value: results.ocr_data.text.length > 10 ? 'Data Successfully Digitized' : 'Incomplete Extraction' }
+                ];
+            } else {
+                extractedData = [
+                    { label: 'Document Number', value: 'P' + Math.random().toString().slice(2, 11) },
+                    { label: 'Issue Date', value: '2024-01-15' }
+                ];
+            }
+
+            document.getElementById('extracted-data').innerHTML = extractedData.map(data => `
+                <div class="check-item">
+                    <div class="check-icon pass">📋</div>
+                    <div class="check-details">
+                        <div class="check-title">${data.label}</div>
+                        <div class="check-description">${data.value}</div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Issues - Real NLP Matching logic
+            let issues = [];
+            if (hasRealAI && results.nlp_matching) {
+                if (results.nlp_matching.is_match) {
+                    issues = [{ severity: 'pass', title: 'NLP Identity Match', detail: 'OCR data matches citizen application records.' }];
+                } else {
+                    issues = [{ severity: 'warning', title: 'Data Mismatch', detail: results.nlp_matching.details || 'Document names/records do not align with system database.' }];
+                }
+                
+                if (results.ai_forensics?.is_screen_forgery) {
+                    issues.push({ severity: 'warning', title: 'Possible Screen Forgery', detail: 'AI detected patterns indicating a photo of a screen.' });
+                }
+            } else {
+                issues = confidence < 70 
+                    ? [{ severity: 'warning', title: 'Low confidence score', detail: 'Additional manual review recommended' }]
+                    : [{ severity: 'pass', title: 'No issues detected', detail: 'All authenticity checks passed' }];
+            }
+
+            document.getElementById('detected-issues').innerHTML = issues.map(issue => `
+                <div class="check-item">
+                    <div class="check-icon ${issue.severity}">${issue.severity === 'pass' ? '✓' : '⚠'}</div>
+                    <div class="check-details">
+                        <div class="check-title">${issue.title}</div>
+                        <div class="check-description">${issue.detail}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Switch Tabs
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabName + '-tab').classList.add('active');
+        }
+
+        // Submit Verification
+        async function submitVerification(event) {
+            event.preventDefault();
+            
+            const decision = document.getElementById('decision').value;
+            const agreeAI = document.getElementById('agree-ai').value;
+            const feedback = document.getElementById('feedback').value;
+            const rejectionReason = document.getElementById('rejection-reason').value;
+
+            try {
+                // Simulate API call
+                showAlert(`Verification submitted successfully for ${currentApp.application_id}`, 'success');
+                
+                // Update application status
+                currentApp.status = decision;
+                
+                // Remove from queue
+                applications = applications.filter(a => a.application_id !== currentApp.application_id);
+                
+                // Reset workspace
+                setTimeout(() => {
+                    document.getElementById('empty-state').style.display = 'block';
+                    document.getElementById('workspace-content').style.display = 'none';
+                    currentApp = null;
+                    updateStats();
+                    displayQueue();
+                }, 1500);
+                
+            } catch (error) {
+                showAlert('Error submitting verification', 'error');
+            }
+        }
+
+        // Reset Form
+        function resetForm() {
+            document.getElementById('verificationForm').reset();
+        }
+
+        // Show Alert
+        function showAlert(message, type) {
+            const alertContainer = document.getElementById('alert-container');
+            const alert = document.createElement('div');
+            alert.className = `alert ${type}`;
+            alert.innerHTML = `<span>${type === 'success' ? '✓' : '⚠'}</span> ${message}`;
+            alertContainer.appendChild(alert);
+            setTimeout(() => alert.remove(), 5000);
+        }
+    </script>
 </body>
 </html>

@@ -1,0 +1,1571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iRembo Document Verification - AI-Powered Government Services</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #003DA5;
+            --primary-gold: #FFD700;
+            --primary-green: #28A745;
+            --text-dark: #2c3e50;
+            --text-light: #6c757d;
+            --bg-light: #f8f9fa;
+            --white: #ffffff;
+            --border-color: #e9ecef;
+            --hover-bg: #f0f4f8;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background: var(--white);
+        }
+
+        /* Top Notification Banner */
+        .notification-banner {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #1a5fb8 100%);
+            color: white;
+            padding: 0.75rem 2rem;
+            text-align: center;
+            font-size: 0.9rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .notification-banner a {
+            color: var(--primary-gold);
+            text-decoration: underline;
+            font-weight: 600;
+        }
+
+        /* Navigation Bar */
+        nav {
+            background: var(--white);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 3px solid var(--primary-blue);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: var(--primary-blue);
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary-blue), #1a5fb8);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-dark);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            padding: 0.5rem 0;
+            border-bottom: 2px solid transparent;
+            font-size: 0.95rem;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-blue);
+            border-bottom-color: var(--primary-blue);
+        }
+
+        .language-toggle {
+            background: var(--primary-blue);
+            color: white;
+            padding: 0.5rem 1.2rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            border: none;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .language-toggle:hover {
+            background: #002d7a;
+            transform: translateY(-1px);
+        }
+
+        .login-btn {
+            background: var(--primary-blue);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .login-btn:hover {
+            background: #002d7a;
+            transform: translateY(-1px);
+        }
+
+        /* Login Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 3rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            max-width: 450px;
+            width: 90%;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .modal-header h2 {
+            color: var(--primary-blue);
+            font-size: 1.8rem;
+            margin: 0;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.3s;
+        }
+
+        .close-btn:hover {
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        .password-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .password-wrapper input {
+            width: 100%;
+            padding-right: 2.5rem;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 0.75rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: var(--text-light);
+            transition: color 0.3s;
+            padding: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .password-toggle:hover {
+            color: var(--primary-blue);
+        }
+
+        .password-strength {
+            margin-top: 0.75rem;
+        }
+
+        .strength-meter {
+            height: 6px;
+            background: #e0e0e0;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+
+        .strength-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: all 0.3s;
+            width: 0%;
+        }
+
+        .strength-fill.weak {
+            background: #f44336;
+            width: 25%;
+        }
+
+        .strength-fill.fair {
+            background: #ff9800;
+            width: 50%;
+        }
+
+        .strength-fill.good {
+            background: #ffc107;
+            width: 75%;
+        }
+
+        .strength-fill.strong {
+            background: #4caf50;
+            width: 100%;
+        }
+
+        .strength-text {
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .strength-text.weak {
+            color: #f44336;
+        }
+
+        .strength-text.fair {
+            color: #ff9800;
+        }
+
+        .strength-text.good {
+            color: #ffc107;
+        }
+
+        .strength-text.strong {
+            color: #4caf50;
+        }
+
+        .strength-requirements {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+        }
+
+        .requirement {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .requirement i {
+            font-size: 0.8rem;
+            width: 16px;
+            text-align: center;
+        }
+
+        .requirement.met {
+            color: #4caf50;
+        }
+
+        .requirement.unmet {
+            color: #ccc;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(0, 61, 165, 0.1);
+        }
+
+        .user-type-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .user-type-option {
+            position: relative;
+        }
+
+        .user-type-option input[type="radio"] {
+            display: none;
+        }
+
+        .user-type-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            background: var(--white);
+        }
+
+        .user-type-option input[type="radio"]:checked + .user-type-label {
+            border-color: var(--primary-blue);
+            background: rgba(0, 61, 165, 0.05);
+            color: var(--primary-blue);
+        }
+
+        .user-type-option.citizen input[type="radio"]:checked + .user-type-label {
+            border-color: var(--primary-gold);
+            background: rgba(255, 215, 0, 0.1);
+            color: var(--primary-gold);
+        }
+
+        .user-type-option.officer input[type="radio"]:checked + .user-type-label {
+            border-color: var(--primary-green);
+            background: rgba(40, 167, 69, 0.1);
+            color: var(--primary-green);
+        }
+
+        .login-submit {
+            width: 100%;
+            padding: 0.75rem;
+            background: linear-gradient(135deg, var(--primary-blue), #1a5fb8);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 1rem;
+        }
+
+        .login-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 61, 165, 0.3);
+        }
+
+        .login-submit:active {
+            transform: translateY(0);
+        }
+
+        .demo-credentials {
+            background: #f0f4f8;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1.5rem;
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .demo-credentials strong {
+            color: var(--text-dark);
+        }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        .form-footer a {
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .form-footer a:hover {
+            color: #1a5fb8;
+            text-decoration: underline;
+        }
+
+        .form-section {
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #1a5fb8 100%);
+            color: white;
+            padding: 5rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/></pattern></defs><rect width="1200" height="600" fill="url(%23grid)"/></svg>');
+            opacity: 0.5;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            margin-bottom: 3rem;
+            opacity: 0.95;
+            font-weight: 400;
+        }
+
+        /* Service Portals */
+        .service-portals {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        .portal-card {
+            background: white;
+            color: var(--text-dark);
+            padding: 2rem 3rem;
+            border-radius: 12px;
+            text-decoration: none;
+            transition: all 0.3s;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            min-width: 280px;
+            text-align: center;
+        }
+
+        .portal-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+        }
+
+        .portal-card i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .portal-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .portal-card p {
+            font-size: 0.95rem;
+            color: var(--text-light);
+            margin-bottom: 0;
+        }
+
+        .portal-card.citizen {
+            border-top: 4px solid var(--primary-gold);
+        }
+
+        .portal-card.citizen i {
+            color: var(--primary-gold);
+        }
+
+        .portal-card.officer {
+            border-top: 4px solid var(--primary-green);
+        }
+
+        .portal-card.officer i {
+            color: var(--primary-green);
+        }
+
+        /* Services Section */
+        .services {
+            padding: 5rem 2rem;
+            background: var(--bg-light);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 2.2rem;
+            color: var(--primary-blue);
+            margin-bottom: 3rem;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .service-category {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            transition: all 0.3s;
+            border-left: 4px solid var(--primary-blue);
+        }
+
+        .service-category:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+        }
+
+        .service-category h3 {
+            color: var(--primary-blue);
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 600;
+        }
+
+        .service-category h3 i {
+            font-size: 1.5rem;
+        }
+
+        .service-list {
+            list-style: none;
+        }
+
+        .service-list li {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-dark);
+            font-size: 0.95rem;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .service-list li:hover {
+            color: var(--primary-blue);
+            padding-left: 0.5rem;
+            background: var(--hover-bg);
+        }
+
+        .service-list li:last-child {
+            border-bottom: none;
+        }
+
+        /* Stats Section */
+        .stats {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #1a5fb8 100%);
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 3rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .stat-item {
+            padding: 2rem;
+        }
+
+        .stat-item h3 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+            color: var(--primary-gold);
+        }
+
+        .stat-item p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            font-weight: 500;
+        }
+
+        /* Footer */
+        footer {
+            background: #1a1a1a;
+            color: #e9ecef;
+            padding: 3rem 2rem 1.5rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-section h4 {
+            color: white;
+            font-size: 1.1rem;
+            margin-bottom: 1.2rem;
+            font-weight: 600;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section li {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-section a {
+            color: #b0b8c0;
+            text-decoration: none;
+            transition: color 0.3s;
+            font-size: 0.95rem;
+        }
+
+        .footer-section a:hover {
+            color: var(--primary-gold);
+        }
+
+        .footer-section p {
+            color: #b0b8c0;
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            background: #2a2a2a;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            transition: all 0.3s;
+            font-size: 1.1rem;
+        }
+
+        .social-links a:hover {
+            background: var(--primary-blue);
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            padding-top: 2rem;
+            border-top: 1px solid #333;
+            text-align: center;
+            color: #b0b8c0;
+            font-size: 0.9rem;
+        }
+
+        .footer-bottom p {
+            margin: 0.5rem 0;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-links {
+                flex-direction: column;
+                gap: 0.5rem;
+                width: 100%;
+                text-align: center;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+
+            .service-portals {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .portal-card {
+                width: 100%;
+                max-width: 400px;
+            }
+
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 2rem;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Notification Banner -->
+    <div class="notification-banner">
+        <p><i class="fas fa-info-circle"></i> New upgrade! Our AI system now supports more document types. <a href="#">Learn more</a></p>
+    </div>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="logo">
+            <div class="logo-icon">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <span>iRembo</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#home" data-translate="nav.home">Home</a></li>
+            <li><a href="#services" data-translate="nav.services">Services</a></li>
+            <li><a href="#about" data-translate="nav.about">About</a></li>
+            <li><a href="#contact" data-translate="nav.contact">Contact</a></li>
+        </ul>
+        <div style="display: flex; gap: 1rem; align-items: center;">
+            <button class="language-toggle" onclick="toggleLanguage()">EN / RW</button>
+            <button class="login-btn" onclick="openLoginModal()"><i class="fas fa-sign-in-alt"></i> <span data-translate="nav.login">Login</span></button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h1 data-translate="hero.title">AI-Powered Document Verification</h1>
+            <p class="hero-subtitle" data-translate="hero.subtitle">Rwanda's trusted government portal for instant, secure, and accurate document verification services</p>
+            
+            <button class="login-btn" onclick="openLoginModal()" style="margin-top: 2rem; padding: 1rem 2rem; font-size: 1.1rem;">
+                <i class="fas fa-sign-in-alt"></i> <span data-translate="hero.login">Login to Your Account</span>
+            </button>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="services" id="services">
+        <div class="container">
+            <h2 class="section-title" data-translate="services.title">Document Verification Services</h2>
+            
+            <div class="services-grid">
+                <div class="service-category">
+                    <h3><i class="fas fa-id-card"></i> <span data-translate="category.identity">Identity Documents</span></h3>
+                    <ul class="service-list">
+                        <li data-translate="service.national_id">National ID Verification</li>
+                        <li data-translate="service.passport">Passport Verification</li>
+                        <li data-translate="service.birth">Birth Certificate Verification</li>
+                        <li data-translate="service.marriage">Marriage Certificate Verification</li>
+                        <li data-translate="service.death">Death Certificate Verification</li>
+                    </ul>
+                </div>
+
+                <div class="service-category">
+                    <h3><i class="fas fa-car"></i> <span data-translate="category.driver">Driver & Vehicle</span></h3>
+                    <ul class="service-list">
+                        <li data-translate="service.driver_license">Driver's License Verification</li>
+                        <li data-translate="service.vehicle_reg">Vehicle Registration Verification</li>
+                        <li data-translate="service.vehicle_insurance">Vehicle Insurance Verification</li>
+                        <li data-translate="service.tech_inspection">Technical Inspection Certificate</li>
+                    </ul>
+                </div>
+
+                <div class="service-category">
+                    <h3><i class="fas fa-graduation-cap"></i> <span data-translate="category.education">Education Documents</span></h3>
+                    <ul class="service-list">
+                        <li data-translate="service.diploma">Diploma Verification</li>
+                        <li data-translate="service.degree">Degree Certificate Verification</li>
+                        <li data-translate="service.transcript">Transcript Verification</li>
+                        <li data-translate="service.tvet">TVET Certificate Verification</li>
+                        <li data-translate="service.professional">Professional Certificate Verification</li>
+                    </ul>
+                </div>
+
+                <div class="service-category">
+                    <h3><i class="fas fa-briefcase"></i> <span data-translate="category.business">Business Documents</span></h3>
+                    <ul class="service-list">
+                        <li data-translate="service.business_license">Business License Verification</li>
+                        <li data-translate="service.tax_reg">Tax Registration Verification</li>
+                        <li data-translate="service.company_reg">Company Registration Verification</li>
+                        <li data-translate="service.import_export">Import/Export Permit Verification</li>
+                    </ul>
+                </div>
+
+                <div class="service-category">
+                    <h3><i class="fas fa-home"></i> <span data-translate="category.property">Property Documents</span></h3>
+                    <ul class="service-list">
+                        <li data-translate="service.land_title">Land Title Verification</li>
+                        <li data-translate="service.property_deed">Property Deed Verification</li>
+                        <li data-translate="service.construction">Construction Permit Verification</li>
+                        <li data-translate="service.occupancy">Occupancy Certificate Verification</li>
+                    </ul>
+                </div>
+
+                <div class="service-category">
+                    <h3><i class="fas fa-heartbeat"></i> <span data-translate="category.health">Health Documents</span></h3>
+                    <ul class="service-list">
+                        <li data-translate="service.medical">Medical Certificate Verification</li>
+                        <li data-translate="service.health_insurance">Health Insurance Card Verification</li>
+                        <li data-translate="service.vaccination">Vaccination Certificate Verification</li>
+                        <li data-translate="service.medical_license">Medical License Verification</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats" id="about">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <h3>96.3%</h3>
+                    <p data-translate="stat.accuracy">AI Accuracy Rate</p>
+                </div>
+                <div class="stat-item">
+                    <h3>10,000+</h3>
+                    <p data-translate="stat.documents">Documents Processed</p>
+                </div>
+                <div class="stat-item">
+                    <h3>&lt;1 sec</h3>
+                    <p data-translate="stat.time">Processing Time</p>
+                </div>
+                <div class="stat-item">
+                    <h3>24/7</h3>
+                    <p data-translate="stat.available">Service Availability</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Auth Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle"><i class="fas fa-sign-in-alt"></i> Login to iRembo</h2>
+                <button class="close-btn" onclick="closeLoginModal()"><i class="fas fa-times"></i></button>
+            </div>
+
+            <!-- Login Form -->
+            <div id="loginSection" class="form-section active">
+                <form id="loginForm" onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" placeholder="your.email@example.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <div class="password-wrapper">
+                            <input type="password" id="password" name="password" placeholder="••••••••" required>
+                            <button type="button" class="password-toggle" onclick="togglePassword('password')"><i class="fas fa-eye"></i></button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="login-submit">
+                        <i class="fas fa-sign-in-alt"></i> Sign In
+                    </button>
+
+                    <div class="form-footer">
+                        Don't have an account? <a onclick="switchToSignup()">Sign up here</a>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Sign Up Form -->
+            <div id="signupSection" class="form-section">
+                <form id="signupForm" onsubmit="handleSignup(event)">
+                    <div class="form-group">
+                        <label for="signupName">Full Name</label>
+                        <input type="text" id="signupName" name="name" placeholder="John Doe" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="signupEmail">Email Address</label>
+                        <input type="email" id="signupEmail" name="email" placeholder="your.email@example.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="signupPassword">Password</label>
+                        <div class="password-wrapper">
+                            <input type="password" id="signupPassword" name="password" placeholder="••••••••" required oninput="checkPasswordStrength()">
+                            <button type="button" class="password-toggle" onclick="togglePassword('signupPassword')"><i class="fas fa-eye"></i></button>
+                        </div>
+                        <div class="password-strength">
+                            <div class="strength-meter">
+                                <div class="strength-fill" id="strengthFill"></div>
+                            </div>
+                            <div class="strength-text" id="strengthText">Password strength: Too weak</div>
+                            <div class="strength-requirements">
+                                <div class="requirement unmet" id="req-length"><i class="fas fa-check"></i> 8+ characters</div>
+                                <div class="requirement unmet" id="req-upper"><i class="fas fa-check"></i> Uppercase</div>
+                                <div class="requirement unmet" id="req-lower"><i class="fas fa-check"></i> Lowercase</div>
+                                <div class="requirement unmet" id="req-number"><i class="fas fa-check"></i> Numbers</div>
+                                <div class="requirement unmet" id="req-special"><i class="fas fa-check"></i> Special chars</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="signupPasswordConfirm">Confirm Password</label>
+                        <div class="password-wrapper">
+                            <input type="password" id="signupPasswordConfirm" name="passwordConfirm" placeholder="••••••••" required>
+                            <button type="button" class="password-toggle" onclick="togglePassword('signupPasswordConfirm')"><i class="fas fa-eye"></i></button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="login-submit">
+                        <i class="fas fa-user-plus"></i> Create Account
+                    </button>
+
+                    <div class="form-footer">
+                        Already have an account? <a onclick="switchToLogin()">Sign in here</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer id="contact">
+        <div class="footer-content">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <h4>About iRembo</h4>
+                    <p>Rwanda's AI-powered document verification system, providing secure, fast, and accurate verification services for citizens and government officers.</p>
+                    <div class="social-links">
+                        <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" title="Facebook"><i class="fab fa-facebook"></i></a>
+                        <a href="#" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#services">Services</a></li>
+                        <li><a href="citizen_dashboard.html">My Services</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">User Guide</a></li>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">System Status</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="mailto:support@irembo.gov.rw"><i class="fas fa-envelope"></i> support@irembo.gov.rw</a></li>
+                        <li><a href="tel:+250788123456"><i class="fas fa-phone"></i> +250 788 123 456</a></li>
+                        <li><a href="#"><i class="fas fa-map-marker-alt"></i> Kigali, Rwanda</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2026 iRembo Document Verification System. All rights reserved.</p>
+                <p>Powered by AI | Made with ❤️ in Rwanda 🇷🇼</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Password strength checker
+        function checkPasswordStrength() {
+            const password = document.getElementById('signupPassword').value;
+            const strengthFill = document.getElementById('strengthFill');
+            const strengthText = document.getElementById('strengthText');
+            
+            // Remove all strength classes
+            strengthFill.className = 'strength-fill';
+            strengthText.className = 'strength-text';
+            
+            // Check requirements
+            const hasLength = password.length >= 8;
+            const hasUpper = /[A-Z]/.test(password);
+            const hasLower = /[a-z]/.test(password);
+            const hasNumber = /[0-9]/.test(password);
+            const hasSpecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
+            
+            // Update requirement indicators
+            updateRequirement('req-length', hasLength);
+            updateRequirement('req-upper', hasUpper);
+            updateRequirement('req-lower', hasLower);
+            updateRequirement('req-number', hasNumber);
+            updateRequirement('req-special', hasSpecial);
+            
+            // Calculate strength
+            let strength = 0;
+            if (hasLength) strength++;
+            if (hasUpper) strength++;
+            if (hasLower) strength++;
+            if (hasNumber) strength++;
+            if (hasSpecial) strength++;
+            
+            // Display strength
+            if (password.length === 0) {
+                strengthFill.classList.add('weak');
+                strengthText.classList.add('weak');
+                strengthText.textContent = 'Password strength: Too weak';
+            } else if (strength <= 1) {
+                strengthFill.classList.add('weak');
+                strengthText.classList.add('weak');
+                strengthText.textContent = '🔴 Weak password';
+            } else if (strength === 2) {
+                strengthFill.classList.add('fair');
+                strengthText.classList.add('fair');
+                strengthText.textContent = '🟠 Fair password';
+            } else if (strength === 3 || strength === 4) {
+                strengthFill.classList.add('good');
+                strengthText.classList.add('good');
+                strengthText.textContent = '🟡 Good password';
+            } else if (strength === 5) {
+                strengthFill.classList.add('strong');
+                strengthText.classList.add('strong');
+                strengthText.textContent = '✅ Strong password';
+            }
+        }
+        
+        function updateRequirement(elementId, isMet) {
+            const element = document.getElementById(elementId);
+            if (isMet) {
+                element.classList.remove('unmet');
+                element.classList.add('met');
+            } else {
+                element.classList.remove('met');
+                element.classList.add('unmet');
+            }
+        }
+        function togglePassword(fieldId) {
+            const field = document.getElementById(fieldId);
+            const icon = event.target.closest('.password-toggle').querySelector('i');
+            
+            if (field.type === 'password') {
+                field.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                field.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+
+        // Authentication functionality
+        function openLoginModal() {
+            document.getElementById('loginModal').classList.add('active');
+            switchToLogin();
+        }
+
+        function closeLoginModal() {
+            document.getElementById('loginModal').classList.remove('active');
+            document.getElementById('loginForm').reset();
+            document.getElementById('signupForm').reset();
+        }
+
+        function switchToLogin() {
+            document.getElementById('loginSection').classList.add('active');
+            document.getElementById('signupSection').classList.remove('active');
+            document.getElementById('modalTitle').innerHTML = '<i class="fas fa-sign-in-alt"></i> Login to iRembo';
+        }
+
+        function switchToSignup() {
+            document.getElementById('loginSection').classList.remove('active');
+            document.getElementById('signupSection').classList.add('active');
+            document.getElementById('modalTitle').innerHTML = '<i class="fas fa-user-plus"></i> Create Account';
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            // Check if user exists
+            const users = JSON.parse(localStorage.getItem('iremboUsers')) || [];
+            const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
+
+            if (!user) {
+                showNotification('❌ Email not found. Please sign up first.', 'error');
+                return;
+            }
+
+            if (user.password !== password) {
+                showNotification('❌ Incorrect password. Please try again.', 'error');
+                return;
+            }
+
+            // Auto-detect user type based on email domain
+            const userType = email.toLowerCase().includes('irembo') ? 'officer' : 'citizen';
+
+            // Store login info
+            const sessionUser = {
+                email: email,
+                name: user.name,
+                userType: userType,
+                loginTime: new Date().toISOString()
+            };
+
+            localStorage.setItem('iremboUser', JSON.stringify(sessionUser));
+            localStorage.setItem('isLoggedIn', 'true');
+
+            // Show success message
+            const userLabel = userType === 'officer' ? 'Officer' : 'Citizen';
+            showNotification(`Welcome back, ${user.name}! (${userLabel})`, 'success');
+
+            // Close modal
+            closeLoginModal();
+
+            // Redirect based on user type
+            setTimeout(() => {
+                if (userType === 'citizen') {
+                    window.location.href = 'citizen_dashboard.html';
+                } else if (userType === 'officer') {
+                    window.location.href = 'officer_dashboard.html';
+                }
+            }, 500);
+        }
+
+        function handleSignup(event) {
+            event.preventDefault();
+
+            const name = document.getElementById('signupName').value;
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            const passwordConfirm = document.getElementById('signupPasswordConfirm').value;
+
+            // Validate password strength
+            const hasLength = password.length >= 8;
+            const hasUpper = /[A-Z]/.test(password);
+            const hasLower = /[a-z]/.test(password);
+            const hasNumber = /[0-9]/.test(password);
+            const hasSpecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
+            
+            const strength = [hasLength, hasUpper, hasLower, hasNumber, hasSpecial].filter(Boolean).length;
+
+            // Validate passwords match
+            if (password !== passwordConfirm) {
+                showNotification('❌ Passwords do not match!', 'error');
+                return;
+            }
+
+            // Validate password strength
+            if (strength < 3) {
+                showNotification('❌ Password must be stronger! Include uppercase, lowercase, numbers, and special characters.', 'error');
+                return;
+            }
+
+            // Get existing users
+            let users = JSON.parse(localStorage.getItem('iremboUsers')) || [];
+
+            // Check if email already exists
+            if (users.find(u => u.email.toLowerCase() === email.toLowerCase())) {
+                showNotification('❌ Email already registered. Please login instead.', 'error');
+                return;
+            }
+
+            // Add new user
+            const newUser = {
+                name: name,
+                email: email,
+                password: password,
+                createdAt: new Date().toISOString()
+            };
+
+            users.push(newUser);
+            localStorage.setItem('iremboUsers', JSON.stringify(users));
+
+            // Auto-detect user type
+            const userType = email.toLowerCase().includes('irembo') ? 'officer' : 'citizen';
+
+            // Auto-login
+            const sessionUser = {
+                email: email,
+                name: name,
+                userType: userType,
+                loginTime: new Date().toISOString()
+            };
+
+            localStorage.setItem('iremboUser', JSON.stringify(sessionUser));
+            localStorage.setItem('isLoggedIn', 'true');
+
+            // Show success message
+            const userLabel = userType === 'officer' ? 'Officer' : 'Citizen';
+            showNotification(`✅ Account created successfully! Welcome, ${name}! (${userLabel})`, 'success');
+
+            // Close modal
+            closeLoginModal();
+
+            // Redirect based on user type
+            setTimeout(() => {
+                if (userType === 'citizen') {
+                    window.location.href = 'citizen_dashboard.html';
+                } else if (userType === 'officer') {
+                    window.location.href = 'officer_dashboard.html';
+                }
+            }, 500);
+        }
+
+        function showNotification(message, type = 'info') {
+            // Create a temporary notification
+            const notification = document.createElement('div');
+            let bgColor = '#003DA5';
+            if (type === 'success') bgColor = '#28A745';
+            if (type === 'error') bgColor = '#dc3545';
+            
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${bgColor};
+                color: white;
+                padding: 1rem 2rem;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+                z-index: 3000;
+                animation: slideInRight 0.3s ease-out;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Check if user is already logged in
+        function checkLoginStatus() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            const user = JSON.parse(localStorage.getItem('iremboUser'));
+
+            if (isLoggedIn && user) {
+                // User is already logged in, could redirect or show logged-in UI
+                console.log('User already logged in:', user);
+            }
+        }
+
+        // Logout function (can be called from other pages)
+        function logout() {
+            localStorage.removeItem('iremboUser');
+            localStorage.removeItem('isLoggedIn');
+            window.location.href = 'index_functional.html';
+        }
+
+        // Close modal when clicking outside
+        document.addEventListener('DOMContentLoaded', function() {
+            const modal = document.getElementById('loginModal');
+            modal.addEventListener('click', function(event) {
+                if (event.target === modal) {
+                    closeLoginModal();
+                }
+            });
+
+            // Password field enter key
+            document.getElementById('password').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    document.getElementById('loginForm').dispatchEvent(new Event('submit'));
+                }
+            });
+
+            checkLoginStatus();
+        });
+
+        // Translation dictionary
+        const translations = {
+            en: {
+                'nav.home': 'Home',
+                'nav.services': 'Services',
+                'nav.about': 'About',
+                'nav.contact': 'Contact',
+                'nav.login': 'Login',
+                'hero.title': 'AI-Powered Document Verification',
+                'hero.subtitle': "Rwanda's trusted government portal for instant, secure, and accurate document verification services",
+                'hero.login': 'Login to Your Account',
+                'services.title': 'Document Verification Services',
+                'category.identity': 'Identity Documents',
+                'category.driver': 'Driver & Vehicle',
+                'category.education': 'Education Documents',
+                'category.business': 'Business Documents',
+                'category.property': 'Property Documents',
+                'category.health': 'Health Documents',
+                'service.national_id': 'National ID Verification',
+                'service.passport': 'Passport Verification',
+                'service.birth': 'Birth Certificate Verification',
+                'service.marriage': 'Marriage Certificate Verification',
+                'service.death': 'Death Certificate Verification',
+                'service.driver_license': "Driver's License Verification",
+                'service.vehicle_reg': 'Vehicle Registration Verification',
+                'service.vehicle_insurance': 'Vehicle Insurance Verification',
+                'service.tech_inspection': 'Technical Inspection Certificate',
+                'service.diploma': 'Diploma Verification',
+                'service.degree': 'Degree Certificate Verification',
+                'service.transcript': 'Transcript Verification',
+                'service.tvet': 'TVET Certificate Verification',
+                'service.professional': 'Professional Certificate Verification',
+                'service.business_license': 'Business License Verification',
+                'service.tax_reg': 'Tax Registration Verification',
+                'service.company_reg': 'Company Registration Verification',
+                'service.import_export': 'Import/Export Permit Verification',
+                'service.land_title': 'Land Title Verification',
+                'service.property_deed': 'Property Deed Verification',
+                'service.construction': 'Construction Permit Verification',
+                'service.occupancy': 'Occupancy Certificate Verification',
+                'service.medical': 'Medical Certificate Verification',
+                'service.health_insurance': 'Health Insurance Card Verification',
+                'service.vaccination': 'Vaccination Certificate Verification',
+                'service.medical_license': 'Medical License Verification',
+                'stat.accuracy': 'AI Accuracy Rate',
+                'stat.documents': 'Documents Processed',
+                'stat.time': 'Processing Time',
+                'stat.available': 'Service Availability'
+            },
+            rw: {
+                'nav.home': 'Ahabanza',
+                'nav.services': 'Serivisi',
+                'nav.about': 'Ibyerekeye',
+                'nav.contact': 'Twandikire',
+                'nav.login': 'Kwinjira',
+                'hero.title': 'Gusuzuma Inyandiko hakoreshejwe AI',
+                'hero.subtitle': 'Urubuga rwizerwa rwa Leta y\'u Rwanda rugufasha gusuzuma inyandiko byihuse, bihoraho kandi bikomeye',
+                'hero.login': 'Injira kuri Konti Yawe',
+                'services.title': 'Serivisi zo Gusuzuma Inyandiko',
+                'category.identity': 'Ibyangombwa by\'Umwirondoro',
+                'category.driver': 'Umushoferi n\'Ibinyabiziga',
+                'category.education': 'Ibyangombwa by\'Uburezi',
+                'category.business': 'Ibyangombwa by\'Ubucuruzi',
+                'category.property': 'Ibyangombwa by\'Umutungo',
+                'category.health': 'Ibyangombwa by\'Ubuzima',
+                'service.national_id': 'Gusuzuma Indangamuntu',
+                'service.passport': 'Gusuzuma Pasiporo',
+                'service.birth': 'Gusuzuma Icyangombwa cy\'Ivuka',
+                'service.marriage': 'Gusuzuma Icyangombwa cy\'Ubukwe',
+                'service.death': 'Gusuzuma Icyangombwa cy\'Urupfu',
+                'service.driver_license': 'Gusuzuma Uruhushya rwo Gutwara',
+                'service.vehicle_reg': 'Gusuzuma Iyandikisha ry\'Ikinyabiziga',
+                'service.vehicle_insurance': 'Gusuzuma Ubwishingizi bw\'Ikinyabiziga',
+                'service.tech_inspection': 'Icyangombwa cy\'Isuzuma rya Tekiniki',
+                'service.diploma': 'Gusuzuma Impamyabumenyi',
+                'service.degree': 'Gusuzuma Icyangombwa cy\'Impamyabumenyi',
+                'service.transcript': 'Gusuzuma Amanota',
+                'service.tvet': 'Gusuzuma Icyangombwa cya TVET',
+                'service.professional': 'Gusuzuma Icyangombwa cy\'Umwuga',
+                'service.business_license': 'Gusuzuma Uruhushya rw\'Ubucuruzi',
+                'service.tax_reg': 'Gusuzuma Iyandikisha ry\'Imisoro',
+                'service.company_reg': 'Gusuzuma Iyandikisha ry\'Isosiyete',
+                'service.import_export': 'Gusuzuma Uruhushya rwo Gutumiza/Kohereza',
+                'service.land_title': 'Gusuzuma Icyangombwa cy\'Ubutaka',
+                'service.property_deed': 'Gusuzuma Icyangombwa cy\'Umutungo',
+                'service.construction': 'Gusuzuma Uruhushya rwo Kubaka',
+                'service.occupancy': 'Gusuzuma Icyangombwa cyo Gutura',
+                'service.medical': 'Gusuzuma Icyangombwa cy\'Ubuzima',
+                'service.health_insurance': 'Gusuzuma Ikarita y\'Ubwishingizi bw\'Ubuzima',
+                'service.vaccination': 'Gusuzuma Icyangombwa cy\'Inkingo',
+                'service.medical_license': 'Gusuzuma Uruhushya rw\'Ubuvuzi',
+                'stat.accuracy': 'Ukuri kwa AI',
+                'stat.documents': 'Inyandiko Zisuzumwe',
+                'stat.time': 'Igihe cyo Gutunganya',
+                'stat.available': 'Serivisi Zihari'
+            }
+        };
+
+        let currentLang = 'en';
+
+        // Language toggle
+        function toggleLanguage() {
+            currentLang = currentLang === 'en' ? 'rw' : 'en';
+            document.documentElement.lang = currentLang;
+            translatePage();
+        }
+
+        function translatePage() {
+            document.querySelectorAll('[data-translate]').forEach(element => {
+                const key = element.getAttribute('data-translate');
+                if (translations[currentLang][key]) {
+                    element.textContent = translations[currentLang][key];
+                }
+            });
+        }
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                // Don't prevent default for non-section links
+                if (!this.getAttribute('href').startsWith('#')) return;
+                
+                e.preventDefault();
+                const href = this.getAttribute('href');
+                if (href === '#') return;
+                
+                const target = document.querySelector(href);
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animation = 'fadeInUp 0.6s ease-out';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.service-category, .stat-item').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Add slide-in animation for notifications
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideInRight {
+                from {
+                    opacity: 0;
+                    transform: translateX(100px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateX(0);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
