@@ -761,15 +761,15 @@
             try {
                 const formData = new FormData();
                 formData.append('document_type', documentType);
-                formData.append('applicant_name', applicantName);
-                formData.append('applicant_email', applicantEmail);
-                formData.append('applicant_id', applicantId);
-                formData.append('applicant_phone', applicantPhone);
+                formData.append('citizen_name', applicantName);
+                formData.append('citizen_email', applicantEmail);
+                formData.append('citizen_id', applicantId);
+                formData.append('citizen_phone', applicantPhone);
                 formData.append('description', description);
                 
-                // Add all files
+                // Add all files - Backend handles 'file' field
                 for (let file of selectedFiles) {
-                    formData.append('documents', file);
+                    formData.append('file', file);
                 }
 
                 const response = await fetch(`${API_BASE_URL}/upload`, {

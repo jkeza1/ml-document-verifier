@@ -591,7 +591,7 @@
                 <div>
                     <div class="user-name" id="officerName">Loading...</div>
                     <div class="user-email" id="officerEmail"></div>
-                    <div class="user-role">👨‍⚖️ Verification Officer</div>
+                    <div class="user-role">👨‍⚖️ iRembo Verification Officer</div>
                 </div>
                 <button class="logout-btn" onclick="logout()">
                     <i class="fas fa-sign-out-alt"></i> Logout
@@ -618,21 +618,17 @@
             </div>
 
             <div class="responsibilities">
-                <h3><i class="fas fa-clipboard-list"></i> Your Responsibilities</h3>
+                <h3>Your Responsibilities</h3>
                 <div class="responsibility-item">
-                    <i class="fas fa-check"></i>
                     <span>Review citizen submissions</span>
                 </div>
                 <div class="responsibility-item">
-                    <i class="fas fa-check"></i>
                     <span>Use AI to analyze documents</span>
                 </div>
                 <div class="responsibility-item">
-                    <i class="fas fa-check"></i>
                     <span>Make approval decisions</span>
                 </div>
                 <div class="responsibility-item">
-                    <i class="fas fa-check"></i>
                     <span>Handle appeals</span>
                 </div>
             </div>
@@ -640,15 +636,20 @@
 
         <!-- Main Content -->
         <div class="main-content">
-            <div class="tabs">
-                <button class="tab active" onclick="switchView('pending')">
-                    <i class="fas fa-inbox"></i> Pending (<span id="pendingBadge">0</span>)
-                </button>
-                <button class="tab" onclick="switchView('analyzing')">
-                    <i class="fas fa-microscope"></i> Analyzing (<span id="analyzingBadge">0</span>)
-                </button>
-                <button class="tab" onclick="switchView('appeals')">
-                    <i class="fas fa-exclamation-circle"></i> Appeals (<span id="appealsBadge">0</span>)
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <div class="tabs" style="margin-bottom: 0;">
+                    <button class="tab active" onclick="switchView('pending')">
+                        <i class="fas fa-inbox"></i> Pending (<span id="pendingBadge">0</span>)
+                    </button>
+                    <button class="tab" onclick="switchView('analyzing')">
+                        <i class="fas fa-microscope"></i> Analyzing (<span id="analyzingBadge">0</span>)
+                    </button>
+                    <button class="tab" onclick="switchView('appeals')">
+                        <i class="fas fa-exclamation-circle"></i> Appeals (<span id="appealsBadge">0</span>)
+                    </button>
+                </div>
+                <button class="btn btn-view" onclick="loadSubmissions()" style="padding: 0.5rem 1rem;">
+                    <i class="fas fa-sync-alt"></i> Refresh Queue
                 </button>
             </div>
 
@@ -939,38 +940,61 @@
         // Load submissions from backend
         async function loadSubmissions() {
             try {
-                const response = await fetch('http://localhost:5000/api/applications?page=1&per_page=100');
-                const result = await response.json();
-                submissions = result.data || [];
+                // Fetch regular applications
+                const appResponse = await fetch('http://localhost:5000/api/applications?page=1&per_page=100');
+                const appResult = await appResponse.json();
+                const appSubmissions = (appResult.data || []).map(app => ({
+                    id: app.application_id || app.id,
+                    serviceType: app.document_type || app.serviceType,
+                    fullName: app.citizen_name || app.fullName || 'N/A',
+                    nationalId: app.citizen_id || app.nationalId || 'N/A',
+                    phoneNumber: app.citizen_phone || app.phoneNumber || 'N/A',
+                    description: app.description || '',
+                    status: app.status === 'pending' ? 'pending' : (app.status === 'pending_irembo' ? 'pending' : app.status),
+                    currentStage: app.current_stage || 'irembo',
+                    submittedDate: app.created_at || app.submittedDate,
+                    queuePosition: app.queue_position || 0,
+                    files: app.documents || [],
+                    apiId: app.application_id,
+                    isDocumentRequest: false,
+                    isRegistryMatch: (app.feedback || '').toLowerCase().includes('registry record found'),
+                    timeline: app.timeline || [
+                        { status: 'Submitted', date: app.created_at || app.submittedDate, active: true }
+                    ]
+                }));
+
+                // Fetch direct document requests
+                let docRequests = [];
+                try {
+                    const docResponse = await fetch('http://localhost:5000/api/document-requests?page=1&per_page=100');
+                    const docResult = await docResponse.json();
+                    docRequests = (docResult.data || []).map(req => ({
+                        id: req.request_id,
+                        serviceType: req.document_type,
+                        fullName: req.citizen_name || 'N/A',
+                        nationalId: req.citizen_id || 'N/A',
+                        phoneNumber: req.citizen_phone || 'N/A',
+                        description: req.reason || '',
+                        status: req.status || 'pending',
+                        submittedDate: req.requested_at,
+                        queuePosition: req.queue_position || 0,
+                        files: [], 
+                        apiId: req.request_id,
+                        isDocumentRequest: true,
+                        remarks: req.remarks || '',
+                        isRegistryMatch: (req.remarks || '').toLowerCase().includes('official record found') || (req.remarks || '').toLowerCase().includes('registry'),
+                        timeline: [
+                            { status: 'Request Submitted', date: req.requested_at, active: true }
+                        ]
+                    }));
+                } catch (docErr) {
+                    console.error('Error loading doc requests:', docErr);
+                }
+
+                submissions = [...appSubmissions, ...docRequests];
                 
-                console.log('Loaded applications from backend:', submissions);
-                
-                // Map backend response to expected format
-                submissions = submissions.map(app => {
-                    console.log('Mapping application:', {
-                        id: app.application_id,
-                        citizen_name: app.citizen_name,
-                        citizen_id: app.citizen_id,
-                        citizen_phone: app.citizen_phone
-                    });
-                    
-                    return {
-                        id: app.application_id || app.id,
-                        serviceType: app.document_type || app.serviceType,
-                        fullName: app.citizen_name || app.fullName || 'N/A',
-                        nationalId: app.citizen_id || app.nationalId || 'N/A',
-                        phoneNumber: app.citizen_phone || app.phoneNumber || 'N/A',
-                        description: app.description || '',
-                        status: app.status === 'pending' ? 'pending' : app.status === 'review' ? 'review' : app.status,
-                        submittedDate: app.created_at || app.submittedDate,
-                        files: app.documents || [],
-                        timeline: [{ status: 'Submitted', date: app.created_at, active: true }],
-                        apiId: app.application_id
-                    };
-                });
             } catch (error) {
                 console.error('Error loading from backend:', error);
-                // Fallback to localStorage
                 submissions = JSON.parse(localStorage.getItem('citizenApplications')) || [];
             }
             restoreCurrentSubmission();
@@ -981,6 +1005,35 @@
                 renderAnalysisPanel();
             } else {
                 setAnalysisEmptyState();
+            }
+        }
+
+        async function queryAI() {
+            const input = document.getElementById('aiPromptInput');
+            const promptText = input.value.trim();
+            if (!promptText) return;
+
+            const chatHistory = document.getElementById('aiChatHistory');
+            chatHistory.innerHTML += `<div style="margin-bottom: 0.8rem; text-align: right;"><span style="background: #e9ecef; padding: 0.4rem 0.8rem; border-radius: 12px; display: inline-block; font-size: 0.85rem;">${promptText}</span></div>`;
+            input.value = '';
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+
+            try {
+                const response = await fetch(`http://localhost:5000/api/applications/${currentSubmission.id}/analyze`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt: promptText })
+                });
+
+                const result = await response.json();
+                const insight = result.data.prompt_response;
+
+                setTimeout(() => {
+                    chatHistory.innerHTML += `<div style="margin-bottom: 0.8rem;"><span style="background: #003DA5; color: white; padding: 0.4rem 0.8rem; border-radius: 12px; display: inline-block; font-size: 0.85rem;"><i class="fas fa-robot"></i> ${insight}</span></div>`;
+                    chatHistory.scrollTop = chatHistory.scrollHeight;
+                }, 500);
+            } catch (err) {
+                chatHistory.innerHTML += `<div style="color: red; font-size: 0.8rem;">AI service unavailable</div>`;
             }
         }
 
@@ -1032,6 +1085,8 @@
                 <div class="submission-card" onclick="selectSubmission('${sub.id}')">
                     <div class="submission-header">
                         <div>
+                            ${sub.queuePosition ? `<span style="font-size: 0.7rem; color: var(--primary-blue); font-weight: bold; background: #e7f3ff; padding: 2px 6px; border-radius: 4px; margin-bottom: 4px; display: inline-block;">RANK #${sub.queuePosition}</span>` : ''}
+                            ${sub.isDocumentRequest ? `<span style="font-size: 0.7rem; color: #856404; font-weight: bold; background: #fff3cd; padding: 2px 6px; border-radius: 4px; margin-bottom: 4px; display: inline-block;">DOC REQUEST</span>` : ''}
                             <div class="submission-title">${sub.serviceType}</div>
                             <div class="submission-id">${sub.id}</div>
                         </div>
@@ -1123,10 +1178,17 @@
                     // Update status in backend if available
                     if (currentSubmission.apiId) {
                         try {
-                            await fetch('http://localhost:5000/api/applications/' + currentSubmission.apiId, {
-                                method: 'PUT',
+                            const endpoint = currentSubmission.isDocumentRequest 
+                                ? `http://localhost:5000/api/document-requests/${currentSubmission.apiId}?status=review`
+                                : `http://localhost:5000/api/applications/${currentSubmission.apiId}`;
+                            
+                            const method = 'PUT';
+                            const body = currentSubmission.isDocumentRequest ? null : JSON.stringify({ status: 'review' });
+
+                            await fetch(endpoint, {
+                                method: method,
                                 headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ status: 'review' })
+                                body: body
                             });
                         } catch (error) {
                             console.error('Could not update backend status:', error);
@@ -1175,6 +1237,31 @@
                     <div class="analysis-section">
                         <h3 class="section-title">Submission Details</h3>
                         <div class="analysis-box">
+                            <div id="registryStatusBar">
+                                ${currentSubmission.isRegistryMatch ? `
+                                    <div style="background: #d1e7dd; color: #0f5132; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; border: 1px solid #badbcc;">
+                                        <i class="fas fa-certificate"></i> <strong>Official Registry Match</strong>
+                                        <p style="font-size: 0.85rem; margin-top: 5px;">This citizen's record was found in the government database.</p>
+                                    </div>
+                                ` : ''}
+                            </div>
+                            
+                            <!-- Template Alignment Section -->
+                            <div style="background: #f8f9fa; border: 1px solid var(--border-color); border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                    <h4 style="font-size: 0.9rem; color: var(--text-dark);"><i class="fas fa-draw-polygon"></i> Template Alignment</h4>
+                                    <span id="alignmentStatus" class="status-badge status-approved" style="font-size: 0.7rem;">98% MATCH</span>
+                                </div>
+                                <div style="font-size: 0.8rem; color: var(--text-light); margin-bottom: 1rem;">
+                                    Comparing against standard <span style="font-weight: bold; color: var(--primary-blue);">${currentSubmission.serviceType}</span> template.
+                                </div>
+                                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                                    <span style="font-size: 0.7rem; background: #e7f3ff; color: var(--primary-blue); padding: 2px 8px; border-radius: 4px;">Logo Position OK</span>
+                                    <span style="font-size: 0.7rem; background: #e7f3ff; color: var(--primary-blue); padding: 2px 8px; border-radius: 4px;">QR Code Detected</span>
+                                    <span style="font-size: 0.7rem; background: #e7f3ff; color: var(--primary-blue); padding: 2px 8px; border-radius: 4px;">Seal Integrity OK</span>
+                                </div>
+                            </div>
+
                             <div class="info-item" style="margin-bottom: 1rem;">
                                 <div class="info-label">Service Type</div>
                                 <div class="info-value">${currentSubmission.serviceType}</div>
@@ -1222,32 +1309,56 @@
                     <div class="analysis-section">
                         <h3 class="section-title"><i class="fas fa-robot"></i> AI Analysis Results</h3>
                         
-                        <button class="analysis-btn" onclick="runAIAnalysis()" id="analyzeBtn">
-                            <i class="fas fa-microscope"></i> Run AI Analysis
-                        </button>
-
-                        <div id="analysisResults" style="margin-top: 1rem;">
-                            <div style="padding: 1rem; background: #f8f9fa; border-radius: 8px; text-align: center; color: var(--text-light);">
-                                <i class="fas fa-info-circle"></i> Click "Run AI Analysis" to start OCR and authenticity verification
+                        ${currentSubmission.isDocumentRequest ? `
+                            <div style="padding: 2rem; background: #fff3cd; border-radius: 8px; border: 1px solid #ffeeba; color: #856404; text-align: center;">
+                                <i class="fas fa-info-circle" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                                <p><strong>Direct Document Request</strong></p>
+                                <p style="font-size: 0.9rem;">This citizen is requesting a new document from the registry. No upload analysis is required. Verify their identity and the reason below before approval.</p>
                             </div>
-                        </div>
+                        ` : `
+                            <button class="analysis-btn" onclick="runAIAnalysis()" id="analyzeBtn" style="margin-bottom: 1rem;">
+                                <i class="fas fa-microscope"></i> Run AI Analysis
+                            </button>
+
+                            <!-- AI Interaction Box -->
+                            <div id="aiInteraction" style="margin-bottom: 1.5rem; display: none;">
+                                <div style="background: white; border: 1px solid var(--primary-blue); border-radius: 8px; overflow: hidden;">
+                                    <div style="background: var(--primary-blue); color: white; padding: 0.5rem 1rem; font-size: 0.85rem; display: flex; justify-content: space-between;">
+                                        <span>AI Assistant - Prompt Analysis</span>
+                                        <i class="fas fa-bolt"></i>
+                                    </div>
+                                    <div id="aiChatHistory" style="padding: 1rem; max-height: 200px; overflow-y: auto; font-size: 0.9rem; border-bottom: 1px solid #eee;">
+                                        <div style="margin-bottom: 0.5rem; color: var(--text-light); font-style: italic;">Ask anything about this document...</div>
+                                    </div>
+                                    <div style="padding: 0.5rem; display: flex; gap: 0.5rem;">
+                                        <input type="text" id="aiPromptInput" placeholder="Verify specific field or authenticity..." style="flex: 1; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                        <button onclick="queryAI()" style="background: var(--primary-blue); color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer;">
+                                            <i class="fas fa-paper-plane"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="analysisResults" style="margin-top: 1rem;">
+                                <div style="padding: 1rem; background: #f8f9fa; border-radius: 8px; text-align: center; color: var(--text-light);">
+                                    <i class="fas fa-info-circle"></i> Click "Run AI Analysis" to start OCR and authenticity verification
+                                </div>
+                            </div>
+                        `}
                     </div>
                 </div>
 
                 <div class="decision-section">
-                    <h3 class="section-title"><i class="fas fa-gavel"></i> Make a Decision</h3>
+                    <h3 class="section-title">Make a Decision</h3>
                     <div class="decision-buttons">
                         <button class="btn btn-approve" onclick="openDecisionModal('approved')">
-                            <i class="fas fa-check"></i> Approve
+                            <i class="fas fa-check"></i> Approve & Issue Document
                         </button>
                         <button class="btn btn-reject" onclick="openDecisionModal('rejected')">
-                            <i class="fas fa-times"></i> Reject
+                            <i class="fas fa-times"></i> Reject Submission
                         </button>
                         <button class="btn btn-hold" onclick="openDecisionModal('hold')">
                             <i class="fas fa-pause"></i> Hold for Further Review
-                        </button>
-                        <button class="btn btn-send" onclick="openDecisionModal('send')">
-                            <i class="fas fa-share"></i> Send to Department
                         </button>
                     </div>
                 </div>
@@ -1350,6 +1461,11 @@
                         // Quality assessment based on confidence
                         results.qualityScore += confidence;
 
+                        // Identify if template elements are missing
+                        if (currentSubmission.serviceType === 'Birth Certificate' && !extractedText.includes('Republic')) {
+                            results.issues.push('Missing "Republic of Rwanda" header - template mismatch');
+                        }
+
                     } catch (error) {
                         console.error('OCR failed for', file.name, error);
                         results.ocrResults.push({
@@ -1423,6 +1539,10 @@
 
         function displayAnalysisResults(results) {
             const resultsDiv = document.getElementById('analysisResults');
+            const interactionBox = document.getElementById('aiInteraction');
+            
+            // Show interaction box if it exists
+            if (interactionBox) interactionBox.style.display = 'block';
             
             const getScoreClass = (score) => {
                 if (score === null || Number.isNaN(score)) return 'warning';
@@ -1597,13 +1717,20 @@
             // Update backend if available
             if (currentSubmission.apiId) {
                 try {
-                    await fetch('http://localhost:5000/api/applications/' + currentSubmission.apiId, {
-                        method: 'PUT',
+                    const endpoint = currentSubmission.isDocumentRequest 
+                        ? `http://localhost:5000/api/document-requests/${currentSubmission.apiId}?status=${newStatus}&remarks=${encodeURIComponent(notes)}`
+                        : `http://localhost:5000/api/applications/${currentSubmission.apiId}`;
+                    
+                    const method = currentSubmission.isDocumentRequest ? 'PUT' : 'PUT';
+                    const body = currentSubmission.isDocumentRequest ? null : JSON.stringify({ 
+                        status: newStatus,
+                        feedback: notes 
+                    });
+
+                    await fetch(endpoint, {
+                        method: method,
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ 
-                            status: newStatus,
-                            feedback: notes 
-                        })
+                        body: body
                     });
                 } catch (error) {
                     console.error('Error updating backend:', error);

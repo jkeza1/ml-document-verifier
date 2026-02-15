@@ -504,6 +504,52 @@
             background: var(--warning);
             color: #000;
         }
+
+        /* Queue Styling */
+        .queue-badge {
+            background: #e7f3ff;
+            color: var(--primary-blue);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(0, 61, 165, 0.1);
+        }
+
+        .queue-position-visual {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-top: 5px;
+        }
+
+        .queue-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #cbd5e0;
+        }
+
+        .queue-dot.active {
+            background: var(--primary-blue);
+            box-shadow: 0 0 5px rgba(0, 61, 165, 0.4);
+        }
+
+        .queue-dot.current {
+            background: var(--warning);
+            transform: scale(1.3);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1.1); opacity: 1; }
+            50% { transform: scale(1.4); opacity: 0.7; }
+            100% { transform: scale(1.1); opacity: 1; }
+        }
     </style>
 </head>
 <body>
@@ -564,7 +610,7 @@
                 <form id="requestForm" onsubmit="submitRequest(event)">
                     <div class="form-group">
                         <label for="serviceType">Service Type *</label>
-                        <select id="serviceType" required>
+                        <select id="serviceType" required onchange="updateQueuePressure(this.value, 'verifyQueueStatus')">
                             <option value="">Select a service...</option>
                             <option value="Birth Certificate">Birth Certificate</option>
                             <option value="National ID">National ID</option>
@@ -577,6 +623,7 @@
                             <option value="Other">Other</option>
                         </select>
                     </div>
+                    <div id="verifyQueueStatus" style="margin-bottom: 1.5rem; display: none;"></div>
 
                     <div class="form-group">
                         <label for="fullName">Full Name (as shown on document) *</label>
@@ -638,7 +685,7 @@
                 <form id="requestDocForm" onsubmit="submitDocRequest(event)">
                     <div class="form-group">
                         <label for="docType">Document Type *</label>
-                        <select id="docType" required>
+                        <select id="docType" required onchange="updateQueuePressure(this.value, 'requestQueueStatus')">
                             <option value="">Select document...</option>
                             <option value="National ID">National ID</option>
                             <option value="Passport">Passport</option>
@@ -651,6 +698,7 @@
                             <option value="Police Clearance">Police Clearance</option>
                         </select>
                     </div>
+                    <div id="requestQueueStatus" style="margin-bottom: 1.5rem; display: none;"></div>
 
                     <div class="form-group">
                         <label for="docFullName">Full Name *</label>
@@ -681,6 +729,34 @@
 
         <!-- My Applications Tab -->
         <div class="tab-content" id="applicationsTab">
+            <!-- Global Queue Status Header -->
+            <div id="queueSummary" style="background: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; gap: 2rem;">
+                    <div style="flex: 1;">
+                        <h3 style="color: var(--primary-blue); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                            <i class="fas fa-users-cog"></i> Live Service Queue
+                        </h3>
+                        <p style="color: var(--text-light); font-size: 0.9rem;">
+                            Our iRembo HQ officers are currently processing applications in real-time. 
+                            Below is the live status of the system queue.
+                        </p>
+                    </div>
+                    <div style="display: flex; gap: 2rem;">
+                        <div style="text-align: center;">
+                            <div id="totalPendingCount" style="font-size: 1.8rem; font-weight: 700; color: var(--warning);">0</div>
+                            <div style="font-size: 0.75rem; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.5px;">Waiting</div>
+                        </div>
+                        <div style="text-align: center; border-left: 1px solid #eee; padding-left: 2rem;">
+                            <div id="avgWaitTime" style="font-size: 1.8rem; font-weight: 700; color: var(--primary-blue);">--</div>
+                            <div style="font-size: 0.75rem; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.5px;">Est. Wait</div>
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-top: 1rem; background: #f8f9fa; height: 8px; border-radius: 4px; overflow: hidden;">
+                    <div id="queueIntensity" style="height: 100%; width: 0%; background: var(--success); transition: width 0.5s;"></div>
+                </div>
+            </div>
+
             <div class="applications-grid" id="applicationsList">
                 <!-- Applications will be loaded here -->
             </div>
@@ -716,6 +792,41 @@
     </div>
 
     <script>
+        function updateQueuePressure(serviceType, containerId) {
+            const container = document.getElementById(containerId);
+            if (!serviceType) {
+                container.style.display = 'none';
+                return;
+            }
+            
+            // Filter cached applications to find those of the same type and still pending
+            const similarApps = cachedApplications.filter(a => a.serviceType === serviceType && (a.status === 'pending' || a.status === 'review'));
+            const count = similarApps.length;
+            
+            container.style.display = 'block';
+            let color = '#28A745';
+            let message = 'Low demand - Processed quickly';
+            
+            if (count > 5) {
+                color = '#ff9800';
+                message = 'Moderate demand - Expect slight delay';
+            }
+            if (count > 10) {
+                color = '#dc3545';
+                message = 'High demand - Significant processing time';
+            }
+            
+            container.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 0.8rem; padding: 0.8rem; background: ${color}15; border-radius: 8px; border: 1px solid ${color}30;">
+                    <div style="font-size: 1.2rem; color: ${color};"><i class="fas fa-users"></i></div>
+                    <div>
+                        <div style="font-size: 0.85rem; font-weight: 700; color: ${color};">${count} applications currently waiting for ${serviceType}</div>
+                        <div style="font-size: 0.75rem; color: #666;">${message}</div>
+                    </div>
+                </div>
+            `;
+        }
+
         // Check authentication
         function checkAuth() {
             let user = JSON.parse(localStorage.getItem('iremboUser'));
@@ -845,18 +956,17 @@
             // Create FormData for backend submission
             const formData = new FormData();
             formData.append('document_type', serviceType);
-            formData.append('applicant_name', fullName);
-            formData.append('applicant_email', email);
-            formData.append('applicant_id', nationalId);
-            formData.append('applicant_phone', phoneNumber);
+            formData.append('citizen_name', fullName);
+            formData.append('citizen_email', email);
+            formData.append('citizen_id', nationalId);
+            formData.append('citizen_phone', phoneNumber);
             formData.append('description', description);
             
             selectedFiles.forEach(file => {
-                formData.append('documents', file);
+                formData.append('file', file);
             });
 
             try {
-                // Submit to backend
                 const response = await fetch('http://localhost:5000/api/upload', {
                     method: 'POST',
                     body: formData
@@ -869,7 +979,6 @@
                 const result = await response.json();
                 const appId = result.data?.application_id || result.data?.id || 'APP-' + Date.now();
 
-                // Save to localStorage as backup
                 let applications = JSON.parse(localStorage.getItem('citizenApplications')) || [];
                 const submissionDate = new Date();
                 const estimatedDate = new Date(submissionDate.getTime() + 14 * 24 * 60 * 60 * 1000); // 14 days from now
@@ -896,12 +1005,10 @@
 
                 showNotification('✅ Request submitted! Application ID: ' + appId, 'success');
 
-                // Reset form
                 document.getElementById('requestForm').reset();
                 selectedFiles = [];
                 document.getElementById('fileList').style.display = 'none';
 
-                // Switch to applications tab
                 setTimeout(() => {
                     document.querySelectorAll('.tab')[1].click();
                     loadApplications();
@@ -912,7 +1019,6 @@
             }
         }
 
-        // Load applications from backend
         async function loadApplications(skipLoadingIndicator = false) {
             const container = document.getElementById('applicationsList');
             
@@ -954,12 +1060,14 @@
                     description: app.description || app.description,
                     files: app.documents || app.files || [],
                     status: app.status || 'pending',
+                    queuePosition: app.queue_position || 0,
                     feedback: app.feedback || app.officerNotes || '',
                     submittedDate: app.created_at || app.submittedDate,
                     estimatedAvailableDate: app.estimated_available_date,
                     timeline: app.timeline || [
                         { status: 'Submitted', date: app.created_at || app.submittedDate, active: true },
-                        { status: 'Under Review', date: app.updated_at || app.created_at, active: app.status !== 'pending' }
+                        { status: 'iRembo Review', date: app.created_at, active: true },
+                        { status: 'Final Result', date: app.updated_at || app.created_at, active: (app.status === 'approved' || app.status === 'rejected') }
                     ]
                 }));
 
@@ -975,21 +1083,37 @@
                         : 'http://localhost:5000/api/document-requests';
                     const docReqResponse = await fetch(docReqUrl);
                     const docReqResult = await docReqResponse.json();
-                    documentRequests = (docReqResult.data || []).map(req => ({
-                        id: req.request_id,
-                        serviceType: req.document_type,
-                        fullName: req.citizen_name,
-                        nationalId: req.citizen_id,
-                        phoneNumber: req.citizen_phone,
-                        status: req.status,
-                        submittedDate: req.requested_at,
-                        isDocumentRequest: true,
-                        feedback: req.remarks || '',
-                        timeline: [
-                            { status: 'Request Submitted', date: req.requested_at, active: true },
-                            { status: 'Processing', date: req.updated_at || req.requested_at, active: req.status !== 'pending' }
-                        ]
-                    }));
+                    documentRequests = (docReqResult.data || []).map(req => {
+                        const timeline = [
+                            { status: 'Request Submitted', date: req.requested_at, active: true }
+                        ];
+                        
+                        if (req.status === 'review') {
+                            timeline.push({ status: 'Under Review', date: req.updated_at || req.requested_at, active: true });
+                        } else if (req.status === 'approved') {
+                            timeline.push({ status: 'Under Review', date: req.updated_at || req.requested_at, active: true });
+                            timeline.push({ status: 'Approved', date: req.updated_at || req.requested_at, active: true });
+                        } else if (req.status === 'rejected') {
+                            timeline.push({ status: 'Under Review', date: req.updated_at || req.requested_at, active: true });
+                            timeline.push({ status: 'Rejected', date: req.updated_at || req.requested_at, active: true });
+                        } else {
+                            timeline.push({ status: 'Processing', date: req.updated_at || req.requested_at, active: false });
+                        }
+
+                        return {
+                            id: req.request_id,
+                            serviceType: req.document_type,
+                            fullName: req.citizen_name,
+                            nationalId: req.citizen_id,
+                            phoneNumber: req.citizen_phone,
+                            status: req.status,
+                            queuePosition: req.queue_position || 0,
+                            submittedDate: req.requested_at,
+                            isDocumentRequest: true,
+                            feedback: req.remarks || '',
+                            timeline: timeline
+                        };
+                    });
                 } catch (err) {
                     console.log('Document requests not available:', err);
                 }
@@ -1042,6 +1166,32 @@
 
         // Render applications list
         function renderApplicationsList(applications, container) {
+            // Update Global Queue Summary
+            const pendingApps = applications.filter(a => (a.status === 'pending' || a.status === 'review'));
+            const queueSummary = document.getElementById('queueSummary');
+            
+            if (pendingApps.length > 0 && queueSummary) {
+                queueSummary.style.display = 'block';
+                const totalPending = pendingApps.length;
+                document.getElementById('totalPendingCount').textContent = totalPending;
+                
+                // Average wait time is for the system overall (max wait)
+                const maxQueuePos = Math.max(...applications.filter(a => a.status === 'pending').map(a => a.queuePosition || 0), 0);
+                const totalMins = Math.max(20, maxQueuePos * 20);
+                const h = Math.floor(totalMins / 60);
+                const m = totalMins % 60;
+                document.getElementById('avgWaitTime').textContent = h > 0 ? `${h}h ${m}m` : `${m}m`;
+                
+                // Intensity (0-100%) - assume 20 is "full capacity"
+                const intensity = Math.min((totalPending / 20) * 100, 100);
+                const intensityBar = document.getElementById('queueIntensity');
+                if (intensityBar) {
+                    intensityBar.style.width = intensity + '%';
+                    intensityBar.style.background = intensity > 80 ? '#ff4757' : (intensity > 40 ? '#ffa502' : '#2ed573');
+                }
+            } else if (queueSummary) {
+                queueSummary.style.display = 'none';
+            }
 
             container.innerHTML = [...applications].reverse().map(app => {
                 const statusClass = 'status-' + app.status;
@@ -1052,18 +1202,43 @@
                 if (app.status === 'review') statusText = 'Under Review';
                 if (app.status === 'approved') statusText = 'Approved';
                 if (app.status === 'rejected') statusText = 'Rejected';
-                if (app.status === 'sent') statusText = 'Sent to Department';
                 
-                const submittedDate = new Date(app.submittedDate).toLocaleDateString();
+                const subDate = new Date(app.submittedDate);
+                const submittedDateStr = subDate.toLocaleDateString();
                 
-                // Calculate days since submission and estimated available date
-                const daysSince = Math.floor((Date.now() - new Date(app.submittedDate)) / (1000 * 60 * 60 * 24));
-                // Use provided estimate or default to 14 days from submission
-                const estimatedDate = app.estimatedAvailableDate ? new Date(app.estimatedAvailableDate) : new Date(new Date(app.submittedDate).getTime() + 14 * 24 * 60 * 60 * 1000);
-                const estimatedDateString = estimatedDate.toLocaleDateString();
-                const daysUntilAvailable = Math.floor((estimatedDate - Date.now()) / (1000 * 60 * 60 * 24));
-                const canAppeal = daysUntilAvailable < 0 && app.status !== 'approved' && app.status !== 'rejected' && !app.isDocumentRequest;
-                const appealText = daysUntilAvailable < 0 ? '(Overdue)' : `(${Math.abs(daysUntilAvailable)} days)`;
+                // Calculate average period based on queue position (e.g., 50 apps processed per day)
+                const appsPerDay = 50;
+                const peopleAheadCount = Math.max(0, (app.queuePosition || 1) - 1);
+                const estimatedDays = Math.max(1, Math.ceil((peopleAheadCount + 1) / appsPerDay));
+                
+                // For demo purposes, current date is Feb 15, 2026
+                const currentDate = new Date('2026-02-15');
+                const diffTime = Math.abs(currentDate - subDate);
+                const daysSinceSubmission = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                const isDelayed = app.status === 'pending' && daysSinceSubmission > estimatedDays;
+
+                let avgPeriod = 'Immediate';
+                if (app.status === 'pending') {
+                    avgPeriod = isDelayed ? `<span style="color: var(--danger)">Delayed (${daysSinceSubmission} Days)</span>` : `${estimatedDays} ${estimatedDays === 1 ? 'Day' : 'Days'}`;
+                } else if (app.status === 'review') {
+                    avgPeriod = 'Processing';
+                } else if (app.status === 'approved' || app.status === 'rejected') {
+                    avgPeriod = 'Finalized';
+                }
+
+                // In-front documents info
+                const inFrontCount = Math.max(0, (app.queuePosition || 1) - 1);
+                const queueVisualDots = [];
+                for (let i = 0; i < Math.min(inFrontCount, 5); i++) {
+                    queueVisualDots.push('<div class="queue-dot active"></div>');
+                }
+                if (inFrontCount > 5) {
+                    queueVisualDots.push('<div style="font-size: 0.7rem; color: #718096; margin: 0 2px;">+'+(inFrontCount-5)+' more</div>');
+                }
+                queueVisualDots.push('<div class="queue-dot current" title="Your application"></div>');
+
+                const canAppeal = app.status === 'rejected' || isDelayed;
+                const appealText = app.status === 'rejected' ? 'Rejection' : 'Processing Delay';
 
                 return `
                     <div class="application-card">
@@ -1075,6 +1250,23 @@
                             <div class="status-badge ${statusClass}">${statusText}</div>
                         </div>
 
+                        ${app.status === 'pending' ? `
+                        <div class="queue-badge">
+                            <i class="fas fa-clock"></i> 
+                            ${isDelayed ? 
+                                `<span style="color: var(--danger); font-weight: bold;">CRITICAL DELAY: Your application has exceeded the estimated ${estimatedDays} day processing period.</span>` :
+                                `<span>${inFrontCount} applications ahead of yours for ${app.serviceType}</span>`
+                            }
+                        </div>
+                        <div style="margin: -0.5rem 0 1rem 0; padding: 0.5rem ${isDelayed ? '; border: 1px solid var(--danger); background: #fff5f5' : '; background: #fffaf0'}; border-radius: 8px;">
+                            <div style="font-size: 0.8rem; font-weight: 600; color: ${isDelayed ? 'var(--danger)' : '#744210'}; margin-bottom: 5px;">Queue Position Visualization:</div>
+                            <div class="queue-position-visual">
+                                ${queueVisualDots.join('')}
+                                <span style="font-size: 0.75rem; color: ${isDelayed ? 'var(--danger)' : 'var(--primary-blue)'}; margin-left: auto;">${isDelayed ? 'Stalled' : (app.queuePosition === 1 ? 'Next for review' : 'Waiting...')}</span>
+                            </div>
+                        </div>
+                        ` : ''}
+
                         <div class="app-details">
                             <div class="detail-item">
                                 <div class="detail-label">Applicant</div>
@@ -1082,15 +1274,17 @@
                             </div>
                             <div class="detail-item">
                                 <div class="detail-label">Submitted</div>
-                                <div class="detail-value">${submittedDate}</div>
+                                <div class="detail-value">${submittedDateStr}</div>
                             </div>
                             <div class="detail-item">
                                 <div class="detail-label">National ID</div>
                                 <div class="detail-value">${app.nationalId}</div>
                             </div>
                             <div class="detail-item">
-                                <div class="detail-label">Estimated Available</div>
-                                <div class="detail-value">${estimatedDateString} ${daysUntilAvailable >= 0 ? `(in ${daysUntilAvailable} days)` : `(${Math.abs(daysUntilAvailable)} days overdue)`}</div>
+                                <div class="detail-label">Average Period</div>
+                                <div class="detail-value" style="color: var(--primary-blue); font-weight: bold;">
+                                    ${avgPeriod}
+                                </div>
                             </div>
                             <div class="detail-item">
                                 <div class="detail-label">Phone</div>
@@ -1121,7 +1315,7 @@
                                 </button>
                             ` : ''}
                             ${app.status === 'approved' ? `
-                                <button class="btn btn-download">
+                                <button class="btn btn-download" onclick="downloadDocument('${app.id}', ${app.isDocumentRequest || false})">
                                     <i class="fas fa-download"></i> Download
                                 </button>
                             ` : ''}
@@ -1129,6 +1323,39 @@
                     </div>
                 `;
             }).join('');
+        }
+
+        // Handle File Downloads
+        async function downloadDocument(id, isDocRequest) {
+            try {
+                const endpoint = isDocRequest 
+                    ? `http://localhost:5000/api/document-requests/${id}/download`
+                    : `http://localhost:5000/api/applications/${id}/download`;
+                
+                showNotification('⏳ Preparing your document...', 'info');
+                console.log(`Downloading from ${endpoint}`);
+                
+                const response = await fetch(endpoint);
+                const result = await response.json();
+                
+                if (response.ok && result.download_url) {
+                    showNotification('✅ Document ready!', 'success');
+                    
+                    // Create a hidden link and click it to trigger download
+                    const link = document.createElement('a');
+                    link.href = result.download_url;
+                    link.download = result.filename || (isDocRequest ? 'requested_doc.png' : 'verified_doc.png');
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                } else {
+                    const errorMsg = result.detail || result.message || 'Download failed (Server Error)';
+                    throw new Error(errorMsg);
+                }
+            } catch (err) {
+                console.error('Download Error:', err);
+                showNotification('❌ ' + err.message, 'error');
+            }
         }
 
         // View details
