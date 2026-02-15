@@ -20,7 +20,13 @@ class Settings(BaseSettings):
     api_version: str = os.getenv("API_VERSION", "1.0.0")
     
     # Database
-    database_url: str = os.getenv("DATABASE_URL", "sqlite:///./irembo.db")
+    database_url: str = os.getenv("DATABASE_URL", "postgresql://postgres:postgres@localhost:5432/irembo_db")
+    db_host: str = os.getenv("DB_HOST", "localhost")
+    db_port: int = int(os.getenv("DB_PORT", 5432))
+    db_user: str = os.getenv("DB_USER", "postgres")
+    db_password: str = os.getenv("DB_PASSWORD", "postgres")
+    db_name: str = os.getenv("DB_NAME", "irembo_db")
+    use_postgresql: bool = os.getenv("USE_POSTGRESQL", "True").lower() == "true"
     
     # Security
     secret_key: str = os.getenv("SECRET_KEY", "change-me-in-production")
