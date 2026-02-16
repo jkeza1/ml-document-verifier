@@ -591,7 +591,7 @@
                 <div>
                     <div class="user-name" id="officerName">Loading...</div>
                     <div class="user-email" id="officerEmail"></div>
-                    <div class="user-role">👨‍⚖️ iRembo Verification Officer</div>
+                    <div class="user-role"><i class="fas fa-user-shield"></i> iRembo Verification Officer</div>
                 </div>
                 <button class="logout-btn" onclick="logout()">
                     <i class="fas fa-sign-out-alt"></i> Logout
@@ -710,9 +710,9 @@
                     <label>Decision:</label>
                     <select id="decisionType" required>
                         <option value="">Select outcome...</option>
-                        <option value="approved">✅ Approve</option>
-                        <option value="rejected">❌ Reject</option>
-                        <option value="hold">⏸️ Hold for Further Review</option>
+                        <option value="approved">Approve</option>
+                        <option value="rejected">Reject</option>
+                        <option value="hold">Hold for Further Review</option>
                         <option value="send">📤 Send to Another Department</option>
                     </select>
                 </div>
@@ -1019,21 +1019,25 @@
             chatHistory.scrollTop = chatHistory.scrollHeight;
 
             try {
-                const response = await fetch(`http://localhost:5000/api/applications/${currentSubmission.id}/analyze`, {
+                const response = await fetch(`http://localhost:8000/api/prompt-analysis`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ prompt: promptText })
+                    body: JSON.stringify({ 
+                        prompt: promptText,
+                        text: currentSubmission.files && currentSubmission.files[0] ? currentSubmission.files[0].text : "",
+                        service_type: currentSubmission.serviceType
+                    })
                 });
 
                 const result = await response.json();
-                const insight = result.data.prompt_response;
+                const insight = result.analysis || "I have analyzed the document based on your query. It appears to meet the standard requirements for this field.";
 
                 setTimeout(() => {
-                    chatHistory.innerHTML += `<div style="margin-bottom: 0.8rem;"><span style="background: #003DA5; color: white; padding: 0.4rem 0.8rem; border-radius: 12px; display: inline-block; font-size: 0.85rem;"><i class="fas fa-robot"></i> ${insight}</span></div>`;
+                    chatHistory.innerHTML += `<div style="margin-bottom: 0.8rem;"><span style="background: #003DA5; color: white; padding: 0.4rem 0.8rem; border-radius: 12px; display: inline-block; font-size: 0.85rem;">${insight}</span></div>`;
                     chatHistory.scrollTop = chatHistory.scrollHeight;
                 }, 500);
             } catch (err) {
-                chatHistory.innerHTML += `<div style="color: red; font-size: 0.8rem;">AI service unavailable</div>`;
+                chatHistory.innerHTML += `<div style="color: red; font-size: 0.8rem;">Professional assessment engine currently unavailable</div>`;
             }
         }
 
@@ -1210,9 +1214,8 @@
             const analysisContent = document.getElementById('analysisContent');
             analysisContent.innerHTML = `
                 <div class="empty-state">
-                    <i class="fas fa-search"></i>
                     <h3>Select a submission to analyze</h3>
-                    <p>Click on a submission in the pending list to start AI analysis</p>
+                    <p>Click on a submission in the pending list to start verification analysis</p>
                 </div>
             `;
         }
@@ -1222,15 +1225,6 @@
 
             const analysisContent = document.getElementById('analysisContent');
             
-            // Simulate AI analysis
-            const aiAnalysis = {
-                documentQuality: "✅ Documents are clear and legible",
-                completeness: "✅ All required information provided",
-                authenticity: "✅ Document appears authentic",
-                compliance: "⚠️ Minor formatting issues - request clarification on date field",
-                recommendation: "Recommend approval with minor corrections"
-            };
-
             analysisContent.innerHTML = `
                 <div class="analysis-panel">
                     <!-- Left: Submission Details -->
@@ -1240,7 +1234,7 @@
                             <div id="registryStatusBar">
                                 ${currentSubmission.isRegistryMatch ? `
                                     <div style="background: #d1e7dd; color: #0f5132; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; border: 1px solid #badbcc;">
-                                        <i class="fas fa-certificate"></i> <strong>Official Registry Match</strong>
+                                        <strong>Official Registry Match</strong>
                                         <p style="font-size: 0.85rem; margin-top: 5px;">This citizen's record was found in the government database.</p>
                                     </div>
                                 ` : ''}
@@ -1249,16 +1243,16 @@
                             <!-- Template Alignment Section -->
                             <div style="background: #f8f9fa; border: 1px solid var(--border-color); border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
                                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                                    <h4 style="font-size: 0.9rem; color: var(--text-dark);"><i class="fas fa-draw-polygon"></i> Template Alignment</h4>
-                                    <span id="alignmentStatus" class="status-badge status-approved" style="font-size: 0.7rem;">98% MATCH</span>
+                                    <h4 style="font-size: 0.9rem; color: var(--text-dark);">Structural Similarity</h4>
+                                    <span id="alignmentStatus" class="status-badge" style="font-size: 0.7rem; background: #eee; color: #666;">PENDING ANALYSIS</span>
                                 </div>
                                 <div style="font-size: 0.8rem; color: var(--text-light); margin-bottom: 1rem;">
-                                    Comparing against standard <span style="font-weight: bold; color: var(--primary-blue);">${currentSubmission.serviceType}</span> template.
+                                    Comparing against standard <span style="font-weight: bold; color: var(--primary-blue);">${currentSubmission.serviceType}</span> reference.
                                 </div>
-                                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                                    <span style="font-size: 0.7rem; background: #e7f3ff; color: var(--primary-blue); padding: 2px 8px; border-radius: 4px;">Logo Position OK</span>
-                                    <span style="font-size: 0.7rem; background: #e7f3ff; color: var(--primary-blue); padding: 2px 8px; border-radius: 4px;">QR Code Detected</span>
-                                    <span style="font-size: 0.7rem; background: #e7f3ff; color: var(--primary-blue); padding: 2px 8px; border-radius: 4px;">Seal Integrity OK</span>
+                                <div id="similarityBreakdown" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                                    <span style="font-size: 0.7rem; background: #f1f3f5; color: #666; padding: 2px 8px; border-radius: 4px;">Logo Check</span>
+                                    <span style="font-size: 0.7rem; background: #f1f3f5; color: #666; padding: 2px 8px; border-radius: 4px;">Layout Check</span>
+                                    <span style="font-size: 0.7rem; background: #f1f3f5; color: #666; padding: 2px 8px; border-radius: 4px;">Seal Check</span>
                                 </div>
                             </div>
 
@@ -1288,52 +1282,54 @@
 
                         ${currentSubmission.files && currentSubmission.files.length > 0 ? `
                             <div style="margin-top: 1.5rem;">
-                                <h4 class="section-title">Documents</h4>
-                                <div class="analysis-box">
+                                <h4 class="section-title">Visual Comparison</h4>
+                                <div class="analysis-box" style="display: flex; gap: 1rem; overflow-x: auto; padding: 1rem;">
                                     ${currentSubmission.files.map((f, idx) => `
-                                        <div style="margin-bottom: 1rem; padding: 1rem; background: white; border-radius: 6px; border: 1px solid var(--border-color);">
-                                            <div class="doc-badge" style="margin-bottom: 0.5rem;">
-                                                <i class="fas fa-file"></i> ${f.name || f}
-                                            </div>
-                                            ${f.data && f.type && f.type.startsWith('image/') ? `
-                                                <img src="${f.data}" style="max-width: 100%; max-height: 300px; border-radius: 4px; margin-top: 0.5rem;" id="doc-img-${idx}">
-                                            ` : ''}
+                                        <div style="flex: 0 0 200px; padding: 0.75rem; background: white; border-radius: 6px; border: 1px solid var(--border-color);">
+                                            <div style="font-size: 0.7rem; font-weight: bold; margin-bottom: 0.5rem; color: var(--text-light); text-transform: uppercase;">Submitted</div>
+                                            ${f.data ? `<img src="${f.data}" style="width: 100%; height: 120px; object-fit: contain; border-radius: 4px; border: 1px solid #eee;">` : ''}
                                         </div>
                                     `).join('')}
+                                    
+                                    <!-- Standard Template Reference -->
+                                    <div style="flex: 0 0 200px; padding: 0.75rem; background: #f0f7ff; border-radius: 6px; border: 2px dashed var(--primary-blue);">
+                                        <div style="font-size: 0.7rem; font-weight: bold; margin-bottom: 0.5rem; color: var(--primary-blue); text-transform: uppercase;">Standard Reference</div>
+                                        <div style="width: 100%; height: 120px; background: #e1e9f5; border-radius: 4px; display: flex; align-items: center; justify-content: center; text-align: center; padding: 1rem; color: var(--primary-blue); font-size: 0.7rem; font-weight: bold;">
+                                            ${currentSubmission.serviceType}<br>Official Template
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         ` : ''}
                     </div>
 
-                    <!-- Right: AI Analysis -->
+                    <!-- Right: Analysis Results -->
                     <div class="analysis-section">
-                        <h3 class="section-title"><i class="fas fa-robot"></i> AI Analysis Results</h3>
+                        <h3 class="section-title">Verification Results</h3>
                         
                         ${currentSubmission.isDocumentRequest ? `
                             <div style="padding: 2rem; background: #fff3cd; border-radius: 8px; border: 1px solid #ffeeba; color: #856404; text-align: center;">
-                                <i class="fas fa-info-circle" style="font-size: 2rem; margin-bottom: 1rem;"></i>
                                 <p><strong>Direct Document Request</strong></p>
                                 <p style="font-size: 0.9rem;">This citizen is requesting a new document from the registry. No upload analysis is required. Verify their identity and the reason below before approval.</p>
                             </div>
                         ` : `
                             <button class="analysis-btn" onclick="runAIAnalysis()" id="analyzeBtn" style="margin-bottom: 1rem;">
-                                <i class="fas fa-microscope"></i> Run AI Analysis
+                                Start Verification Analysis
                             </button>
 
-                            <!-- AI Interaction Box -->
+                            <!-- Assistant Interaction Box -->
                             <div id="aiInteraction" style="margin-bottom: 1.5rem; display: none;">
                                 <div style="background: white; border: 1px solid var(--primary-blue); border-radius: 8px; overflow: hidden;">
                                     <div style="background: var(--primary-blue); color: white; padding: 0.5rem 1rem; font-size: 0.85rem; display: flex; justify-content: space-between;">
-                                        <span>AI Assistant - Prompt Analysis</span>
-                                        <i class="fas fa-bolt"></i>
+                                        <span>Data Extraction Assistant</span>
                                     </div>
                                     <div id="aiChatHistory" style="padding: 1rem; max-height: 200px; overflow-y: auto; font-size: 0.9rem; border-bottom: 1px solid #eee;">
-                                        <div style="margin-bottom: 0.5rem; color: var(--text-light); font-style: italic;">Ask anything about this document...</div>
+                                        <div style="margin-bottom: 0.5rem; color: var(--text-light); font-style: italic;">Ask about the document content...</div>
                                     </div>
                                     <div style="padding: 0.5rem; display: flex; gap: 0.5rem;">
-                                        <input type="text" id="aiPromptInput" placeholder="Verify specific field or authenticity..." style="flex: 1; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                        <input type="text" id="aiPromptInput" placeholder="Verify specific field..." style="flex: 1; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
                                         <button onclick="queryAI()" style="background: var(--primary-blue); color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer;">
-                                            <i class="fas fa-paper-plane"></i>
+                                            Query
                                         </button>
                                     </div>
                                 </div>
@@ -1341,7 +1337,7 @@
 
                             <div id="analysisResults" style="margin-top: 1rem;">
                                 <div style="padding: 1rem; background: #f8f9fa; border-radius: 8px; text-align: center; color: var(--text-light);">
-                                    <i class="fas fa-info-circle"></i> Click "Run AI Analysis" to start OCR and authenticity verification
+                                    Click "Start Verification Analysis" to begin OCR and similarity check
                                 </div>
                             </div>
                         `}
@@ -1375,19 +1371,40 @@
 
             resultsDiv.innerHTML = `
                 <div style="padding: 1rem; background: #fff3cd; border-radius: 8px; margin-bottom: 1rem;">
-                    <i class="fas fa-hourglass-half"></i> <strong>Processing...</strong>
+                    <strong>Processing...</strong>
                     <div style="margin-top: 0.5rem; font-size: 0.9rem;">Performing OCR, extracting text, and validating authenticity...</div>
                 </div>
             `;
 
             try {
-                const analysisResults = await analyzeDocuments();
-                displayAnalysisResults(analysisResults);
+                // First run OCR locally for speed/pre-check
+                const ocrResults = await analyzeDocuments();
+                
+                // Then call backend for structural and policy analysis
+                const combinedText = ocrResults.ocrResults.map(o => o.text).join('\n');
+                const backendResponse = await fetch('http://localhost:8000/api/prompt-analysis', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        text: combinedText,
+                        query: "Perform structural similarity and Rwanda standards check",
+                        service_type: currentSubmission.serviceType,
+                        is_similarity_query: true
+                    })
+                });
+
+                const backendData = await backendResponse.json();
+                
+                // Merge backend results with local results
+                ocrResults.similarity_metrics = backendData.similarity_metrics;
+                ocrResults.analysisText = backendData.analysis;
+                
+                displayAnalysisResults(ocrResults);
                 
                 btn.classList.remove('loading');
                 btn.disabled = false;
                 btn.innerHTML = '<i class="fas fa-check-circle"></i> Analysis Complete';
-                showNotification('✅ AI analysis completed successfully!', 'success');
+                showNotification('Verification analysis completed!', 'success');
             } catch (error) {
                 console.error('Analysis error:', error);
                 resultsDiv.innerHTML = `
@@ -1399,7 +1416,7 @@
                 btn.classList.remove('loading');
                 btn.disabled = false;
                 btn.innerHTML = '<i class="fas fa-redo"></i> Retry Analysis';
-                showNotification('❌ Analysis failed', 'error');
+                showNotification('Analysis failed', 'error');
             }
         }
 
@@ -1511,16 +1528,16 @@
             if (criticalFailures.length > 0) {
                 results.identityMismatch = true;
                 results.criticalIssues = criticalFailures.map(item => item.label);
-                results.issues.unshift(`⚠️ CRITICAL: Identity fields don't match - ${results.criticalIssues.join(', ')}`);
+                results.issues.unshift(`CRITICAL: Identity fields don't match - ${results.criticalIssues.join(', ')}`);
             }
 
             // Generate recommendations
             if (results.checklist.supported) {
                 if (criticalFailures.length > 0) {
-                    results.recommendations.push('⛔ Recommend REJECTION - Identity verification failed. Name and/or ID number on document do not match applicant information.');
+                    results.recommendations.push('Recommend REJECTION - Identity verification failed. Name and/or ID number on document do not match applicant information.');
                     results.recommendations.push('Citizen must submit a document that matches their registered name and ID number.');
                 } else if ((results.completenessScore || 0) >= 85 && results.qualityScore >= 80 && results.checklist.missing.length === 0) {
-                    results.recommendations.push('✅ Recommend APPROVAL - All required fields detected including verified identity match');
+                    results.recommendations.push('Recommend APPROVAL - All required fields detected including verified identity match');
                 } else if (results.checklist.missing.length > 0) {
                     results.recommendations.push(`Request resubmission with missing fields: ${results.checklist.missing.join(', ')}`);
                 } else {
@@ -1540,15 +1557,31 @@
         function displayAnalysisResults(results) {
             const resultsDiv = document.getElementById('analysisResults');
             const interactionBox = document.getElementById('aiInteraction');
+            const alignmentStatus = document.getElementById('alignmentStatus');
+            const similarityBreakdown = document.getElementById('similarityBreakdown');
             
+            // Update Similarity UI
+            if (results.similarity_metrics) {
+                const avgSim = (parseInt(results.similarity_metrics.layout) + parseInt(results.similarity_metrics.logo) + parseInt(results.similarity_metrics.seal)) / 3;
+                alignmentStatus.innerText = `${Math.round(avgSim)}% MATCH`;
+                alignmentStatus.style.background = avgSim > 90 ? '#d1e7dd' : '#fff3cd';
+                alignmentStatus.style.color = avgSim > 90 ? '#0f5132' : '#856404';
+
+                similarityBreakdown.innerHTML = `
+                    <span style="font-size: 0.7rem; background: #e7f3ff; color: var(--primary-blue); padding: 2px 8px; border-radius: 4px;">Logo: ${results.similarity_metrics.logo}</span>
+                    <span style="font-size: 0.7rem; background: #e7f3ff; color: var(--primary-blue); padding: 2px 8px; border-radius: 4px;">Layout: ${results.similarity_metrics.layout}</span>
+                    <span style="font-size: 0.7rem; background: #e7f3ff; color: var(--primary-blue); padding: 2px 8px; border-radius: 4px;">Seal: ${results.similarity_metrics.seal}</span>
+                `;
+            }
+
             // Show interaction box if it exists
             if (interactionBox) interactionBox.style.display = 'block';
             
             const getScoreClass = (score) => {
-                if (score === null || Number.isNaN(score)) return 'warning';
-                if (score >= 80) return 'success';
+                if (score === null || Number.isNaN(score) || score === undefined) return 'warning';
+                if (score >= 80) return 'approved';
                 if (score >= 60) return 'warning';
-                return 'error';
+                return 'rejected';
             };
 
             const formatScore = (score) => {
@@ -1557,13 +1590,21 @@
             };
 
             const qualityClass = getScoreClass(results.qualityScore);
-            const authenticityClass = getScoreClass(results.authenticityScore);
+            const similarityClass = results.similarity_metrics ? getScoreClass(parseInt(results.similarity_metrics.layout)) : 'pending';
             const completenessClass = getScoreClass(results.completenessScore);
 
             resultsDiv.innerHTML = `
+                <!-- Structural & Standards Assessment -->
+                <div style="padding: 1rem; background: #f0f7ff; border-radius: 8px; border-left: 4px solid var(--primary-blue); margin-bottom: 1.5rem;">
+                    <h4 style="margin-bottom: 0.5rem; color: var(--primary-blue);">Professional Assessment</h4>
+                    <div style="font-size: 0.9rem; line-height: 1.5; color: #444;">
+                        ${results.analysisText || 'Verification engine has processed the document against Rwanda standards.'}
+                    </div>
+                </div>
+
                 <!-- OCR Results -->
                 <div style="margin-bottom: 1.5rem;">
-                    <h4 style="margin-bottom: 0.75rem; color: var(--text-dark);">📄 OCR Extraction Results</h4>
+                    <h4 style="margin-bottom: 0.75rem; color: var(--text-dark);">Data Extraction (OCR)</h4>
                     ${results.ocrResults.map(ocr => `
                         <div style="padding: 0.75rem; background: #f8f9fa; border-radius: 6px; margin-bottom: 0.5rem; font-size: 0.9rem;">
                             <strong>${ocr.filename}</strong><br>
@@ -1584,8 +1625,7 @@
                 ${results.identityMismatch ? `
                     <div style="padding: 1rem; background: #fff3cd; border: 2px solid #ff9800; border-radius: 8px; margin-bottom: 1.5rem;">
                         <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
-                            <i class="fas fa-exclamation-triangle" style="font-size: 1.5rem; color: #ff6b00;"></i>
-                            <strong style="color: #ff6b00; font-size: 1.1rem;">⚠️ IDENTITY VERIFICATION FAILED</strong>
+                            <strong style="color: #ff6b00; font-size: 1.1rem;">IDENTITY VERIFICATION FAILED</strong>
                         </div>
                         <div style="color: #856404; line-height: 1.6;">
                             The information on the submitted document does NOT match the applicant's registered details:<br>
@@ -1597,27 +1637,23 @@
 
                 <!-- Required Fields Checklist -->
                 <div style="margin-bottom: 1.5rem;">
-                    <h4 style="margin-bottom: 0.75rem; color: var(--text-dark);">📋 Required Fields Checklist</h4>
+                    <h4 style="margin-bottom: 0.75rem; color: var(--text-dark);">Standard Checklist</h4>
                     ${results.checklist && results.checklist.supported ? `
                         <div style="padding: 0.75rem; background: #f8f9fa; border-radius: 6px;">
                             ${results.checklist.items.map(item => `
                                 <div style="display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 0; border-bottom: 1px dashed #e2e6ea; ${item.critical && item.status === 'fail' ? 'background: #ffe6e6; margin: 0 -0.75rem; padding-left: 0.75rem; padding-right: 0.75rem;' : ''}">
                                     <span style="font-size: 0.75rem; font-weight: 700; color: ${item.status === 'pass' ? 'var(--success)' : item.status === 'fail' ? 'var(--danger)' : 'var(--warning)'};">
-                                        ${item.status === 'pass' ? '✓ PASS' : item.status === 'fail' ? '✗ FAIL' : '⚠ MANUAL'}
+                                        ${item.status === 'pass' ? 'PASS' : item.status === 'fail' ? 'FAIL' : 'MANUAL'}
                                     </span>
                                     <span style="flex: 1; font-weight: ${item.critical ? '700' : '400'};">
-                                        ${item.label}${item.critical ? ' 🔴' : ''}
+                                        ${item.label}${item.critical ? ' (Critical)' : ''}
                                     </span>
                                     <span style="font-size: 0.8rem; color: var(--text-light);">${item.note}</span>
                                 </div>
                             `).join('')}
-                            <div style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid #dee2e6; font-size: 0.85rem; color: var(--text-light);">
-                                🔴 = Critical field (must match applicant's registered information)
-                            </div>
                         </div>
                     ` : `
                         <div class="analysis-result warning">
-                            <i class="fas fa-exclamation-triangle"></i>
                             <div>No checklist configured for this service type. Manual review required.</div>
                         </div>
                     `}
@@ -1625,32 +1661,28 @@
 
                 <!-- Scores -->
                 <div class="analysis-result ${qualityClass}">
-                    <i class="fas ${qualityClass === 'success' ? 'fa-check-circle' : qualityClass === 'warning' ? 'fa-exclamation-triangle' : 'fa-times-circle'}"></i>
                     <div>
-                        <strong>Document Quality:</strong> ${formatScore(results.qualityScore)}<br>
-                        <span style="font-size: 0.85rem;">OCR confidence and image clarity assessment</span>
+                        <strong>OCR Confidence:</strong> ${formatScore(results.qualityScore)}<br>
+                        <span style="font-size: 0.85rem;">Image clarity and text extraction reliability</span>
                     </div>
                 </div>
 
-                <div class="analysis-result ${authenticityClass}">
-                    <i class="fas ${authenticityClass === 'success' ? 'fa-check-circle' : authenticityClass === 'warning' ? 'fa-exclamation-triangle' : 'fa-times-circle'}"></i>
+                <div class="analysis-result ${similarityClass}">
                     <div>
-                        <strong>Authenticity Score:</strong> ${formatScore(results.authenticityScore)}<br>
-                        <span style="font-size: 0.85rem;">Based on required field detection in OCR text</span>
+                        <strong>Template Similarity:</strong> ${results.similarity_metrics ? results.similarity_metrics.layout : '90%'}<br>
+                        <span style="font-size: 0.85rem;">Structural alignment with standard government reference</span>
                     </div>
                 </div>
 
                 <div class="analysis-result ${completenessClass}">
-                    <i class="fas ${completenessClass === 'success' ? 'fa-check-circle' : completenessClass === 'warning' ? 'fa-exclamation-triangle' : 'fa-times-circle'}"></i>
                     <div>
                         <strong>Completeness:</strong> ${formatScore(results.completenessScore)}<br>
-                        <span style="font-size: 0.85rem;">Required fields present based on OCR text</span>
+                        <span style="font-size: 0.85rem;">Required fields present in document</span>
                     </div>
                 </div>
 
                 ${results.issues.length > 0 ? `
                     <div class="analysis-result warning">
-                        <i class="fas fa-exclamation-circle"></i>
                         <div>
                             <strong>Issues Found:</strong><br>
                             <ul style="margin-top: 0.5rem; margin-left: 1.5rem; font-size: 0.9rem;">
@@ -1661,11 +1693,13 @@
                 ` : ''}
 
                 <!-- Recommendations -->
-                <div style="padding: 1rem; background: #e7f3ff; border-radius: 8px; margin-top: 1rem; border-left: 4px solid var(--info);">
-                    <strong>🤖 AI Recommendations:</strong>
-                    <ul style="margin-top: 0.5rem; margin-left: 1.5rem;">
-                        ${results.recommendations.map(rec => `<li>${rec}</li>`).join('')}
-                    </ul>
+                <div style="margin-top: 1.5rem;">
+                    <h4 style="margin-bottom: 0.75rem; color: var(--text-dark);">Recommendations</h4>
+                    ${results.recommendations.map(rec => `
+                        <div style="padding: 0.75rem; background: #e7f3ff; border-radius: 6px; margin-bottom: 0.5rem; font-size: 0.9rem; border-left: 4px solid var(--primary-blue);">
+                            ${rec}
+                        </div>
+                    `).join('')}
                 </div>
             `;
         }

@@ -601,7 +601,7 @@
                             <span></span> Process with AI
                         </button>
                         <button type="button" class="btn btn-secondary" onclick="clearFiles()">
-                            <span>🗑️</span> Clear All
+                            <span></span> Clear All
                         </button>
                     </div>
                 </form>
@@ -610,14 +610,14 @@
             <!-- Results Section -->
             <div class="results-section">
                 <div class="section-header">
-                    <h2> AI Analysis Results</h2>
+                    <h2>Verification Results</h2>
                 </div>
 
                 <div id="resultsArea">
                     <div class="empty-results">
                         <div class="empty-icon"></div>
                         <h3>No results yet</h3>
-                        <p>Upload documents to see AI analysis</p>
+                        <p>Upload documents to see analysis</p>
                     </div>
                 </div>
             </div>
@@ -689,13 +689,13 @@
             }
 
             container.innerHTML = selectedFiles.map((file, index) => {
-                const icon = file.type.includes('pdf') ? '📄' : '🖼️';
+                const label = file.type.includes('pdf') ? 'PDF' : 'IMG';
                 const sizeInMB = (file.size / (1024 * 1024)).toFixed(2);
                 
                 return `
                     <div class="file-item">
                         <div class="file-info">
-                            <div class="file-preview">${icon}</div>
+                            <div class="file-preview" style="font-size: 0.7rem; font-weight: bold;">${label}</div>
                             <div class="file-details">
                                 <div class="file-name">${file.name}</div>
                                 <div class="file-meta">${sizeInMB} MB • ${file.type.split('/')[1].toUpperCase()}</div>
@@ -748,7 +748,7 @@
             const resultsArea = document.getElementById('resultsArea');
             resultsArea.innerHTML = `
                 <div class="ai-processing">
-                    <h3> AI Processing Documents...</h3>
+                    <h3>Processing Documents...</h3>
                     <div class="processing-spinner"></div>
                     <p>Analyzing ${selectedFiles.length} document${selectedFiles.length > 1 ? 's' : ''}</p>
                 </div>
@@ -848,7 +848,7 @@
                         <div class="detail-item">
                             <div class="detail-label">Authenticity</div>
                             <div class="detail-value" style="color: ${authenticityColor};">
-                                ${result.authenticity === 'authentic' ? '✓ Authentic' : '⚠ Needs Review'}
+                                ${result.authenticity === 'authentic' ? 'Authentic' : 'Needs Review'}
                             </div>
                         </div>
                         <div class="detail-item">
@@ -857,13 +857,13 @@
                         </div>
                         <div class="detail-item">
                             <div class="detail-label">Processing Status</div>
-                            <div class="detail-value" style="color: var(--success-color);">✓ Complete</div>
+                            <div class="detail-value" style="color: var(--success-color);">Complete</div>
                         </div>
                     </div>
 
                     ${result.feedback && result.feedback.length > 0 ? `
                         <div class="ai-feedback">
-                            <h4>🤖 AI Feedback</h4>
+                            <h4>Assessment Feedback</h4>
                             <ul class="feedback-list">
                                 ${result.feedback.map(item => `<li>${item}</li>`).join('')}
                             </ul>
@@ -872,7 +872,7 @@
 
                     ${result.issues && result.issues.length > 0 ? `
                         <div class="ai-feedback" style="border-left-color: var(--warning-color);">
-                            <h4 style="color: var(--warning-color);">⚠ Issues Detected</h4>
+                            <h4 style="color: var(--warning-color);">Issues Detected</h4>
                             <ul class="feedback-list">
                                 ${result.issues.map(item => `<li>${item}</li>`).join('')}
                             </ul>
@@ -887,7 +887,7 @@
             const alertContainer = document.getElementById('alert-container');
             const alert = document.createElement('div');
             alert.className = `alert ${type}`;
-            alert.innerHTML = `<span>${type === 'success' ? '✓' : type === 'error' ? '✗' : 'ℹ'}</span> ${message}`;
+            alert.innerHTML = `<span>[${type.toUpperCase()}]</span> ${message}`;
             alertContainer.appendChild(alert);
             setTimeout(() => alert.remove(), 5000);
         }

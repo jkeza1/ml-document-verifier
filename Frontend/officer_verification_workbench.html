@@ -584,13 +584,13 @@
     <header>
         <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
             <div>
-                <h1>🛡️ Officer Verification Workbench</h1>
+                <h1><i class="fas fa-user-shield"></i> Officer Verification Workbench</h1>
                 <p>AI-Powered Document Verification System</p>
             </div>
             <div style="text-align: right;">
                 <div id="user-info" style="color: #666; font-size: 0.9rem; margin-bottom: 0.5rem;"></div>
                 <button onclick="logout()" style="background: #f44336; color: white; padding: 0.5rem 1rem; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s;">
-                    <i style="font-size: 0.9rem;">🚪</i> Logout
+                    <i class="fas fa-sign-out-alt"></i> Logout
                 </button>
             </div>
         </div>
@@ -598,22 +598,22 @@
 
     <!-- Officer Responsibilities Section -->
     <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 2rem; border-radius: 12px; margin-bottom: 2rem; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-        <h2 style="margin-bottom: 1.5rem; font-size: 1.5rem;">👨‍💼 Your Role as Officer</h2>
+        <h2 style="margin-bottom: 1.5rem; font-size: 1.5rem;"><i class="fas fa-briefcase"></i> Your Role as Officer</h2>
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
             <div style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2);">
-                <h3 style="margin-bottom: 0.5rem; font-size: 1.1rem;">📋 Review Applications</h3>
+                <h3 style="margin-bottom: 0.5rem; font-size: 1.1rem;"><i class="fas fa-list-check"></i> Review Applications</h3>
                 <p style="opacity: 0.9; font-size: 0.95rem;">Review submitted documents and applications in your queue. Prioritize urgent cases and manage workload efficiently.</p>
             </div>
             <div style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2);">
-                <h3 style="margin-bottom: 0.5rem; font-size: 1.1rem;">🤖 Use AI Assistance</h3>
+                <h3 style="margin-bottom: 0.5rem; font-size: 1.1rem;"><i class="fas fa-robot"></i> Use AI Assistance</h3>
                 <p style="opacity: 0.9; font-size: 0.95rem;">Leverage AI analysis for authenticity verification, fraud detection, and document quality assessment with confidence scores.</p>
             </div>
             <div style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2);">
-                <h3 style="margin-bottom: 0.5rem; font-size: 1.1rem;">✓ Make Decisions</h3>
+                <h3 style="margin-bottom: 0.5rem; font-size: 1.1rem;"><i class="fas fa-check-double"></i> Make Decisions</h3>
                 <p style="opacity: 0.9; font-size: 0.95rem;">Approve, reject, or request more information for applications. Document your verification decision with notes.</p>
             </div>
             <div style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2);">
-                <h3 style="margin-bottom: 0.5rem; font-size: 1.1rem;">📊 Track Performance</h3>
+                <h3 style="margin-bottom: 0.5rem; font-size: 1.1rem;"><i class="fas fa-chart-line"></i> Track Performance</h3>
                 <p style="opacity: 0.9; font-size: 0.95rem;">Monitor your verification stats, daily achievements, and maintain high accuracy standards for quality service.</p>
             </div>
         </div>
@@ -644,7 +644,7 @@
         <!-- Applications Queue -->
         <div class="applications-queue">
             <div class="queue-header">
-                <h2>📋 Applications Queue</h2>
+                <h2><i class="fas fa-list"></i> Applications Queue</h2>
                 <select class="filter-dropdown" id="queueFilter" onchange="filterQueue()">
                     <option value="all">All</option>
                     <option value="urgent">Urgent</option>
@@ -658,7 +658,7 @@
         <!-- Verification Workspace -->
         <div class="verification-workspace">
             <div id="empty-state" class="empty-state">
-                <div class="empty-state-icon">📁</div>
+                <div class="empty-state-icon"><i class="fas fa-folder-open"></i></div>
                 <h3>Select an application to begin verification</h3>
                 <p>Choose an application from the queue to view AI analysis and complete verification</p>
             </div>
@@ -674,18 +674,17 @@
 
                 <!-- Workspace Tabs -->
                 <div class="workspace-tabs">
-                    <button class="tab-btn active" onclick="switchTab('ai-analysis')">🤖 AI Analysis</button>
-                    <button class="tab-btn" onclick="switchTab('document')">📄 Document</button>
-                    <button class="tab-btn" onclick="switchTab('verification')">✓ Verification</button>
+                    <button class="tab-btn active" onclick="switchTab('ai-analysis')">Document Analysis</button>
+                    <button class="tab-btn" onclick="switchTab('document')">Document Viewer</button>
+                    <button class="tab-btn" onclick="switchTab('verification')">Verification Decision</button>
                 </div>
 
                 <!-- AI Analysis Tab -->
                 <div id="ai-analysis-tab" class="tab-content active">
                     <div class="ai-analysis-section">
                         <div class="ai-header">
-                            <div class="ai-icon">🤖</div>
                             <div>
-                                <h3>AI Document Analysis</h3>
+                                <h3>Document Forensic Analysis</h3>
                                 <div class="ai-status">
                                     <div class="pulse"></div>
                                     <span>Analysis Complete</span>
@@ -711,7 +710,7 @@
 
                             <div class="ai-result-card">
                                 <h4>Quality Check</h4>
-                                <div class="result-value" id="ai-quality">✓ Pass</div>
+                                <div class="result-value" id="ai-quality">PASS</div>
                                 <div class="result-detail">Image quality acceptable</div>
                             </div>
 
@@ -726,22 +725,22 @@
                     <!-- Detailed Authenticity Report -->
                     <div class="authenticity-report">
                         <div class="report-header">
-                            <h3>📊 Detailed Authenticity Report</h3>
-                            <span class="status-indicator authentic" id="overall-status">✓ Authentic</span>
+                            <h3>Detailed Authenticity Report</h3>
+                            <span class="status-indicator authentic" id="overall-status">Authentic</span>
                         </div>
 
                         <div class="report-section">
-                            <h4>🔍 Security Features Check</h4>
+                            <h4>Security Features Check</h4>
                             <div id="security-checks"></div>
                         </div>
 
                         <div class="report-section">
-                            <h4>📝 Data Extraction</h4>
+                            <h4>Data Extraction</h4>
                             <div id="extracted-data"></div>
                         </div>
 
                         <div class="report-section">
-                            <h4>⚠️ Detected Issues</h4>
+                            <h4>Detected Issues</h4>
                             <div id="detected-issues"></div>
                         </div>
                     </div>
@@ -751,7 +750,7 @@
                 <div id="document-tab" class="tab-content">
                     <div class="document-preview">
                         <div class="document-placeholder" id="doc-preview">
-                            <p>📄 Document preview will be displayed here</p>
+                            <p><i class="fas fa-file-image"></i> Document preview will be displayed here</p>
                             <p style="margin-top: 0.5rem; font-size: 0.9rem;">Supported formats: PDF, JPG, PNG</p>
                         </div>
                     </div>
@@ -768,9 +767,9 @@
                             <label for="decision">Verification Decision *</label>
                             <select id="decision" required>
                                 <option value="">-- Select Decision --</option>
-                                <option value="approved">✓ Approve Document</option>
-                                <option value="rejected">✗ Reject Document</option>
-                                <option value="needs-review">⚠ Needs Further Review</option>
+                                <option value="approved">Approve Document</option>
+                                <option value="rejected">Reject Document</option>
+                                <option value="needs-review">Needs Further Review</option>
                             </select>
                         </div>
 
@@ -803,10 +802,10 @@
 
                         <div class="action-buttons">
                             <button type="submit" class="btn btn-primary">
-                                <span>✓</span> Submit Verification
+                                <i class="fas fa-check"></i> Submit Verification
                             </button>
                             <button type="button" class="btn btn-secondary" onclick="resetForm()">
-                                <span>↺</span> Reset Form
+                                <i class="fas fa-undo"></i> Reset Form
                             </button>
                         </div>
                     </form>
@@ -1021,11 +1020,11 @@
             document.getElementById('ai-doc-type').textContent = app.document_type;
             
             // Quality metric based on forensics if available
-            let qualityStatus = '✓ Pass';
+            let qualityStatus = 'Pass';
             if (hasRealAI && results.ai_forensics) {
-                qualityStatus = results.ai_forensics.noise_integrity > 5 ? '✓ Good' : '⚠ Distorted';
+                qualityStatus = results.ai_forensics.noise_integrity > 5 ? 'Good' : 'Distorted';
             } else {
-                qualityStatus = confidence > 80 ? '✓ Pass' : '⚠ Warning';
+                qualityStatus = confidence > 80 ? 'Pass' : 'Warning';
             }
             document.getElementById('ai-quality').textContent = qualityStatus;
             
@@ -1035,13 +1034,13 @@
             const statusEl = document.getElementById('overall-status');
             if (verdict === 'authentic' && confidence > 84) {
                 statusEl.className = 'status-indicator authentic';
-                statusEl.innerHTML = '✓ Authentic';
+                statusEl.innerHTML = 'Authentic';
             } else if (confidence < 70 || verdict === 'fraudulent') {
                 statusEl.className = 'status-indicator fraudulent';
-                statusEl.innerHTML = '✗ Suspicious';
+                statusEl.innerHTML = 'Suspicious';
             } else {
                 statusEl.className = 'status-indicator suspicious';
-                statusEl.innerHTML = '⚠ Needs Review';
+                statusEl.innerHTML = 'Needs Review';
             }
 
             // Security checks - Real forensics logic
@@ -1074,7 +1073,7 @@
 
             document.getElementById('security-checks').innerHTML = securityChecks.map(check => `
                 <div class="check-item">
-                    <div class="check-icon ${check.status}">${check.status === 'pass' ? '✓' : '⚠'}</div>
+                    <div class="check-icon ${check.status}"><i class="fas ${check.status === 'pass' ? 'fa-check' : 'fa-exclamation'}"></i></div>
                     <div class="check-details">
                         <div class="check-title">${check.title}</div>
                         <div class="check-description">${check.detail}</div>
@@ -1098,7 +1097,7 @@
 
             document.getElementById('extracted-data').innerHTML = extractedData.map(data => `
                 <div class="check-item">
-                    <div class="check-icon pass">📋</div>
+                    <div class="check-icon pass" style="font-size: 0.7rem;">INFO</div>
                     <div class="check-details">
                         <div class="check-title">${data.label}</div>
                         <div class="check-description">${data.value}</div>
@@ -1126,7 +1125,7 @@
 
             document.getElementById('detected-issues').innerHTML = issues.map(issue => `
                 <div class="check-item">
-                    <div class="check-icon ${issue.severity}">${issue.severity === 'pass' ? '✓' : '⚠'}</div>
+                    <div class="check-icon ${issue.severity}" style="font-size: 0.7rem;">${issue.severity === 'pass' ? 'PASS' : 'WARN'}</div>
                     <div class="check-details">
                         <div class="check-title">${issue.title}</div>
                         <div class="check-description">${issue.detail}</div>
@@ -1187,7 +1186,7 @@
             const alertContainer = document.getElementById('alert-container');
             const alert = document.createElement('div');
             alert.className = `alert ${type}`;
-            alert.innerHTML = `<span>${type === 'success' ? '✓' : '⚠'}</span> ${message}`;
+            alert.innerHTML = `<span>[${type.toUpperCase()}]</span> ${message}`;
             alertContainer.appendChild(alert);
             setTimeout(() => alert.remove(), 5000);
         }
