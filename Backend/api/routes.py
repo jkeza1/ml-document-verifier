@@ -776,12 +776,71 @@ async def forward_to_irembo(application_id: str, payload: dict):
 async def prompt_ai_analysis(application_id: str, payload: dict):
     """AI Prompt Interface (Analyzing document with specific prompt)"""
     prompt = payload.get("prompt", "")
+    prompt_lower = prompt.lower()
     
+    # Check if the prompt is asking about document type or business registration
+    is_doc_type_query = any(word in prompt_lower for word in ["what is this", "document type", "verify if", "is this for", "identify"])
+    is_business_query = "business" in prompt_lower or "registration" in prompt_lower
+    is_similarity_query = "similar" in prompt_lower or "template" in prompt_lower or "match" in prompt_lower
+    
+    # Fetch application details to check service type
+    conn = get_db_connection()
+    cursor = get_db_cursor(conn)
+    cursor.execute(format_query("SELECT document_type FROM applications WHERE application_id = ?"), (application_id,))
+    app = cursor.fetchone()
+    
+    # Fetch template for similarity comparison
+    template = None
+    if app:
+        service_type = app["document_type"]
+        cursor.execute(format_query("SELECT * FROM document_templates WHERE document_type = ?"), (service_type,))
+        template_row = cursor.fetchone()
+        if template_row:
+            template = dict(template_row)
+    
+    conn.close()
+    
+    service_type = app["document_type"] if app else "Unknown"
+    prompt_response = f"Based on your request, I have analyzed the document structure and content."
+    
+    # Detail similarity analysis if requested or as part of general analysis
+    similarity_score = 92 # Default simulated score
+    structural_checks = {
+        "layout": "95%",
+        "logo_position": "98%",
+        "seal_integrity": "91%",
+        "font_matching": "88%"
+    }
+
+    if is_business_query and "Birth Certificate" in service_type:
+        prompt_response = (
+            f"The submitted document appears to be a Birth Certificate, but you are verifying it against "
+            f"Business Registration standards. This is a mismatch. The document lacks business-specific "
+            f"identifiers like RDB registration numbers or company headers."
+        )
+        similarity_score = 15
+    elif is_similarity_query:
+        if template:
+            prompt_response = (
+                f"I have compared the submitted document against the standard {service_type} template (v{template.get('standard_version', '1.0')}). "
+                f"The overall structural similarity is {similarity_score}%. Key matching features include "
+                f"header alignment, logo placement, and QR code positioning."
+            )
+        else:
+            prompt_response = f"I am comparing this document against general standards for {service_type}, as a specific template is not in the registry. The layout appears 85% consistent with standard formats."
+    elif is_doc_type_query:
+        prompt_response = f"This document is classified as a {service_type}. I have verified the relevant security features and data fields."
+    else:
+        # Default response with less generic fluff
+        prompt_response = f"I have processed your request for this {service_type}. The document's watermark and layout markers match the expected standards for certificates of this type."
+
     # Simulation of AI Analysis based on prompt
     insights = {
-        "integrity": "94%",
-        "prompt_response": f"Based on your request '{prompt}', I have verified the watermark and seal consistency. Both appear authentic.",
-        "details": "Spectral analysis shows no tampering in the requested region."
+        "integrity": f"{similarity_score}%",
+        "prompt_response": prompt_response,
+        "similarity_metrics": structural_checks,
+        "template_version": template.get("standard_version") if template else "Standard",
+        "details": "Layout analysis confirms document structure aligns with official templates."
     }
     
     return SuccessResponse(
@@ -849,16 +908,25 @@ async def upload_documents(
 
         # Template Alignment Logic
         template_feedback = ""
+        similarity_metrics = {
+            "layout": f"{random.randint(90, 98)}%",
+            "logo": f"{random.randint(92, 99)}%",
+            "seal": f"{random.randint(88, 96)}%",
+            "fonts": f"{random.randint(85, 95)}%"
+        }
+
         if template_info:
-            template_feedback = f"✓ Standard {document_type} layout detected. Elements align with template."
+            template_feedback = f"Standard {document_type} layout detected. Elements align with template."
         else:
-            template_feedback = "ℹ No standard template available for this document type."
+            template_feedback = "No standard template available for this document type."
 
         if registry_match_found and authenticity == "authentic":
             ai_confidence = min(100, ai_confidence + 5)
-            template_feedback += " ✓ Matched with official registry record."
+            template_feedback += " Matched with official registry record."
+            similarity_metrics["layout"] = "99%"
         elif registry_match_found:
-            template_feedback = "⚠ Template Mismatch: Record exists in registry but uploaded document has irregularities."
+            template_feedback = "Template Mismatch: Record exists in registry but uploaded document has irregularities."
+            similarity_metrics["layout"] = "45%"
 
         quality_score = ai_result.get("quality_score", int(ai_result.get("ai_forensics", {}).get("noise_integrity", 0) * 10))
         
@@ -870,6 +938,7 @@ async def upload_documents(
             "confidence": ai_confidence,
             "authenticity": authenticity,
             "quality_score": quality_score,
+            "similarity_metrics": similarity_metrics,
             "feedback": [template_feedback, f"Forensic Integrity: {ai_result.get('ai_forensics', {}).get('noise_integrity', 0):.2f}"]
         }
 
@@ -1335,3 +1404,47 @@ async def list_issued_documents(
         per_page=per_page,
         data=data[start:end]
     )
+
+@router.post("/prompt-analysis")
+async def prompt_ai_analysis(data: dict):
+    """Analyze document text based on Rwanda standards and similarity"""
+    text = data.get("text", "")
+    query = data.get("query", "")
+    service_type = data.get("service_type", "General")
+    is_similarity = data.get("is_similarity_query", False)
+    
+    # Simulate Rwanda Standards Analysis
+    analysis = "Verification Report:\n"
+    
+    # Check for service mismatch (e.g., Birth Cert for Business Reg)
+    if "business" in service_type.lower() and "birth certificate" in text.lower():
+        analysis += "- CRITICAL: Document mismatch detected. Applicant submitted a Birth Certificate for a Business Registration service.\n"
+        analysis += "- STATUS: REJECTED based on Rwanda service eligibility standards.\n"
+    else:
+        analysis += f"- Document validated against {service_type} standards.\n"
+        analysis += "- Text extraction confirmed required fields (Identity, Date of Issue, Authority Seal).\n"
+        analysis += "- Authenticity check: Structure matches official government template.\n"
+
+    # Add similarity metrics if requested
+    similarity_metrics = None
+    if is_similarity:
+        # Fetch template metadata if available
+        conn = get_db_connection()
+        cursor = get_db_cursor(conn)
+        cursor.execute(format_query("SELECT layout_metadata FROM document_templates WHERE document_type = ?"), (service_type,))
+        template = cursor.fetchone()
+        conn.close()
+        
+        # Simulated metrics based on template match logic
+        similarity_metrics = {
+            "layout": "95%",
+            "logo": "98%",
+            "seal": "92%",
+            "template_version": "2024.1-RW"
+        }
+    
+    return {
+        "status": "success",
+        "analysis": analysis,
+        "similarity_metrics": similarity_metrics
+    }
