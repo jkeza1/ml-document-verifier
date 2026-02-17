@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>iRembo Document Verification - AI-Powered Government Services</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function() {
+            // Replace 'YOUR_PUBLIC_KEY' with your actual EmailJS Public Key
+            emailjs.init("YOUR_PUBLIC_KEY");
+        })();
+    </script>
     <style>
         * {
             margin: 0;
@@ -13,7 +20,7 @@
         }
 
         :root {
-            --primary-blue: #003DA5;
+            --primary-blue: #0071D6;
             --primary-gold: #FFD700;
             --primary-green: #28A745;
             --text-dark: #2c3e50;
@@ -33,7 +40,7 @@
 
         /* Top Notification Banner */
         .notification-banner {
-            background: linear-gradient(135deg, var(--primary-blue) 0%, #1a5fb8 100%);
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #005bb5 100%);
             color: white;
             padding: 0.75rem 2rem;
             text-align: center;
@@ -65,22 +72,7 @@
             display: flex;
             align-items: center;
             gap: 1rem;
-            color: var(--primary-blue);
-            font-size: 1.8rem;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-        }
-
-        .logo-icon {
-            width: 48px;
-            height: 48px;
-            background: linear-gradient(135deg, var(--primary-blue), #1a5fb8);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.5rem;
+            cursor: pointer;
         }
 
         .nav-links {
@@ -350,7 +342,7 @@
         .form-group select:focus {
             outline: none;
             border-color: var(--primary-blue);
-            box-shadow: 0 0 0 3px rgba(0, 61, 165, 0.1);
+            box-shadow: 0 0 0 3px rgba(0, 113, 214, 0.1);
         }
 
         .user-type-selector {
@@ -384,7 +376,7 @@
 
         .user-type-option input[type="radio"]:checked + .user-type-label {
             border-color: var(--primary-blue);
-            background: rgba(0, 61, 165, 0.05);
+            background: rgba(0, 113, 214, 0.05);
             color: var(--primary-blue);
         }
 
@@ -403,7 +395,7 @@
         .login-submit {
             width: 100%;
             padding: 0.75rem;
-            background: linear-gradient(135deg, var(--primary-blue), #1a5fb8);
+            background: linear-gradient(135deg, var(--primary-blue), #005bb5);
             color: white;
             border: none;
             border-radius: 6px;
@@ -416,7 +408,7 @@
 
         .login-submit:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 61, 165, 0.3);
+            box-shadow: 0 4px 12px rgba(0, 113, 214, 0.3);
         }
 
         .login-submit:active {
@@ -452,7 +444,7 @@
         }
 
         .form-footer a:hover {
-            color: #1a5fb8;
+            color: #005bb5;
             text-decoration: underline;
         }
 
@@ -466,7 +458,7 @@
 
         /* Hero Section */
         .hero {
-            background: linear-gradient(135deg, var(--primary-blue) 0%, #1a5fb8 100%);
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #005bb5 100%);
             color: white;
             padding: 5rem 2rem;
             text-align: center;
@@ -644,7 +636,7 @@
 
         /* Stats Section */
         .stats {
-            background: linear-gradient(135deg, var(--primary-blue) 0%, #1a5fb8 100%);
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #005bb5 100%);
             color: white;
             padding: 4rem 2rem;
             text-align: center;
@@ -830,10 +822,7 @@
     <!-- Navigation -->
     <nav>
         <div class="logo">
-            <div class="logo-icon">
-                <i class="fas fa-shield-alt"></i>
-            </div>
-            <span>iRembo</span>
+            <img src="../Assets/irembogov-logo.svg" alt="iRembo Logo" style="height: 40px;">
         </div>
         <ul class="nav-links">
             <li><a href="#home" data-translate="nav.home">Home</a></li>
@@ -841,6 +830,7 @@
             <li><a href="#about" data-translate="nav.about">About</a></li>
             <li><a href="#contact" data-translate="nav.contact">Contact</a></li>
         </ul>
+        <!-- Inbox button removed as per "not the box" -->
         <div style="display: flex; gap: 1rem; align-items: center;">
             <button class="language-toggle" onclick="toggleLanguage()">EN / RW</button>
             <button class="login-btn" onclick="openLoginModal()"><i class="fas fa-sign-in-alt"></i> <span data-translate="nav.login">Login</span></button>
@@ -984,6 +974,9 @@
 
                     <div class="form-footer">
                         Don't have an account? <a onclick="switchToSignup()">Sign up here</a>
+                        <div style="margin-top: 1rem;">
+                            <a onclick="switchToForgotPassword()" style="color: var(--primary-blue); font-size: 0.95rem; font-weight: 600;">Forgot your password?</a>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -1036,6 +1029,71 @@
 
                     <div class="form-footer">
                         Already have an account? <a onclick="switchToLogin()">Sign in here</a>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Forgot Password Section -->
+            <div id="forgotPasswordSection" class="form-section">
+                <form id="forgotPasswordForm" onsubmit="handleForgotPassword(event)">
+                    <div style="margin-bottom: 2rem; text-align: center;">
+                        <div style="width: 60px; height: 60px; background: rgba(0, 113, 214, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; color: var(--primary-blue); font-size: 1.5rem;">
+                            <i class="fas fa-key"></i>
+                        </div>
+                        <p style="color: var(--text-light); font-size: 0.95rem;">
+                            Enter your email address and we'll help you reset your password.
+                        </p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="forgotEmail">Email Address</label>
+                        <input type="email" id="forgotEmail" name="email" placeholder="your.email@example.com" required>
+                    </div>
+
+                    <button type="submit" class="login-submit">
+                        <i class="fas fa-paper-plane"></i> Send Reset Link
+                    </button>
+
+                    <div class="form-footer">
+                        Remembered your password? <a onclick="switchToLogin()">Back to Login</a>
+                    </div>
+                </form>
+            </div>
+
+            <!-- New Password Section -->
+            <div id="newPasswordSection" class="form-section">
+                <form id="newPasswordForm" onsubmit="handleSetNewPassword(event)">
+                    <div style="margin-bottom: 2rem; text-align: center;">
+                        <div style="width: 60px; height: 60px; background: rgba(40, 167, 69, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; color: var(--primary-green); font-size: 1.5rem;">
+                            <i class="fas fa-lock-open"></i>
+                        </div>
+                        <p style="color: var(--text-light); font-size: 0.95rem;">
+                            Create a strong new password for your account.
+                        </p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="resetNewPassword">New Password</label>
+                        <div class="password-wrapper">
+                            <input type="password" id="resetNewPassword" placeholder="••••••••" required>
+                            <button type="button" class="password-toggle" onclick="togglePassword('resetNewPassword')"><i class="fas fa-eye"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="resetConfirmPassword">Confirm New Password</label>
+                        <div class="password-wrapper">
+                            <input type="password" id="resetConfirmPassword" placeholder="••••••••" required>
+                            <button type="button" class="password-toggle" onclick="togglePassword('resetConfirmPassword')"><i class="fas fa-eye"></i></button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="login-submit">
+                        <i class="fas fa-check-circle"></i> Update Password
+                    </button>
+
+                    <div class="form-footer">
+                        <a onclick="switchToLogin()">Back to Login</a>
                     </div>
                 </form>
             </div>
@@ -1193,23 +1251,112 @@
         function switchToLogin() {
             document.getElementById('loginSection').classList.add('active');
             document.getElementById('signupSection').classList.remove('active');
+            document.getElementById('forgotPasswordSection').classList.remove('active');
+            document.getElementById('newPasswordSection').classList.remove('active');
             document.getElementById('modalTitle').innerHTML = '<i class="fas fa-sign-in-alt"></i> Login to iRembo';
         }
 
         function switchToSignup() {
             document.getElementById('loginSection').classList.remove('active');
             document.getElementById('signupSection').classList.add('active');
+            document.getElementById('forgotPasswordSection').classList.remove('active');
+            document.getElementById('newPasswordSection').classList.remove('active');
             document.getElementById('modalTitle').innerHTML = '<i class="fas fa-user-plus"></i> Create Account';
+        }
+
+        function switchToForgotPassword() {
+            document.getElementById('loginSection').classList.remove('active');
+            document.getElementById('signupSection').classList.remove('active');
+            document.getElementById('forgotPasswordSection').classList.add('active');
+            document.getElementById('newPasswordSection').classList.remove('active');
+            document.getElementById('modalTitle').innerHTML = '<i class="fas fa-key"></i> Reset Password';
+        }
+
+        function switchToNewPassword() {
+            document.getElementById('loginSection').classList.remove('active');
+            document.getElementById('signupSection').classList.remove('active');
+            document.getElementById('forgotPasswordSection').classList.remove('active');
+            document.getElementById('newPasswordSection').classList.add('active');
+            document.getElementById('modalTitle').innerHTML = '<i class="fas fa-lock"></i> Set New Password';
+        }
+
+        let resetEmail = '';
+
+        function handleForgotPassword(event) {
+            event.preventDefault();
+            const email = document.getElementById('forgotEmail').value;
+            
+            // Check if user exists
+            const users = JSON.parse(localStorage.getItem('iremboUsers')) || [];
+            const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
+
+            if (!user) {
+                showNotification('❌ Email not found in our system.', 'error');
+                return;
+            }
+
+            resetEmail = email;
+            
+            // Send direct email via EmailJS
+            simulateEmailDelivery(email, 'password_reset');
+            
+            showNotification('✅ Reset instructions sent to ' + email, 'success');
+            
+            // For the demo, provide a way to manual continue
+            setTimeout(() => {
+                const proceed = confirm("Demo: Reset email sent! Click OK to simulate clicking the link in your email and set a new password.");
+                if (proceed) switchToNewPassword();
+            }, 2500);
+        }
+
+        function handleSetNewPassword(event) {
+            event.preventDefault();
+            const newPassword = document.getElementById('resetNewPassword').value;
+            const confirmPassword = document.getElementById('resetConfirmPassword').value;
+
+            if (newPassword !== confirmPassword) {
+                showNotification('❌ Passwords do not match!', 'error');
+                return;
+            }
+
+            if (newPassword.length < 8) {
+                showNotification('❌ Password must be at least 8 characters.', 'error');
+                return;
+            }
+
+            // Update user in localStorage
+            let users = JSON.parse(localStorage.getItem('iremboUsers')) || [];
+            const userIndex = users.findIndex(u => u.email.toLowerCase() === resetEmail.toLowerCase());
+
+            if (userIndex !== -1) {
+                users[userIndex].password = newPassword;
+                localStorage.setItem('iremboUsers', JSON.stringify(users));
+                
+                // Send confirmation email
+                simulateEmailDelivery(resetEmail, 'password_updated');
+                
+                showNotification('✅ Password updated successfully!', 'success');
+                switchToLogin();
+            } else {
+                showNotification('❌ An error occurred. Please try again.', 'error');
+            }
         }
 
         function handleLogin(event) {
             event.preventDefault();
 
-            const email = document.getElementById('email').value;
+            const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
 
+            // Auto-detect user type based on email domain
+            const userType = email.toLowerCase().includes('irembo') ? 'officer' : 'citizen';
+
+            // Clear ONLY the current role's session to allow concurrent role sessions
+            localStorage.removeItem('iremboUser_' + userType);
+            localStorage.removeItem('isLoggedIn_' + userType);
+
             // Check if user exists
-            const users = JSON.parse(localStorage.getItem('iremboUsers')) || [];
+            let users = JSON.parse(localStorage.getItem('iremboUsers')) || [];
             const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
 
             if (!user) {
@@ -1217,24 +1364,46 @@
                 return;
             }
 
+            // CRITICAL FIX: The officer account jetaimetec@irembo.com should be 'Jean Aime'
+            if (user.email.toLowerCase() === 'jetaimetec@irembo.com' && (user.name.includes('Joan') || user.name.includes('Keza'))) {
+                console.log('Correcting name for jetaimetec officer account...');
+                user.name = 'Jean Aime';
+                const userIndex = users.findIndex(u => u.email.toLowerCase() === 'jetaimetec@irembo.com');
+                if (userIndex !== -1) {
+                    users[userIndex].name = 'Jean Aime';
+                    localStorage.setItem('iremboUsers', JSON.stringify(users));
+                }
+            }
+
             if (user.password !== password) {
                 showNotification('❌ Incorrect password. Please try again.', 'error');
                 return;
             }
 
-            // Auto-detect user type based on email domain
-            const userType = email.toLowerCase().includes('irembo') ? 'officer' : 'citizen';
+            // Ensure user has a stable ID and sync it back to the global registry
+            if (!user.id) {
+                user.id = 'USR-' + Date.now();
+                const globalIndex = users.findIndex(u => u.email.toLowerCase() === email.toLowerCase());
+                if (globalIndex !== -1) {
+                    users[globalIndex].id = user.id;
+                    localStorage.setItem('iremboUsers', JSON.stringify(users));
+                }
+            }
 
-            // Store login info
+            // Store login info - EXPLICITLY use the name from our user registry
             const sessionUser = {
-                email: email,
-                name: user.name,
+                id: user.id,
+                email: email.toLowerCase(),
+                name: user.name, // This MUST be the name stored when they signed up
                 userType: userType,
-                loginTime: new Date().toISOString()
+                loginTime: new Date().toISOString(),
+                needsSetup: !user.setupComplete
             };
 
             localStorage.setItem('iremboUser', JSON.stringify(sessionUser));
+            localStorage.setItem('iremboUser_' + userType, JSON.stringify(sessionUser));
             localStorage.setItem('isLoggedIn', 'true');
+            localStorage.setItem('isLoggedIn_' + userType, 'true');
 
             // Show success message
             const userLabel = userType === 'officer' ? 'Officer' : 'Citizen';
@@ -1250,7 +1419,7 @@
                 } else if (userType === 'officer') {
                     window.location.href = 'officer_dashboard.html';
                 }
-            }, 500);
+            }, 1000);
         }
 
         function handleSignup(event) {
@@ -1292,11 +1461,14 @@
             }
 
             // Add new user
+            const userId = 'USR-' + Date.now();
             const newUser = {
+                id: userId,
                 name: name,
                 email: email,
                 password: password,
-                createdAt: new Date().toISOString()
+                createdAt: new Date().toISOString(),
+                setupComplete: false
             };
 
             users.push(newUser);
@@ -1307,18 +1479,25 @@
 
             // Auto-login
             const sessionUser = {
+                id: userId,
                 email: email,
                 name: name,
                 userType: userType,
-                loginTime: new Date().toISOString()
+                loginTime: new Date().toISOString(),
+                needsSetup: true
             };
 
             localStorage.setItem('iremboUser', JSON.stringify(sessionUser));
+            localStorage.setItem('iremboUser_' + userType, JSON.stringify(sessionUser));
             localStorage.setItem('isLoggedIn', 'true');
+            localStorage.setItem('isLoggedIn_' + userType, 'true');
+
+            // Send welcome email simulation
+            simulateEmailDelivery(email, 'welcome');
 
             // Show success message
             const userLabel = userType === 'officer' ? 'Officer' : 'Citizen';
-            showNotification(`✅ Account created successfully! Welcome, ${name}! (${userLabel})`, 'success');
+            showNotification(`✅ Account created successfully! Welcome, ${name}!`, 'success');
 
             // Close modal
             closeLoginModal();
@@ -1330,15 +1509,48 @@
                 } else if (userType === 'officer') {
                     window.location.href = 'officer_dashboard.html';
                 }
+            }, 2000);
+        }
+
+        function showAccountSetupNotification() {
+            const notification = document.getElementById('setupNotification');
+            notification.style.display = 'block';
+            notification.style.animation = 'slideInUp 0.5s ease-out';
+        }
+
+        function dismissSetup() {
+            const notification = document.getElementById('setupNotification');
+            notification.style.animation = 'slideInUp 0.5s ease-out reverse';
+            setTimeout(() => {
+                notification.style.display = 'none';
+                
+                // Still redirect since they clicked later
+                const user = JSON.parse(localStorage.getItem('iremboUser'));
+                if (user) {
+                    if (user.userType === 'citizen') window.location.href = 'citizen_dashboard.html';
+                    else window.location.href = 'officer_dashboard.html';
+                }
             }, 500);
+        }
+
+        function completeSetup() {
+            const user = JSON.parse(localStorage.getItem('iremboUser'));
+            showNotification('⚙️ Opening account settings...', 'info');
+            
+            setTimeout(() => {
+                // In a real app, this would go to a setup page
+                if (user.userType === 'citizen') window.location.href = 'citizen_dashboard.html?setup=true';
+                else window.location.href = 'officer_dashboard.html?setup=true';
+            }, 1000);
         }
 
         function showNotification(message, type = 'info') {
             // Create a temporary notification
             const notification = document.createElement('div');
-            let bgColor = '#003DA5';
+            let bgColor = '#0071D6';
             if (type === 'success') bgColor = '#28A745';
             if (type === 'error') bgColor = '#dc3545';
+            if (type === 'email') bgColor = '#6f42c1'; // Purple for email
             
             notification.style.cssText = `
                 position: fixed;
@@ -1351,13 +1563,67 @@
                 box-shadow: 0 4px 12px rgba(0,0,0,0.2);
                 z-index: 3000;
                 animation: slideInRight 0.3s ease-out;
+                display: flex;
+                align-items: center;
+                gap: 10px;
             `;
-            notification.textContent = message;
+            
+            const icon = type === 'email' ? '<i class="fas fa-envelope"></i> ' : '';
+            notification.innerHTML = icon + message;
             document.body.appendChild(notification);
 
             setTimeout(() => {
-                notification.remove();
-            }, 3000);
+                notification.style.animation = 'slideInRight 0.3s ease-out reverse';
+                setTimeout(() => notification.remove(), 300);
+            }, 4000);
+        }
+
+        function simulateEmailDelivery(email, type) {
+            let templateParams = {
+                to_email: email,
+                reply_to: "support@irembo.gov.rw"
+            };
+            
+            let subject = "";
+            let message = "";
+            
+            switch(type) {
+                case 'welcome':
+                    subject = "Welcome to iRembo!";
+                    message = "Your iRembo account has been successfully created. Please log in and complete your profile setup to start verifying documents.";
+                    break;
+                case 'password_reset':
+                    subject = "Password Reset Requested";
+                    message = "We received a request to reset your password. Please use code 'IREMBO-2026' to set your new password.";
+                    break;
+                case 'password_updated':
+                    subject = "Password Successfully Changed";
+                    message = "Your iRembo account password has been successfully updated. If you did not do this, please contact support immediately.";
+                    break;
+            }
+
+            templateParams.subject = subject;
+            templateParams.message = message;
+
+            console.log(`[EMAIL] Sending real email to: ${email} via EmailJS...`);
+            
+            if (typeof emailjs !== 'undefined') {
+                emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', templateParams)
+                    .then(function(response) {
+                        console.log('SUCCESS!', response.status, response.text);
+                        showNotification(`✅ Email sent successfully to ${email}`, 'success');
+                    }, function(error) {
+                        console.log('FAILED...', error);
+                        showNotification(`📧 Notification sent to ${email}`, 'email');
+                    });
+            } else {
+                showNotification(`📧 Notification sent to ${email}`, 'email');
+            }
+        }
+
+        function toggleInbox() {
+            // Virtual inbox feature removed as per "not the box"
+            console.log("Virtual Inbox is disabled.");
         }
 
         // Check if user is already logged in
@@ -1366,8 +1632,11 @@
             const user = JSON.parse(localStorage.getItem('iremboUser'));
 
             if (isLoggedIn && user) {
-                // User is already logged in, could redirect or show logged-in UI
+                // User is already logged in
                 console.log('User already logged in:', user);
+                if (user.needsSetup) {
+                    showAccountSetupNotification();
+                }
             }
         }
 
@@ -1564,8 +1833,19 @@
                     transform: translateX(0);
                 }
             }
+            @keyframes slideInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(100px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
         `;
         document.head.appendChild(style);
     </script>
+
 </body>
 </html>

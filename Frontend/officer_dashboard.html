@@ -8,7 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
     <style>
         :root {
-            --primary-blue: #003DA5;
+            --primary-blue: #0071D6;
             --primary-gold: #FFD700;
             --primary-green: #28A745;
             --text-dark: #333;
@@ -36,7 +36,7 @@
 
         /* Header */
         header {
-            background: linear-gradient(135deg, var(--primary-blue), #1a5fb8);
+            background: linear-gradient(135deg, var(--primary-blue), #005bb5);
             color: white;
             padding: 1.5rem 2rem;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
@@ -229,7 +229,7 @@
 
         .submission-card.selected {
             border-color: var(--primary-blue);
-            background: rgba(0, 61, 165, 0.02);
+            background: rgba(0, 113, 214, 0.02);
         }
 
         .submission-header {
@@ -568,6 +568,145 @@
             background: var(--danger);
         }
 
+        /* Settings Tab Styles */
+        .settings-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .settings-header {
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .settings-header h2 {
+            color: var(--primary-blue);
+            font-size: 1.8rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+        }
+
+        .form-input[disabled] {
+            background-color: #f1f3f5;
+            cursor: not-allowed;
+        }
+
+        .save-btn {
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s;
+        }
+
+        .save-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        .profile-picture-container {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .profile-pic {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: var(--primary-blue);
+            border: 3px solid var(--primary-blue);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .profile-pic img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-pic-info h3 {
+            margin-bottom: 0.2rem;
+            color: var(--text-dark);
+        }
+
+        .profile-pic-info p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        /* Header Profile Enhancement */
+        .profile-header-btn {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-right: 1.5rem;
+        }
+
+        .profile-header-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .profile-header-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary-gold);
+            color: var(--primary-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            border: 2px solid white;
+        }
+
+        .profile-header-text {
+            text-align: right;
+        }
+
         @media (max-width: 1200px) {
             .container {
                 grid-template-columns: 1fr;
@@ -584,14 +723,21 @@
     <header>
         <div class="header-content">
             <div class="header-left">
-                <h1><i class="fas fa-shield-alt"></i> Officer Dashboard</h1>
-                <p>Review and analyze citizen submissions</p>
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <img src="../Assets/irembogov-logo.svg" alt="iRembo Logo" style="height: 35px;">
+                    <h1 style="border-left: 2px solid rgba(255,255,255,0.3); padding-left: 1rem; font-size: 1.5rem; letter-spacing: 0.5px;">Officer Dashboard</h1>
+                </div>
+                <p style="margin-top: 0.2rem; opacity: 0.9;">Review and analyze citizen submissions</p>
             </div>
             <div class="user-info">
-                <div>
-                    <div class="user-name" id="officerName">Loading...</div>
-                    <div class="user-email" id="officerEmail"></div>
-                    <div class="user-role"><i class="fas fa-user-shield"></i> iRembo Verification Officer</div>
+                <div class="profile-header-btn" onclick="switchView('settings')">
+                    <div class="profile-header-text">
+                        <div class="user-name" id="officerName" style="color: white; font-weight: 600;">Loading...</div>
+                        <div class="user-email" id="officerEmail" style="font-size: 0.8rem; opacity: 0.8;"></div>
+                    </div>
+                    <div class="profile-header-icon" id="profileHeaderIcon">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
                 </div>
                 <button class="logout-btn" onclick="logout()">
                     <i class="fas fa-sign-out-alt"></i> Logout
@@ -647,6 +793,9 @@
                     <button class="tab" onclick="switchView('appeals')">
                         <i class="fas fa-exclamation-circle"></i> Appeals (<span id="appealsBadge">0</span>)
                     </button>
+                    <button class="tab" onclick="switchView('settings')">
+                        <i class="fas fa-cog"></i> Settings
+                    </button>
                 </div>
                 <button class="btn btn-view" onclick="loadSubmissions()" style="padding: 0.5rem 1rem;">
                     <i class="fas fa-sync-alt"></i> Refresh Queue
@@ -693,6 +842,75 @@
                         <h3>No appeals</h3>
                         <p>No pending appeals at the moment</p>
                     </div>
+                </div>
+            </div>
+
+            <!-- Account Settings View -->
+            <div class="content-area" id="settingsView" style="display: none;">
+                <div class="settings-container">
+                    <div class="settings-header">
+                        <h2><i class="fas fa-user-shield"></i> Officer Profile</h2>
+                        <p>Manage your account information and security settings</p>
+                    </div>
+
+                    <div class="profile-picture-container">
+                        <div class="profile-pic" id="profilePicPreview">
+                            <i class="fas fa-user-shield"></i>
+                        </div>
+                        <div class="profile-pic-info">
+                            <h3 id="profileDisplayName">Loading...</h3>
+                            <p id="profileUserType">Verification Officer</p>
+                            <div style="margin-top: 10px;">
+                                <label for="profilePicInput" class="tab" style="padding: 0.5rem 1rem; font-size: 0.85rem; display: inline-block; cursor: pointer; border: 1px solid var(--primary-blue); border-radius: 6px;">
+                                    <i class="fas fa-camera"></i> Change Photo
+                                </label>
+                                <input type="file" id="profilePicInput" accept="image/*" style="display: none;" onchange="handleProfilePicUpload(event)">
+                            </div>
+                        </div>
+                    </div>
+
+                    <form id="profileForm" onsubmit="updateProfile(event)">
+                        <div class="form-group">
+                            <label class="form-label" for="settingsName">Full Name</label>
+                            <input type="text" id="settingsName" class="form-input" placeholder="Your full name" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="settingsEmail">Email Address</label>
+                            <input type="email" id="settingsEmail" class="form-input" placeholder="yourname@example.com" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="settingsUserType">Role</label>
+                            <input type="text" id="settingsUserType" class="form-input" value="Verification Officer" disabled>
+                        </div>
+
+                        <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border-color);">
+                            <h3 style="margin-bottom: 1.5rem; color: var(--primary-blue);">
+                                <i class="fas fa-lock"></i> Security & Password
+                            </h3>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="newPassword">New Password (leave blank to keep current)</label>
+                                <div style="position: relative;">
+                                    <input type="password" id="newPassword" class="form-input" placeholder="Enter new password">
+                                    <i class="fas fa-eye" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: var(--text-light);" onclick="togglePasswordVisibility('newPassword')"></i>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="confirmNewPassword">Confirm New Password</label>
+                                <div style="position: relative;">
+                                    <input type="password" id="confirmNewPassword" class="form-input" placeholder="Confirm your new password">
+                                    <i class="fas fa-eye" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: var(--text-light);" onclick="togglePasswordVisibility('confirmNewPassword')"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="save-btn">
+                            <i class="fas fa-save" style="margin-right: 8px;"></i> Save Changes
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -916,21 +1134,40 @@
             };
         }
 
+        function getSessionUser() {
+            return JSON.parse(localStorage.getItem('iremboUser_officer') || localStorage.getItem('iremboUser'));
+        }
+
         // Check authentication
         function checkAuth() {
-            let user = JSON.parse(localStorage.getItem('iremboUser'));
-            let isLoggedIn = localStorage.getItem('isLoggedIn');
+            let user = getSessionUser();
+            let isLoggedIn = localStorage.getItem('isLoggedIn_officer');
 
-            // Fallback: auto-login as Test Officer if not logged in or wrong user type
             if (!isLoggedIn || !user || user.userType !== 'officer') {
-                user = {
-                    name: 'Test Officer',
-                    email: 'officer@test.local',
-                    userType: 'officer'
-                };
+                // Also check if general iremboUser is officer for legacy compatibility
+                let fallbackUser = JSON.parse(localStorage.getItem('iremboUser'));
+                if (fallbackUser && fallbackUser.userType === 'officer') {
+                    user = fallbackUser;
+                    isLoggedIn = 'true';
+                } else {
+                    console.log('Not authenticated as officer, redirecting to login...');
+                    window.location.href = 'index_functional.html?error=unauthorized';
+                    return;
+                }
+            }
+
+            // Correction for specific account name as requested
+            if (user.email.toLowerCase() === 'jetaimetec@irembo.com' && (user.name.includes('Joan') || user.name.includes('Keza'))) {
+                user.name = 'Jean Aime';
                 localStorage.setItem('iremboUser', JSON.stringify(user));
-                localStorage.setItem('isLoggedIn', 'true');
-                isLoggedIn = 'true';
+                
+                // Also update the global registry in case it's wrong there too
+                let users = JSON.parse(localStorage.getItem('iremboUsers')) || [];
+                const userIndex = users.findIndex(u => u.id === user.id);
+                if (userIndex !== -1) {
+                    users[userIndex].name = 'Jean Aime';
+                    localStorage.setItem('iremboUsers', JSON.stringify(users));
+                }
             }
 
             document.getElementById('officerName').textContent = user.name;
@@ -947,6 +1184,7 @@
                     id: app.application_id || app.id,
                     serviceType: app.document_type || app.serviceType,
                     fullName: app.citizen_name || app.fullName || 'N/A',
+                    citizenId: app.account_id || app.citizen_id || app.nationalId,
                     nationalId: app.citizen_id || app.nationalId || 'N/A',
                     phoneNumber: app.citizen_phone || app.phoneNumber || 'N/A',
                     description: app.description || '',
@@ -972,6 +1210,7 @@
                         id: req.request_id,
                         serviceType: req.document_type,
                         fullName: req.citizen_name || 'N/A',
+                        citizenId: req.account_id || req.citizen_id,
                         nationalId: req.citizen_id || 'N/A',
                         phoneNumber: req.citizen_phone || 'N/A',
                         description: req.reason || '',
@@ -995,7 +1234,19 @@
                 
             } catch (error) {
                 console.error('Error loading from backend:', error);
-                submissions = JSON.parse(localStorage.getItem('citizenApplications')) || [];
+                // First try the new system-wide registry
+                const globalApps = JSON.parse(localStorage.getItem('iremboApplications')) || [];
+                // Fallback to the legacy registry if needed
+                const legacyApps = JSON.parse(localStorage.getItem('citizenApplications')) || [];
+                
+                // Merge and remove duplicates
+                submissions = [...globalApps];
+                legacyApps.forEach(legacy => {
+                    const alreadyPresent = submissions.some(app => app.id === legacy.id);
+                    if (!alreadyPresent) {
+                        submissions.push(legacy);
+                    }
+                });
             }
             restoreCurrentSubmission();
             updateCounts();
@@ -1019,7 +1270,7 @@
             chatHistory.scrollTop = chatHistory.scrollHeight;
 
             try {
-                const response = await fetch(`http://localhost:8000/api/prompt-analysis`, {
+                const response = await fetch(`http://localhost:5000/api/prompt-analysis`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
@@ -1033,7 +1284,7 @@
                 const insight = result.analysis || "I have analyzed the document based on your query. It appears to meet the standard requirements for this field.";
 
                 setTimeout(() => {
-                    chatHistory.innerHTML += `<div style="margin-bottom: 0.8rem;"><span style="background: #003DA5; color: white; padding: 0.4rem 0.8rem; border-radius: 12px; display: inline-block; font-size: 0.85rem;">${insight}</span></div>`;
+                    chatHistory.innerHTML += `<div style="margin-bottom: 0.8rem;"><span style="background: var(--primary-blue); color: white; padding: 0.4rem 0.8rem; border-radius: 12px; display: inline-block; font-size: 0.85rem;">${insight}</span></div>`;
                     chatHistory.scrollTop = chatHistory.scrollHeight;
                 }, 500);
             } catch (err) {
@@ -1102,8 +1353,12 @@
                             <div class="info-value">${sub.fullName}</div>
                         </div>
                         <div class="info-item">
-                            <div class="info-label">National ID</div>
+                            <div class="info-label">National ID (16-digit)</div>
                             <div class="info-value">${sub.nationalId}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Account User ID</div>
+                            <div class="info-value" style="font-family: monospace; font-size: 0.8rem; color: var(--primary-blue);">${sub.citizenId || 'Legacy Account'}</div>
                         </div>
                         <div class="info-item">
                             <div class="info-label">Phone</div>
@@ -1199,7 +1454,27 @@
                         }
                     }
                 }
-                localStorage.setItem('citizenApplications', JSON.stringify(submissions));
+                
+                // Track who is currently reviewing this
+                const sessionUser = getSessionUser();
+                currentSubmission.reviewStartedBy = sessionUser.name;
+                currentSubmission.reviewStartedById = sessionUser.id;
+
+                // Sync the update back to the appropriate registry
+                let globalApps = JSON.parse(localStorage.getItem('iremboApplications')) || [];
+                const gIndex = globalApps.findIndex(a => a.id === currentSubmission.id);
+                if (gIndex !== -1) {
+                    globalApps[gIndex] = currentSubmission;
+                    localStorage.setItem('iremboApplications', JSON.stringify(globalApps));
+                }
+                
+                // Also update the local submissions list in memory
+                const subIndex = submissions.findIndex(s => s.id === currentSubmission.id);
+                if (subIndex !== -1) {
+                    submissions[subIndex] = currentSubmission;
+                    localStorage.setItem('citizenApplications', JSON.stringify(submissions)); // Legacy support
+                }
+
                 localStorage.setItem('officerCurrentSubmissionId', currentSubmission.id);
 
                 updateCounts();
@@ -1382,7 +1657,7 @@
                 
                 // Then call backend for structural and policy analysis
                 const combinedText = ocrResults.ocrResults.map(o => o.text).join('\n');
-                const backendResponse = await fetch('http://localhost:8000/api/prompt-analysis', {
+                const backendResponse = await fetch('http://localhost:5000/api/prompt-analysis', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -1720,6 +1995,7 @@
 
             const decision = document.getElementById('decisionType').value;
             const notes = document.getElementById('decisionNotes').value;
+            const sessionUser = getSessionUser();
 
             if (!currentSubmission) return;
 
@@ -1736,6 +2012,24 @@
             currentSubmission.officerNotes = notes;
             currentSubmission.decidedDate = new Date().toISOString();
             currentSubmission.status = newStatus;
+            currentSubmission.processedBy = sessionUser.name;
+            currentSubmission.processedById = sessionUser.id;
+
+            // Update in the main collection and save to local storage
+            const globalApps = JSON.parse(localStorage.getItem('iremboApplications')) || [];
+            const index = globalApps.findIndex(a => a.id === currentSubmission.id);
+            if (index !== -1) {
+                globalApps[index] = currentSubmission;
+                localStorage.setItem('iremboApplications', JSON.stringify(globalApps));
+            } else {
+                // Fallback to legacy collection if needed
+                const legacyApps = JSON.parse(localStorage.getItem('citizenApplications')) || [];
+                const lIndex = legacyApps.findIndex(a => a.id === currentSubmission.id);
+                if (lIndex !== -1) {
+                    legacyApps[lIndex] = currentSubmission;
+                    localStorage.setItem('citizenApplications', JSON.stringify(legacyApps));
+                }
+            }
 
             const statusText = decision === 'approved' ? 'Approved' : 
                               decision === 'rejected' ? 'Rejected' : 
@@ -1784,7 +2078,8 @@
 
         function switchView(view) {
             document.querySelectorAll('[id$="View"]').forEach(el => el.style.display = 'none');
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(t => t.classList.remove('active'));
 
             switch(view) {
                 case 'pending':
@@ -1801,10 +2096,154 @@
                     document.getElementById('appealsView').style.display = 'block';
                     renderAppeals();
                     break;
+                case 'settings':
+                    document.getElementById('settingsView').style.display = 'block';
+                    loadUserProfile();
+                    break;
             }
 
-            event.target.classList.add('active');
+            // Highlight the correct tab
+            const activeTab = Array.from(tabs).find(t => t.innerText.toLowerCase().includes(view));
+            if (activeTab) activeTab.classList.add('active');
         }
+
+        // --- ACCOUNT SETTINGS LOGIC ---
+        function loadUserProfile() {
+            const user = getSessionUser();
+            
+            // Sync with global registry to get latest profile image
+            const users = JSON.parse(localStorage.getItem('iremboUsers')) || [];
+            const registryUser = users.find(u => u.id === user.id);
+            
+            if (user) {
+                document.getElementById('settingsName').value = user.name || '';
+                document.getElementById('settingsEmail').value = user.email || '';
+                document.getElementById('profileDisplayName').textContent = user.name || 'Officer Account';
+                
+                const roles = { 'officer': 'Review Officer', 'citizen': 'Citizen' };
+                document.getElementById('profileUserType').textContent = (roles[user.userType] || 'User') + ' Account';
+
+                // Update Profile Photo
+                const profilePic = registryUser ? registryUser.profilePic : user.profilePic;
+                if (profilePic) {
+                    const preview = document.getElementById('profilePicPreview');
+                    const headerIcon = document.getElementById('profileHeaderIcon');
+                    
+                    const imgHtml = `<img src="${profilePic}" alt="Profile" style="width: 100%; height: 100%; object-fit: cover;">`;
+                    preview.innerHTML = imgHtml;
+                    headerIcon.innerHTML = imgHtml;
+                    headerIcon.style.background = 'transparent';
+                }
+            }
+        }
+
+        function handleProfilePicUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            if (!file.type.startsWith('image/')) {
+                showNotification('❌ Please upload an image file', 'error');
+                return;
+            }
+
+            if (file.size > 2 * 1024 * 1024) { // 2MB limit
+                showNotification('❌ Image is too large (max 2MB)', 'error');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const base64String = e.target.result;
+                
+                // Update Previews
+                const preview = document.getElementById('profilePicPreview');
+                const headerIcon = document.getElementById('profileHeaderIcon');
+                
+                const imgHtml = `<img src="${base64String}" alt="Profile">`;
+                preview.innerHTML = imgHtml;
+                headerIcon.innerHTML = imgHtml;
+                headerIcon.style.background = 'transparent';
+
+                // Store in registry immediately
+                const currentUser = getSessionUser();
+                const users = JSON.parse(localStorage.getItem('iremboUsers')) || [];
+                const index = users.findIndex(u => u.id === currentUser.id);
+                
+                if (index !== -1) {
+                    users[index].profilePic = base64String;
+                    localStorage.setItem('iremboUsers', JSON.stringify(users));
+                    showNotification('✅ Profile photo updated!', 'success');
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function updateProfile(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('settingsName').value;
+            const email = document.getElementById('settingsEmail').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmNewPassword').value;
+
+            if (newPassword && newPassword !== confirmPassword) {
+                showNotification('❌ Passwords do not match', 'error');
+                return;
+            }
+
+            // Get current session user
+            let currentUser = getSessionUser();
+            
+            // Get all registered users
+            let users = JSON.parse(localStorage.getItem('iremboUsers')) || [];
+            
+            // Find user by ID for reliability (emails can change)
+            const userIndex = users.findIndex(u => u.id === currentUser.id);
+
+            if (userIndex !== -1) {
+                // Update global registry
+                users[userIndex].name = name;
+                users[userIndex].email = email;
+                
+                if (newPassword) {
+                    users[userIndex].password = newPassword;
+                }
+
+                localStorage.setItem('iremboUsers', JSON.stringify(users));
+
+                // Update current session
+                currentUser.name = name;
+                currentUser.email = email;
+                localStorage.setItem('iremboUser_officer', JSON.stringify(currentUser));
+                localStorage.setItem('iremboUser', JSON.stringify(currentUser));
+
+                // Update UI headers
+                document.getElementById('officerName').textContent = name;
+                document.getElementById('officerEmail').textContent = email;
+                document.getElementById('profileDisplayName').textContent = name;
+
+                showNotification('✅ Profile updated successfully!', 'success');
+                
+                // Clear password fields
+                document.getElementById('newPassword').value = '';
+                document.getElementById('confirmNewPassword').value = '';
+            } else {
+                showNotification('❌ Could not find user account to update', 'error');
+            }
+        }
+
+        function togglePasswordVisibility(inputId) {
+            const input = document.getElementById(inputId);
+            const icon = input.nextElementSibling;
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        }
+        // --- END ACCOUNT SETTINGS LOGIC ---
 
         function renderAppeals() {
             const appeals = submissions.filter(s => s.appeal);
@@ -1850,8 +2289,14 @@
 
         function logout() {
             if (confirm('Are you sure you want to logout?')) {
-                localStorage.removeItem('iremboUser');
-                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('iremboUser_officer');
+                localStorage.removeItem('isLoggedIn_officer');
+                // Only clear general one if it was us
+                const current = JSON.parse(localStorage.getItem('iremboUser'));
+                if (current && current.userType === 'officer') {
+                    localStorage.removeItem('iremboUser');
+                    localStorage.removeItem('isLoggedIn');
+                }
                 window.location.href = 'index_functional.html';
             }
         }
@@ -1870,6 +2315,7 @@
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             checkAuth();
+            loadUserProfile();
             loadSubmissions();
 
             // Close modal when clicking outside

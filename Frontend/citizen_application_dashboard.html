@@ -788,9 +788,11 @@
         async function loadApplications() {
             try {
                 showLoading(true);
-                const response = await fetch(`${API_BASE_URL}/applications`);
+                const sessionUser = JSON.parse(localStorage.getItem('iremboUser'));
+                const accountId = sessionUser ? sessionUser.id : '';
+                const response = await fetch(`${API_BASE_URL}/applications?account_id=${accountId}`);
                 const data = await response.json();
-                allApplications = data.data || [];
+                allApplications = (data.data || []).filter(app => !app.account_id || app.account_id === accountId);
                 
                 // Load demo documents
                 loadDemoDocuments();

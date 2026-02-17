@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary-blue: #003DA5;
+            --primary-blue: #0071D6;
             --primary-gold: #FFD700;
             --primary-green: #28A745;
             --text-dark: #333;
@@ -36,7 +36,7 @@
 
         /* Header */
         header {
-            background: linear-gradient(135deg, var(--primary-blue), #1a5fb8);
+            background: linear-gradient(135deg, var(--primary-blue), #005bb5);
             color: white;
             padding: 1.5rem 2rem;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
@@ -184,7 +184,7 @@
         .form-group textarea:focus {
             outline: none;
             border-color: var(--primary-blue);
-            box-shadow: 0 0 0 3px rgba(0, 61, 165, 0.1);
+            box-shadow: 0 0 0 3px rgba(0, 113, 214, 0.1);
         }
 
         .form-group textarea {
@@ -203,7 +203,7 @@
 
         .file-upload:hover {
             border-color: var(--primary-blue);
-            background: rgba(0, 61, 165, 0.02);
+            background: rgba(0, 113, 214, 0.02);
         }
 
         .file-upload input {
@@ -219,7 +219,7 @@
         }
 
         .submit-btn {
-            background: linear-gradient(135deg, var(--primary-blue), #1a5fb8);
+            background: linear-gradient(135deg, var(--primary-blue), #005bb5);
             color: white;
             padding: 1rem 3rem;
             border: none;
@@ -232,7 +232,7 @@
 
         .submit-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 61, 165, 0.3);
+            box-shadow: 0 4px 12px rgba(0, 113, 214, 0.3);
         }
 
         /* Applications List */
@@ -517,7 +517,7 @@
             align-items: center;
             gap: 0.5rem;
             margin-bottom: 1rem;
-            border: 1px solid rgba(0, 61, 165, 0.1);
+            border: 1px solid rgba(0, 113, 214, 0.1);
         }
 
         .queue-position-visual {
@@ -536,7 +536,7 @@
 
         .queue-dot.active {
             background: var(--primary-blue);
-            box-shadow: 0 0 5px rgba(0, 61, 165, 0.4);
+            box-shadow: 0 0 5px rgba(0, 113, 214, 0.4);
         }
 
         .queue-dot.current {
@@ -550,6 +550,145 @@
             50% { transform: scale(1.4); opacity: 0.7; }
             100% { transform: scale(1.1); opacity: 1; }
         }
+
+        /* Settings Tab Styles */
+        .settings-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .settings-header {
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .settings-header h2 {
+            color: var(--primary-blue);
+            font-size: 1.8rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+        }
+
+        .form-input[disabled] {
+            background-color: #f1f3f5;
+            cursor: not-allowed;
+        }
+
+        .save-btn {
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s;
+        }
+
+        .save-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        .profile-picture-container {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .profile-pic {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: var(--primary-blue);
+            border: 3px solid var(--primary-blue);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .profile-pic img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-pic-info h3 {
+            margin-bottom: 0.2rem;
+            color: var(--text-dark);
+        }
+
+        .profile-pic-info p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        /* Header Profile Enhancement */
+        .profile-header-btn {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-right: 1.5rem;
+        }
+
+        .profile-header-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .profile-header-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary-gold);
+            color: var(--primary-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            border: 2px solid white;
+        }
+
+        .profile-header-text {
+            text-align: right;
+        }
     </style>
 </head>
 <body>
@@ -557,14 +696,21 @@
     <header>
         <div class="header-content">
             <div class="header-left">
-                <h1><i class="fas fa-file-alt"></i> iRembo Services</h1>
-                <p>Request services and track your applications</p>
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <img src="../Assets/irembogov-logo.svg" alt="iRembo Logo" style="height: 35px;">
+                    <h1 style="border-left: 2px solid rgba(255,255,255,0.3); padding-left: 1rem; font-size: 1.5rem; letter-spacing: 0.5px;">Services</h1>
+                </div>
+                <p style="margin-top: 0.2rem; opacity: 0.9;">Request and track your government services</p>
             </div>
             <div class="user-info">
-                <div class="user-details">
-                    <div class="user-name" id="userName">Loading...</div>
-                    <div class="user-email" id="userEmail"></div>
-                    <div class="user-role">👤 Citizen Account</div>
+                <div class="profile-header-btn" onclick="switchTab('settings')">
+                    <div class="profile-header-text">
+                        <div class="user-name" id="userName" style="text-align: right; color: white;">Loading...</div>
+                        <div class="user-email" id="userEmail" style="text-align: right; font-size: 0.8rem; opacity: 0.8;"></div>
+                    </div>
+                    <div class="profile-header-icon" id="profileHeaderIcon">
+                        <i class="fas fa-user"></i>
+                    </div>
                 </div>
                 <button class="logout-btn" onclick="logout()">
                     <i class="fas fa-sign-out-alt"></i> Logout
@@ -585,6 +731,9 @@
             </button>
             <button class="tab" onclick="switchTab('applications')">
                 <i class="fas fa-list"></i> My Applications
+            </button>
+            <button class="tab" onclick="switchTab('settings')">
+                <i class="fas fa-cog"></i> Account Settings
             </button>
         </div>
 
@@ -761,6 +910,77 @@
                 <!-- Applications will be loaded here -->
             </div>
         </div>
+
+        <!-- Account Settings Tab -->
+        <div class="tab-content" id="settingsTab">
+            <div class="content-area">
+                <div class="settings-container">
+                    <div class="settings-header">
+                        <h2><i class="fas fa-user-circle"></i> Account Profile</h2>
+                        <p>Manage your account information and security settings</p>
+                    </div>
+
+                    <div class="profile-picture-container">
+                        <div class="profile-pic" id="profilePicPreview">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="profile-pic-info">
+                            <h3 id="profileDisplayName">Loading...</h3>
+                            <p id="profileUserType">Citizen Account</p>
+                            <div style="margin-top: 10px;">
+                                <label for="profilePicInput" class="tab" style="padding: 0.5rem 1rem; font-size: 0.85rem; display: inline-block; cursor: pointer; border: 1px solid var(--primary-blue); border-radius: 6px;">
+                                    <i class="fas fa-camera"></i> Change Photo
+                                </label>
+                                <input type="file" id="profilePicInput" accept="image/*" style="display: none;" onchange="handleProfilePicUpload(event)">
+                            </div>
+                        </div>
+                    </div>
+
+                    <form id="profileForm" onsubmit="updateProfile(event)">
+                        <div class="form-group">
+                            <label class="form-label" for="settingsName">Full Name</label>
+                            <input type="text" id="settingsName" class="form-input" placeholder="Your full name" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="settingsEmail">Email Address</label>
+                            <input type="email" id="settingsEmail" class="form-input" placeholder="yourname@example.com" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="settingsUserType">Account Type</label>
+                            <input type="text" id="settingsUserType" class="form-input" value="Citizen" disabled>
+                        </div>
+
+                        <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border-color);">
+                            <h3 style="margin-bottom: 1.5rem; color: var(--primary-blue);">
+                                <i class="fas fa-lock"></i> Security & Password
+                            </h3>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="newPassword">New Password (leave blank to keep current)</label>
+                                <div style="position: relative;">
+                                    <input type="password" id="newPassword" class="form-input" placeholder="Enter new password">
+                                    <i class="fas fa-eye" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: var(--text-light);" onclick="togglePasswordVisibility('newPassword')"></i>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="confirmNewPassword">Confirm New Password</label>
+                                <div style="position: relative;">
+                                    <input type="password" id="confirmNewPassword" class="form-input" placeholder="Confirm your new password">
+                                    <i class="fas fa-eye" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: var(--text-light);" onclick="togglePasswordVisibility('confirmNewPassword')"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="save-btn">
+                            <i class="fas fa-save" style="margin-right: 8px;"></i> Save Changes
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Appeal Modal -->
@@ -792,6 +1012,16 @@
     </div>
 
     <script>
+        function getAppsKey() {
+            // Updated to shared registry for full system integration
+            // Each application will have its own 'citizenId' to ensure isolation during display
+            return 'iremboApplications';
+        }
+
+        function getSessionUser() {
+            return JSON.parse(localStorage.getItem('iremboUser_citizen') || localStorage.getItem('iremboUser'));
+        }
+
         function updateQueuePressure(serviceType, containerId) {
             const container = document.getElementById(containerId);
             if (!serviceType) {
@@ -829,19 +1059,20 @@
 
         // Check authentication
         function checkAuth() {
-            let user = JSON.parse(localStorage.getItem('iremboUser'));
-            let isLoggedIn = localStorage.getItem('isLoggedIn');
+            let user = JSON.parse(localStorage.getItem('iremboUser_citizen'));
+            let isLoggedIn = localStorage.getItem('isLoggedIn_citizen');
 
-            // Fallback: auto-login as Test Citizen if not logged in or wrong user type
             if (!isLoggedIn || !user || user.userType !== 'citizen') {
-                user = {
-                    name: 'Test Citizen',
-                    email: 'citizen@test.local',
-                    userType: 'citizen'
-                };
-                localStorage.setItem('iremboUser', JSON.stringify(user));
-                localStorage.setItem('isLoggedIn', 'true');
-                isLoggedIn = 'true';
+                // Also check if general iremboUser is citizen for legacy compatibility
+                let fallbackUser = JSON.parse(localStorage.getItem('iremboUser'));
+                if (fallbackUser && fallbackUser.userType === 'citizen') {
+                    user = fallbackUser;
+                    isLoggedIn = 'true';
+                } else {
+                    console.log('Not authenticated as citizen, redirecting to login...');
+                    window.location.href = 'index_functional.html?error=unauthorized';
+                    return;
+                }
             }
 
             document.getElementById('userName').textContent = user.name;
@@ -851,8 +1082,14 @@
         // Logout
         function logout() {
             if (confirm('Are you sure you want to logout?')) {
-                localStorage.removeItem('iremboUser');
-                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('iremboUser_citizen');
+                localStorage.removeItem('isLoggedIn_citizen');
+                // Only clear general one if it was us
+                const current = JSON.parse(localStorage.getItem('iremboUser'));
+                if (current && current.userType === 'citizen') {
+                    localStorage.removeItem('iremboUser');
+                    localStorage.removeItem('isLoggedIn');
+                }
                 window.location.href = 'index_functional.html';
             }
         }
@@ -865,13 +1102,155 @@
             tabs.forEach(tab => tab.classList.remove('active'));
             contents.forEach(content => content.classList.remove('active'));
 
-            event.target.closest('.tab').classList.add('active');
+            const activeTab = Array.from(tabs).find(t => t.innerText.toLowerCase().includes(tabName === 'request' ? 'verify' : tabName === 'requestDoc' ? 'request' : tabName));
+            if (activeTab) activeTab.classList.add('active');
+            
             document.getElementById(tabName + 'Tab').classList.add('active');
 
             if (tabName === 'applications') {
                 loadApplications();
+            } else if (tabName === 'settings') {
+                loadUserProfile();
             }
         }
+
+        // --- ACCOUNT SETTINGS LOGIC ---
+        function loadUserProfile() {
+            const user = getSessionUser();
+            
+            // Sync with global registry to get latest profile image
+            const users = JSON.parse(localStorage.getItem('iremboUsers')) || [];
+            if (!user) return;
+            const registryUser = users.find(u => u.id === user.id);
+            
+            if (user) {
+                document.getElementById('settingsName').value = user.name || '';
+                document.getElementById('settingsEmail').value = user.email || '';
+                document.getElementById('profileDisplayName').textContent = user.name || 'Citizen Account';
+                
+                const roles = { 'officer': 'Review Officer', 'citizen': 'Citizen' };
+                document.getElementById('profileUserType').textContent = (roles[user.userType] || 'User') + ' Account';
+
+                // Update Profile Photo
+                const profilePic = registryUser ? registryUser.profilePic : user.profilePic;
+                if (profilePic) {
+                    const preview = document.getElementById('profilePicPreview');
+                    const headerIcon = document.getElementById('profileHeaderIcon');
+                    
+                    const imgHtml = `<img src="${profilePic}" alt="Profile" style="width: 100%; height: 100%; object-fit: cover;">`;
+                    preview.innerHTML = imgHtml;
+                    headerIcon.innerHTML = imgHtml;
+                    headerIcon.style.background = 'transparent';
+                }
+            }
+        }
+
+        function handleProfilePicUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            if (!file.type.startsWith('image/')) {
+                showNotification('❌ Please upload an image file', 'error');
+                return;
+            }
+
+            if (file.size > 2 * 1024 * 1024) { // 2MB limit
+                showNotification('❌ Image is too large (max 2MB)', 'error');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const base64String = e.target.result;
+                
+                // Update Previews
+                const preview = document.getElementById('profilePicPreview');
+                const headerIcon = document.getElementById('profileHeaderIcon');
+                
+                const imgHtml = `<img src="${base64String}" alt="Profile">`;
+                preview.innerHTML = imgHtml;
+                headerIcon.innerHTML = imgHtml;
+                headerIcon.style.background = 'transparent';
+
+                // Store in registry immediately
+                const currentUser = getSessionUser();
+                const users = JSON.parse(localStorage.getItem('iremboUsers')) || [];
+                const index = users.findIndex(u => u.id === currentUser.id);
+                
+                if (index !== -1) {
+                    users[index].profilePic = base64String;
+                    localStorage.setItem('iremboUsers', JSON.stringify(users));
+                    showNotification('✅ Profile photo updated!', 'success');
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function updateProfile(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('settingsName').value;
+            const email = document.getElementById('settingsEmail').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmNewPassword').value;
+
+            if (newPassword && newPassword !== confirmPassword) {
+                showNotification('❌ Passwords do not match', 'error');
+                return;
+            }
+
+            // Get current session user
+            let currentUser = getSessionUser();
+            
+            // Get all registered users
+            let users = JSON.parse(localStorage.getItem('iremboUsers')) || [];
+            
+            // Find user by ID for reliability (emails can change)
+            const userIndex = users.findIndex(u => u.id === currentUser.id);
+
+            if (userIndex !== -1) {
+                // Update global registry
+                users[userIndex].name = name;
+                users[userIndex].email = email;
+                
+                if (newPassword) {
+                    users[userIndex].password = newPassword;
+                }
+
+                localStorage.setItem('iremboUsers', JSON.stringify(users));
+
+                // Update current session
+                currentUser.name = name;
+                currentUser.email = email;
+                localStorage.setItem('iremboUser', JSON.stringify(currentUser));
+
+                // Update UI headers
+                document.getElementById('userName').textContent = name;
+                document.getElementById('userEmail').textContent = email;
+                document.getElementById('profileDisplayName').textContent = name;
+
+                showNotification('✅ Profile updated successfully!', 'success');
+                
+                // Clear password fields
+                document.getElementById('newPassword').value = '';
+                document.getElementById('confirmNewPassword').value = '';
+            } else {
+                showNotification('❌ Could not find user account to update', 'error');
+            }
+        }
+
+        function togglePasswordVisibility(inputId) {
+            const input = document.getElementById(inputId);
+            const icon = input.nextElementSibling;
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        }
+        // --- END ACCOUNT SETTINGS LOGIC ---
 
         // Submit document request to iRembo
         async function submitDocRequest(event) {
@@ -882,6 +1261,7 @@
             const nationalId = document.getElementById('docNationalId').value;
             const phone = document.getElementById('docPhone').value;
             const reason = document.getElementById('docReason').value;
+            const sessionUser = JSON.parse(localStorage.getItem('iremboUser_citizen') || localStorage.getItem('iremboUser'));
 
             try {
                 const response = await fetch('http://localhost:5000/api/document-request', {
@@ -891,6 +1271,7 @@
                         document_type: docType,
                         citizen_name: fullName,
                         citizen_id: nationalId,
+                        account_id: sessionUser.id,
                         citizen_phone: phone,
                         reason: reason,
                         requested_at: new Date().toISOString()
@@ -954,11 +1335,13 @@
             }
 
             // Create FormData for backend submission
+            const sessionUser = JSON.parse(localStorage.getItem('iremboUser_citizen') || localStorage.getItem('iremboUser'));
             const formData = new FormData();
             formData.append('document_type', serviceType);
             formData.append('citizen_name', fullName);
             formData.append('citizen_email', email);
-            formData.append('citizen_id', nationalId);
+            formData.append('citizen_id', nationalId); // The 16-digit ID for verification
+            formData.append('account_id', sessionUser.id); // The USR- ID for dashboard tracking
             formData.append('citizen_phone', phoneNumber);
             formData.append('description', description);
             
@@ -978,13 +1361,16 @@
 
                 const result = await response.json();
                 const appId = result.data?.application_id || result.data?.id || 'APP-' + Date.now();
+                const sessionUser = getSessionUser();
 
-                let applications = JSON.parse(localStorage.getItem('citizenApplications')) || [];
+                let applications = JSON.parse(localStorage.getItem(getAppsKey())) || [];
                 const submissionDate = new Date();
                 const estimatedDate = new Date(submissionDate.getTime() + 14 * 24 * 60 * 60 * 1000); // 14 days from now
                 
                 const request = {
                     id: appId,
+                    citizenId: sessionUser.id, // CRITICAL: Link this application to the current user's unique ID
+                    citizenName: sessionUser.name,
                     serviceType: serviceType,
                     fullName: fullName,
                     nationalId: nationalId,
@@ -1001,7 +1387,7 @@
                     }]
                 };
                 applications.push(request);
-                localStorage.setItem('citizenApplications', JSON.stringify(applications));
+                localStorage.setItem(getAppsKey(), JSON.stringify(applications));
 
                 showNotification('✅ Request submitted! Application ID: ' + appId, 'success');
 
@@ -1021,11 +1407,19 @@
 
         async function loadApplications(skipLoadingIndicator = false) {
             const container = document.getElementById('applicationsList');
+            const sessionUser = JSON.parse(localStorage.getItem('iremboUser_citizen') || localStorage.getItem('iremboUser'));
             
-            // Always try to show cached data immediately while loading from backend
-            const localAppsImmediate = JSON.parse(localStorage.getItem('citizenApplications')) || [];
+            // Filter global applications to only show those belonging to the current user's unique ID
+            const globalApps = JSON.parse(localStorage.getItem(getAppsKey())) || [];
+            const userAppsFiltered = globalApps.filter(app => app.citizenId === sessionUser.id);
             
-            // Show cached data immediately if available
+            // Also handle potential legacy apps with old format
+            const legacyApps = JSON.parse(localStorage.getItem('citizenApplications')) || [];
+            const legacyUserApps = legacyApps.filter(app => app.citizenId === sessionUser.id);
+            
+            const localAppsImmediate = [...userAppsFiltered, ...legacyUserApps];
+            
+            // Show cached/local data immediately if available
             if (localAppsImmediate.length > 0 && !skipLoadingIndicator) {
                 cachedApplications = localAppsImmediate;
                 renderApplicationsList(localAppsImmediate, container);
@@ -1038,7 +1432,8 @@
                 const controller = new AbortController();
                 const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
                 
-                const response = await fetch('http://localhost:5000/api/applications?page=1&per_page=50', {
+                const fetchUrl = `http://localhost:5000/api/applications?page=1&per_page=50&account_id=${sessionUser.id}`;
+                const response = await fetch(fetchUrl, {
                     method: 'GET',
                     headers: { 'Content-Type': 'application/json' },
                     signal: controller.signal
@@ -1051,8 +1446,9 @@
                 }
                 
                 const result = await response.json();
-                const applications = (result.data || []).map(app => ({
+                const backendApps = (result.data || []).map(app => ({
                     id: app.application_id || app.id,
+                    citizenId: app.account_id || app.citizen_id || sessionUser.id,
                     serviceType: app.document_type || app.serviceType,
                     fullName: app.citizen_name || app.fullName,
                     nationalId: app.citizen_id || app.nationalId,
@@ -1071,16 +1467,10 @@
                     ]
                 }));
 
-                // Also load from localStorage as fallback
-                const localApps = JSON.parse(localStorage.getItem('citizenApplications')) || [];
-
                 // Load document requests from backend
                 let documentRequests = [];
                 try {
-                    const userId = localStorage.getItem('userId');
-                    const docReqUrl = userId
-                        ? `http://localhost:5000/api/document-requests?citizen_id=${userId}`
-                        : 'http://localhost:5000/api/document-requests';
+                    const docReqUrl = `http://localhost:5000/api/document-requests?account_id=${sessionUser.id}`;
                     const docReqResponse = await fetch(docReqUrl);
                     const docReqResult = await docReqResponse.json();
                     documentRequests = (docReqResult.data || []).map(req => {
@@ -1102,6 +1492,7 @@
 
                         return {
                             id: req.request_id,
+                            citizenId: req.account_id || req.citizen_id || sessionUser.id,
                             serviceType: req.document_type,
                             fullName: req.citizen_name,
                             nationalId: req.citizen_id,
@@ -1118,13 +1509,15 @@
                     console.log('Document requests not available:', err);
                 }
 
-                const allApps = [...applications, ...documentRequests, ...localApps].filter((app, idx, arr) => arr.findIndex(a => a.id === app.id) === idx);
+                // Merge and dedup
+                const allAppsFiltered = [...backendApps, ...documentRequests, ...localAppsImmediate]
+                    .filter((app, idx, arr) => arr.findIndex(a => a.id === app.id) === idx)
+                    .filter(app => !app.citizenId || app.citizenId === sessionUser.id);
                 
-                // Check if data has changed to avoid unnecessary re-renders
-                const dataChanged = JSON.stringify(cachedApplications) !== JSON.stringify(allApps);
-                cachedApplications = allApps;
+                const dataChanged = JSON.stringify(cachedApplications) !== JSON.stringify(allAppsFiltered);
+                cachedApplications = allAppsFiltered;
 
-                if (allApps.length === 0) {
+                if (allAppsFiltered.length === 0) {
                     container.innerHTML = `
                         <div class="empty-state">
                             <i class="fas fa-inbox"></i>
@@ -1132,34 +1525,23 @@
                             <p>Submit a service request to get started</p>
                         </div>
                     `;
-                    return;
-                }
-                
-                // Only re-render if data actually changed
-                if (dataChanged) {
-                    renderApplicationsList(allApps, container);
+                } else if (dataChanged) {
+                    renderApplicationsList(allAppsFiltered, container);
                 }
             } catch (error) {
                 console.error('Error loading applications:', error);
-                // Fallback to localStorage only
-                const applications = JSON.parse(localStorage.getItem('citizenApplications')) || [];
-                cachedApplications = applications;
                 
-                if (applications.length === 0) {
+                // Final fallback to local list if everything else fails
+                if (localAppsImmediate.length === 0) {
                     container.innerHTML = `
                         <div class="empty-state">
                             <i class="fas fa-inbox"></i>
                             <h3>No applications yet</h3>
                             <p>Submit a service request to get started</p>
-                            <p style="color: #ff6b6b; font-size: 0.9rem; margin-top: 1rem;">
-                                <i class="fas fa-exclamation-triangle"></i> Backend server is not running. Start backend to sync data.
-                            </p>
                         </div>
                     `;
                 } else {
-                    // Show cached data even on error
-                    renderApplicationsList(applications, container);
-                    showNotification('⚠️ Showing cached data - backend offline', 'warning');
+                    renderApplicationsList(localAppsImmediate, container);
                 }
             }
         }
@@ -1244,6 +1626,7 @@
                     <div class="application-card">
                         <div class="app-header">
                             <div>
+                                ${app.isDocumentRequest ? `<span style="font-size: 0.7rem; color: #856404; font-weight: bold; background: #fff3cd; padding: 2px 6px; border-radius: 4px; margin-bottom: 4px; display: inline-block;">DOC REQUEST</span>` : ''}
                                 <div class="app-title">${app.serviceType}</div>
                                 <div class="app-id">${app.id}</div>
                             </div>
@@ -1360,7 +1743,7 @@
 
         // View details
         function viewDetails(appId) {
-            const localApplications = JSON.parse(localStorage.getItem('citizenApplications')) || [];
+            const localApplications = JSON.parse(localStorage.getItem(getAppsKey())) || [];
             const app = cachedApplications.find(a => a.id === appId) || localApplications.find(a => a.id === appId);
 
             if (app) {
@@ -1386,6 +1769,7 @@
 
             const appId = document.getElementById('appealAppId').value;
             const reason = document.getElementById('appealReason').value;
+            const sessionUser = JSON.parse(localStorage.getItem('iremboUser_citizen') || localStorage.getItem('iremboUser'));
 
             try {
                 const response = await fetch('http://localhost:5000/api/appeals', {
@@ -1393,6 +1777,8 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         application_id: appId,
+                        citizen_id: sessionUser.id,
+                        account_id: sessionUser.id,
                         reason: reason,
                         additional_documents: []
                     })
@@ -1406,7 +1792,7 @@
             }
 
             // Update application status locally for immediate feedback
-            let applications = JSON.parse(localStorage.getItem('citizenApplications')) || [];
+            let applications = JSON.parse(localStorage.getItem(getAppsKey())) || [];
             const appIndex = applications.findIndex(a => a.id === appId);
 
             if (appIndex !== -1) {
@@ -1421,7 +1807,7 @@
                     date: new Date().toISOString()
                 };
 
-                localStorage.setItem('citizenApplications', JSON.stringify(applications));
+                localStorage.setItem(getAppsKey(), JSON.stringify(applications));
             }
 
             showNotification('✅ Appeal submitted successfully!', 'success');
@@ -1444,6 +1830,7 @@
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             checkAuth();
+            loadUserProfile();
             loadApplications();
 
             // Auto-refresh only when Applications tab is active, preserve scroll position
