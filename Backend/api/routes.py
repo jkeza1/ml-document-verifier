@@ -15,6 +15,7 @@ import psycopg2
 from psycopg2.extras import RealDictCursor
 import json
 import io
+import random
 from typing import Optional, List, Dict, Any
 from PIL import Image, ImageDraw, ImageFont
 
@@ -263,16 +264,47 @@ def init_db():
         is_sqlite = isinstance(conn, sqlite3.Connection)
         
         if is_sqlite:
+            # Migration for applications table
             cursor.execute("PRAGMA table_info(applications)")
             columns = [info[1] for info in cursor.fetchall()]
+            if 'account_id' not in columns:
+                cursor.execute("ALTER TABLE applications ADD COLUMN account_id TEXT")
             if 'citizen_id' not in columns:
                 cursor.execute("ALTER TABLE applications ADD COLUMN citizen_id TEXT")
+            if 'document_base64' not in columns:
+                cursor.execute("ALTER TABLE applications ADD COLUMN document_base64 TEXT")
+            if 'documents' not in columns:
+                cursor.execute("ALTER TABLE applications ADD COLUMN documents TEXT")
+            if 'ai_confidence' not in columns:
+                cursor.execute("ALTER TABLE applications ADD COLUMN ai_confidence REAL")
+            if 'ai_results' not in columns:
+                cursor.execute("ALTER TABLE applications ADD COLUMN ai_results TEXT")
+            if 'ai_verdict' not in columns:
+                cursor.execute("ALTER TABLE applications ADD COLUMN ai_verdict TEXT")
+            if 'local_feedback' not in columns:
+                cursor.execute("ALTER TABLE applications ADD COLUMN local_feedback TEXT")
+            if 'irembo_feedback' not in columns:
+                cursor.execute("ALTER TABLE applications ADD COLUMN irembo_feedback TEXT")
+            if 'feedback' not in columns:
+                cursor.execute("ALTER TABLE applications ADD COLUMN feedback TEXT")
+            if 'priority' not in columns:
+                cursor.execute("ALTER TABLE applications ADD COLUMN priority TEXT")
             
             # Migration for document_requests table
             cursor.execute("PRAGMA table_info(document_requests)")
             doc_columns = [info[1] for info in cursor.fetchall()]
+            if 'account_id' not in doc_columns:
+                cursor.execute("ALTER TABLE document_requests ADD COLUMN account_id TEXT")
             if 'updated_at' not in doc_columns:
                 cursor.execute("ALTER TABLE document_requests ADD COLUMN updated_at TEXT")
+            if 'remarks' not in doc_columns:
+                cursor.execute("ALTER TABLE document_requests ADD COLUMN remarks TEXT")
+
+            # Migration for appeals table
+            cursor.execute("PRAGMA table_info(appeals)")
+            appeal_columns = [info[1] for info in cursor.fetchall()]
+            if 'account_id' not in appeal_columns:
+                cursor.execute("ALTER TABLE appeals ADD COLUMN account_id TEXT")
         else:
             # PostgreSQL migration
             cursor.execute("""
@@ -436,6 +468,7 @@ initialize_demo_data()
 @router.get("/appeals", response_model=PaginatedResponse)
 async def list_appeals(
     citizen_id: Optional[str] = Query(None),
+    account_id: Optional[str] = Query(None),
     status: Optional[str] = Query(None),
     page: int = Query(1, ge=1),
     per_page: int = Query(10, ge=1, le=100)
@@ -451,6 +484,9 @@ async def list_appeals(
     if citizen_id:
         conditions.append("citizen_id = ?")
         params.append(citizen_id)
+    if account_id:
+        conditions.append("account_id = ?")
+        params.append(account_id)
     if status:
         conditions.append("status = ?")
         params.append(status)
@@ -502,11 +538,12 @@ async def create_appeal(appeal_data: AppealCreate):
     cursor = get_db_cursor(conn)
     cursor.execute(format_query('''
     INSERT INTO appeals (
-        appeal_id, application_id, citizen_id, reason, 
+        appeal_id, application_id, citizen_id, account_id, reason, 
         status, created_at, updated_at, notes, additional_documents
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     '''), (
-        appeal_id, appeal_data.application_id, "CITIZEN-DEFAULT", 
+        appeal_id, appeal_data.application_id, appeal_data.citizen_id or "CITIZEN-DEFAULT", 
+        appeal_data.account_id,
         appeal_data.reason, "pending", now, now, "", appeal_data.additional_documents
     ))
     conn.commit()
@@ -625,6 +662,8 @@ async def get_ai_review(review_id: str):
 @router.get("/applications")
 async def list_applications(
     status: Optional[str] = Query(None),
+    citizen_id: Optional[str] = Query(None),
+    account_id: Optional[str] = Query(None),
     page: int = Query(1, ge=1),
     per_page: int = Query(10, ge=1, le=100)
 ):
@@ -635,9 +674,19 @@ async def list_applications(
     query = "SELECT * FROM applications"
     params = []
     
+    conditions = []
     if status:
-        query += " WHERE status = ?"
+        conditions.append("status = ?")
         params.append(status)
+    if citizen_id:
+        conditions.append("citizen_id = ?")
+        params.append(citizen_id)
+    if account_id:
+        conditions.append("account_id = ?")
+        params.append(account_id)
+
+    if conditions:
+        query += " WHERE " + " AND ".join(conditions)
     
     query += " ORDER BY created_at DESC"
     
@@ -732,14 +781,14 @@ async def update_application(application_id: str, payload: dict):
     updated_at = datetime.utcnow().isoformat()
 
     if status and feedback:
-        cursor.execute(format_query("UPDATE applications SET status = ?, feedback = ?, created_at = ? WHERE application_id = ?"), 
-                      (status, feedback, updated_at, application_id))
+        cursor.execute(format_query("UPDATE applications SET status = ?, feedback = ? WHERE application_id = ?"), 
+                      (status, feedback, application_id))
     elif status:
-        cursor.execute(format_query("UPDATE applications SET status = ?, created_at = ? WHERE application_id = ?"), 
-                      (status, updated_at, application_id))
+        cursor.execute(format_query("UPDATE applications SET status = ? WHERE application_id = ?"), 
+                      (status, application_id))
     elif feedback:
-        cursor.execute(format_query("UPDATE applications SET feedback = ?, created_at = ? WHERE application_id = ?"), 
-                      (feedback, updated_at, application_id))
+        cursor.execute(format_query("UPDATE applications SET feedback = ? WHERE application_id = ?"), 
+                      (feedback, application_id))
 
     # If approved, save to issued_documents
     if status in ['approved', 'sent']:
@@ -856,6 +905,7 @@ async def upload_documents(
     citizen_name: str = Form(...),
     citizen_email: str = Form(...),
     citizen_id: str = Form(...),
+    account_id: Optional[str] = Form(None),
     citizen_phone: Optional[str] = Form(None),
     description: Optional[str] = Form(None),
     file: List[UploadFile] = File(...)
@@ -964,13 +1014,13 @@ async def upload_documents(
     cursor.execute(format_query('''
     INSERT INTO applications (
         application_id, citizen_name, citizen_email, citizen_id,
-        citizen_phone, description, document_type, status,
+        account_id, citizen_phone, description, document_type, status,
         created_at, priority, ai_confidence, ai_verdict,
         ai_results, documents, feedback, document_base64
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     '''), (
         application_id, citizen_name, citizen_email, citizen_id,
-        citizen_phone, description, document_type, "pending",
+        account_id, citizen_phone, description, document_type, "pending",
         created_at, priority, avg_confidence, combined_authenticity,
         json.dumps(results), json.dumps(stored_documents), feedback_text, best_encoded
     ))
@@ -1010,12 +1060,13 @@ async def request_document(request: DocumentRequest):
 
     cursor.execute(format_query('''
     INSERT INTO document_requests (
-        request_id, document_type, citizen_name, citizen_id, 
+        request_id, document_type, citizen_name, citizen_id, account_id,
         citizen_phone, reason, status, requested_at, updated_at, remarks
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     '''), (
         request_id, request.document_type, request.citizen_name,
-        request.citizen_id, request.citizen_phone, request.reason or "No reason specified",
+        request.citizen_id, request.account_id, request.citizen_phone, 
+        request.reason or "No reason specified",
         initial_status, requested_at, requested_at, remarks
     ))
     conn.commit()
@@ -1035,6 +1086,7 @@ async def request_document(request: DocumentRequest):
 @router.get("/document-requests", response_model=PaginatedResponse)
 async def list_document_requests(
     citizen_id: Optional[str] = Query(None),
+    account_id: Optional[str] = Query(None),
     status: Optional[str] = Query(None),
     page: int = Query(1, ge=1),
     per_page: int = Query(10, ge=1, le=100)
@@ -1050,6 +1102,9 @@ async def list_document_requests(
     if citizen_id:
         conditions.append("citizen_id = ?")
         params.append(citizen_id)
+    if account_id:
+        conditions.append("account_id = ?")
+        params.append(account_id)
     if status:
         conditions.append("status = ?")
         params.append(status)

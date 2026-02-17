@@ -10,6 +10,8 @@ from typing import Optional, List
 class AppealCreate(BaseModel):
     """Model for creating a new appeal"""
     application_id: str = Field(..., description="ID of the application being appealed")
+    citizen_id: Optional[str] = Field(None, description="Citizen account ID")
+    account_id: Optional[str] = Field(None, description="Citizen's USR account ID")
     reason: str = Field(..., description="Reason for appeal")
     additional_documents: Optional[str] = Field(None, description="Additional supporting documents")
     
@@ -103,6 +105,7 @@ class DocumentRequest(BaseModel):
     document_type: str = Field(..., description="Type of document being requested")
     citizen_name: str = Field(..., description="Full name of citizen")
     citizen_id: str = Field(..., description="National ID of citizen")
+    account_id: Optional[str] = Field(None, description="Account ID from iRembo system")
     citizen_phone: str = Field(..., description="Phone number of citizen")
     reason: Optional[str] = Field(None, description="Reason for requesting document")
     requested_at: Optional[str] = Field(None, description="Timestamp of request")
