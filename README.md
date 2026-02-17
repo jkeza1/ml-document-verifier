@@ -17,7 +17,7 @@ An AI-powered document verification system that leverages machine learning to au
 
 ## Watch Demo Video
 
- **[View 10-Minute Product Demo]([(https://drive.google.com/file/d/1Eq6ialKbqsFojsWMcKY46L46i2K2deEn/view?usp=sharing)]**
+ **[View 10-Minute Product Demo][(https://drive.google.com/file/d/1Eq6ialKbqsFojsWMcKY46L46i2K2deEn/view?usp=sharing)]**
 
 This video showcases the complete system:
 - UI/UX design walkthrough (9 professionally designed screens)
