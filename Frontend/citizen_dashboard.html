@@ -737,6 +737,38 @@
             </button>
         </div>
 
+        <!-- Global Dashboard Statistics / Queue Status -->
+        <div id="globalQueueSummary" style="background: white; padding: 1.25rem; border-radius: 12px; margin-bottom: 2rem; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+            <div style="display: flex; justify-content: space-between; align-items: center; gap: 2rem;">
+                <div style="flex: 1;">
+                    <h3 style="color: var(--primary-blue); margin-bottom: 0.25rem; display: flex; align-items: center; gap: 0.5rem; font-size: 1.1rem;">
+                        <i class="fas fa-tachometer-alt"></i> iRembo Digital Queue Status
+                    </h3>
+                    <p style="color: var(--text-light); font-size: 0.85rem;">
+                        Live overview of document processing at the national level.
+                    </p>
+                </div>
+                <div style="display: flex; gap: 2.5rem;">
+                    <div style="text-align: center;">
+                        <div id="globalQueuePending" style="font-size: 1.6rem; font-weight: 700; color: var(--warning);">--</div>
+                        <div style="font-size: 0.7rem; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.5px;">Waiting</div>
+                    </div>
+                    <div style="text-align: center; border-left: 1px solid #eee; padding-left: 2.5rem;">
+                        <div id="availableSlots" style="font-size: 1.6rem; font-weight: 700; color: var(--primary-blue);">--</div>
+                        <div style="font-size: 0.7rem; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.5px;">Available Slots</div>
+                    </div>
+                    <div style="text-align: center; border-left: 1px solid #eee; padding-left: 2.5rem;">
+                        <div id="globalWaitTime" style="font-size: 1.6rem; font-weight: 700; color: #6c757d;">--</div>
+                        <div style="font-size: 0.7rem; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.5px;">Avg. Period</div>
+                    </div>
+                    <div style="text-align: center; border-left: 1px solid #eee; padding-left: 2.5rem;">
+                        <div id="processingRate" style="font-size: 1.6rem; font-weight: 700; color: var(--success);">Fast</div>
+                        <div style="font-size: 0.7rem; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.5px;">Velocity</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- New Request Tab -->
         <div class="tab-content active" id="requestTab">
             <div class="request-form">
@@ -1509,13 +1541,74 @@
                     console.log('Document requests not available:', err);
                 }
 
-                // Merge and dedup
+                // Global Queue Stats Fetch (matching Officer logic)
+                let totalQueueWaiting = 0;
+                try {
+                    const [globalAppsRes, globalDocsRes] = await Promise.all([
+                        fetch('http://localhost:5000/api/applications?page=1&per_page=100'),
+                        fetch('http://localhost:5000/api/document-requests?page=1&per_page=100')
+                    ]);
+                    
+                    const [globalApps, globalDocs] = await Promise.all([
+                        globalAppsRes.json(),
+                        globalDocsRes.json()
+                    ]);
+
+                    const pendingApps = (globalApps.data || []).filter(a => a.status === 'pending' || a.status === 'review').length;
+                    const pendingDocs = (globalDocs.data || []).filter(a => a.status === 'pending' || a.status === 'review').length;
+                    
+                    totalQueueWaiting = pendingApps + pendingDocs;
+                } catch (err) {
+                    console.error('Error fetching global queue stats:', err);
+                    // Fallback to local count if global fails
+                    totalQueueWaiting = allAppsFiltered.filter(a => a.status === 'pending' || a.status === 'review').length; 
+                }
+
+                // Merge and dedup for personal list
                 const allAppsFiltered = [...backendApps, ...documentRequests, ...localAppsImmediate]
                     .filter((app, idx, arr) => arr.findIndex(a => a.id === app.id) === idx)
                     .filter(app => !app.citizenId || app.citizenId === sessionUser.id);
                 
                 const dataChanged = JSON.stringify(cachedApplications) !== JSON.stringify(allAppsFiltered);
                 cachedApplications = allAppsFiltered;
+
+                // Update global queue summary at top of dashboard
+                const totalPendingCount = allAppsFiltered.filter(a => a.status === 'pending' || a.status === 'review').length;
+                const globalPendingElem = document.getElementById('globalQueuePending');
+                if (globalPendingElem) {
+                    // This number now exactly matches what's in the officer dashboard's queue
+                    const totalWaiting = totalQueueWaiting; 
+                    globalPendingElem.textContent = totalWaiting;
+                    
+                    // Capacity management
+                    const dailyCapacity = 100;
+                    const availableSlots = Math.max(0, dailyCapacity - totalWaiting);
+                    const slotsElem = document.getElementById('availableSlots');
+                    if (slotsElem) {
+                        slotsElem.textContent = availableSlots;
+                        slotsElem.style.color = availableSlots < 10 ? 'var(--danger)' : 'var(--primary-blue)';
+                    }
+                    
+                    const avgPeriodElem = document.getElementById('globalWaitTime');
+                    if (avgPeriodElem) {
+                        const waitMin = totalWaiting * 2; // ~2 mins per doc
+                        avgPeriodElem.textContent = waitMin < 60 ? `${waitMin}m` : `${Math.floor(waitMin/60)}h ${waitMin%60}m`;
+                    }
+
+                    const velocityElem = document.getElementById('processingRate');
+                    if (velocityElem) {
+                        if (totalWaiting > 50) {
+                            velocityElem.textContent = 'High Load';
+                            velocityElem.style.color = 'var(--danger)';
+                        } else if (totalWaiting > 20) {
+                            velocityElem.textContent = 'Moderate';
+                            velocityElem.style.color = 'var(--warning)';
+                        } else {
+                            velocityElem.textContent = 'Fast';
+                            velocityElem.style.color = 'var(--success)';
+                        }
+                    }
+                }
 
                 if (allAppsFiltered.length === 0) {
                     container.innerHTML = `

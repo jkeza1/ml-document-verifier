@@ -804,6 +804,34 @@
 
             <!-- Pending Submissions -->
             <div class="content-area" id="pendingView">
+                <div style="background: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; gap: 2rem;">
+                        <div style="flex: 1;">
+                            <h3 style="color: var(--primary-blue); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                                <i class="fas fa-layer-group"></i> Official Document Queue
+                            </h3>
+                            <p style="color: var(--text-light); font-size: 0.9rem;">
+                                Below are the documents currently waiting for verification. 
+                                High-priority items are automatically ranked based on submission urgency.
+                            </p>
+                        </div>
+                        <div style="display: flex; gap: 2rem;">
+                            <div style="text-align: center;">
+                                <div id="queueCountBig" style="font-size: 1.8rem; font-weight: 700; color: var(--warning);">0</div>
+                                <div style="font-size: 0.75rem; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.5px;">Pending</div>
+                            </div>
+                            <div style="text-align: center; border-left: 1px solid #eee; padding-left: 2rem;">
+                                <div id="availableSlots" style="font-size: 1.8rem; font-weight: 700; color: var(--primary-blue);">100</div>
+                                <div style="font-size: 0.75rem; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.5px;">Available Slots</div>
+                            </div>
+                            <div style="text-align: center; border-left: 1px solid #eee; padding-left: 2rem;">
+                                <div id="queueLoadLabel" style="font-size: 1.8rem; font-weight: 700; color: #6c757d;">--</div>
+                                <div style="font-size: 0.75rem; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.5px;">Avg. Period</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <h2 style="margin-bottom: 1.5rem; color: var(--primary-blue);">
                     <i class="fas fa-inbox"></i> Pending Submissions
                 </h2>
@@ -1319,6 +1347,25 @@
             document.getElementById('pendingBadge').textContent = pending;
             document.getElementById('analyzingBadge').textContent = reviewing;
             document.getElementById('appealsBadge').textContent = appeals;
+
+            // Update new queue visual
+            const qCount = document.getElementById('queueCountBig');
+            if (qCount) qCount.textContent = pending;
+            
+            // Available Slots
+            const slotsCount = document.getElementById('availableSlots');
+            if (slotsCount) {
+                const available = Math.max(0, 100 - pending);
+                slotsCount.textContent = available;
+                slotsCount.style.color = available < 10 ? 'var(--danger)' : 'var(--primary-blue)';
+            }
+            
+            const qLoad = document.getElementById('queueLoadLabel');
+            if (qLoad) {
+                const waitMin = pending * 2;
+                qLoad.textContent = waitMin < 60 ? `${waitMin}m` : `${Math.floor(waitMin/60)}h ${waitMin%60}m`;
+                qLoad.style.color = pending > 15 ? 'var(--danger)' : '#6c757d';
+            }
         }
 
         function renderPendingSubmissions() {
